@@ -37,7 +37,7 @@ def do_measurement():
     # サンプリング・レートの設定
     ads.drate = DRATE_1000
     # gainの設定
-    ads.pga_gain = GAIN_1
+    ads.pga_gain = 1
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
 
