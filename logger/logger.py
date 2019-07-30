@@ -26,8 +26,13 @@ SHORT_CIRCUIT = POS_AIN0|NEG_AIN0
 # Specify here an arbitrary length list (tuple) of arbitrary input channel pair
 # eight-bit code values to scan sequentially from index 0 to last.
 # Eight channels fit on the screen nicely for this example..
-CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT7, POTI_INVERTED, SHORT_CIRCUIT)
+# CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT7, POTI_INVERTED, SHORT_CIRCUIT)
 ################################################################################
+Diff0_1 = POS_AIN0|NEG_AIN1
+Diff2_3 = POS_AIN2|NEG_AIN3
+Diff4_5 = POS_AIN4|NEG_AIN5
+Diff6_7 = POS_AIN6|NEG_AIN7
+CH_SEQUENCE = (Diff0_1,Diff2_3,Diff4_5,Diff6_7)
 def do_measurement():
     ### STEP 1: Initialise ADC object using default configuration:
     # (Note1: See ADS1256_default_config.py, see ADS1256 datasheet)
@@ -44,8 +49,10 @@ def do_measurement():
     while True:
         ### STEP 3: Get data:
         raw_channels = ads.read_sequence(CH_SEQUENCE)
-        voltages     = [i * ads.v_per_digit for i in raw_channels]
-        print(raw_channels)
+        voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
+        MagneticF     = [(i * 1000 / 0.16) for i in voltages]
+        print(voltages)
+        print(MagneticF)
 
         ### STEP 4: DONE. Have fun!
         # nice_output(raw_channels, voltages)
