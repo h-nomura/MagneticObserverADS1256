@@ -3,31 +3,12 @@ import os
 from ADS1256_definitions import *
 from pipyadc import ADS1256
 
+import time, datetime
+import csv
 
 if not os.path.exists("/dev/spidev0.1"):
     raise IOError("Error: No SPI device. Check settings in /boot/config.txt")
 # Input pin for the potentiometer on the Waveshare Precision ADC board:
-POTI = POS_AIN0|NEG_AINCOM
-# Light dependant resistor of the same board:
-LDR  = POS_AIN1|NEG_AINCOM
-# The other external input screw terminals of the Waveshare board:
-EXT2, EXT3, EXT4 = POS_AIN2|NEG_AINCOM, POS_AIN3|NEG_AINCOM, POS_AIN4|NEG_AINCOM
-EXT5, EXT6, EXT7 = POS_AIN5|NEG_AINCOM, POS_AIN6|NEG_AINCOM, POS_AIN7|NEG_AINCOM
-
-# You can connect any pin as well to the positive as to the negative ADC input.
-# The following reads the voltage of the potentiometer with negative polarity.
-# The ADC reading should be identical to that of the POTI channel, but negative.
-POTI_INVERTED = POS_AINCOM|NEG_AIN0
-
-# For fun, connect both ADC inputs to the same physical input pin.
-# The ADC should always read a value close to zero for this.
-SHORT_CIRCUIT = POS_AIN0|NEG_AIN0
-
-# Specify here an arbitrary length list (tuple) of arbitrary input channel pair
-# eight-bit code values to scan sequentially from index 0 to last.
-# Eight channels fit on the screen nicely for this example..
-# CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT7, POTI_INVERTED, SHORT_CIRCUIT)
-################################################################################
 Diff0_1 = POS_AIN0|NEG_AIN1
 Diff2_3 = POS_AIN2|NEG_AIN3
 Diff4_5 = POS_AIN4|NEG_AIN5
@@ -38,57 +19,74 @@ def do_measurement():
     # (Note1: See ADS1256_default_config.py, see ADS1256 datasheet)
     # (Note2: Input buffer on means limited voltage range 0V...3V for 5V supply)
     ads = ADS1256()
-
     # サンプリング・レートの設定
-    ads.drate = DRATE_1000
+    # REG_DRATE: Sample rate definitions:
+    # DRATE_30000     = 0b11110000 # 30,000SPS (default)
+    # DRATE_15000     = 0b11100000 # 15,000SPS
+    # DRATE_7500      = 0b11010000 # 7,500SPS
+    # DRATE_3750      = 0b11000000 # 3,750SPS
+    # DRATE_2000      = 0b10110000 # 2,000SPS
+    # DRATE_1000      = 0b10100001 # 1,000SPS
+    # DRATE_500       = 0b10010010 # 500SPS
+    # DRATE_100       = 0b10000010 # 100SPS
+    # DRATE_60        = 0b01110010 # 60SPS
+    # DRATE_50        = 0b01100011 # 50SPS
+    # DRATE_30        = 0b01010011 # 30SPS
+    # DRATE_25        = 0b01000011 # 25SPS
+    # DRATE_15        = 0b00110011 # 15SPS
+    # DRATE_10        = 0b00100011 # 10SPS
+    # DRATE_5         = 0b00010011 # 5SPS
+    # DRATE_2_5       = 0b00000011 # 2.5SPS
+    ads.drate = DRATE_7500
     # gainの設定
     ads.pga_gain = 1
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
 
     while True:
-        ### STEP 3: Get data:
-        raw_channels = ads.read_sequence(CH_SEQUENCE)
-        voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
-        MagneticF     = [(i * 1000 / 0.16) for i in voltages]
-        print(voltages)
-        print(MagneticF)
+        now = datetime.datetime.now()#get time
+        today = '{0:%Y-%m-%d}'.format(now)
+        with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(now),'w') as f:
+            data = ['datatime',
+            'raw_1ch','Magnetic force(nT)_1ch',
+            'raw_2ch','Magnetic force(nT)_2ch',
+            'raw_3ch','Magnetic force(nT)_3ch',
+            'raw_4ch','Magnetic force(nT)_4ch']
+            writer = csv.writer(f)
+            writer.writerow(data)
+            counter = 0
+            while True:            
+                now = datetime.datetime.now()
+                # get data
+                raw_channels = ads.read_sequence(CH_SEQUENCE)
+                voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
+                MagneticF     = [(i * 1000 / 0.16) for i in voltages]
 
-        ### STEP 4: DONE. Have fun!
-        # nice_output(raw_channels, voltages)
+                data = ['{0:%Y-%m-%d %H:%M:%S%f}'.format(now),
+                raw_channels[0], MagneticF[0],
+                raw_channels[1], MagneticF[1],
+                raw_channels[2], MagneticF[2],
+                raw_channels[3], MagneticF[3]]
+                if counter == 1000:
+                    print('{0:%Y-%m-%d  %H:%M:%S}'.format(now) + '  Magnetic force(nT)==' + str(MagneticF[0]))
+                    counter = 0
+                writer = csv.writer(f)
+                writer.writerow(data)
+                counter += 1
+                if '{0:%Y-%m-%d}'.format(now) != today:
+                    break
+                today = '{0:%Y-%m-%d}'.format(now)
 
-### END EXAMPLE ###
+def main():
+    try:
+        print("\033[2J\033[H") # Clear screen
+        print(__doc__)
+        print("\nPress CTRL-C to exit.")
+        do_measurement()
 
+    except (KeyboardInterrupt):
+        print("\n"*8 + "User exit.\n")
+        sys.exit(0)
 
-#############################################################################
-# Format nice looking text output:
-def nice_output(digits, volts):
-    sys.stdout.write(
-          "\0337" # Store cursor position
-        +
-"""
-These are the raw sample values for the channels:
-Poti_CH0,  LDR_CH1,     AIN2,     AIN3,     AIN4,     AIN7, Poti NEG, Short 0V
-"""
-        + ", ".join(["{: 8d}".format(i) for i in digits])
-        +
-"""
-
-These are the sample values converted to voltage in V for the channels:
-Poti_CH0,  LDR_CH1,     AIN2,     AIN3,     AIN4,     AIN7, Poti NEG, Short 0V
-"""
-        + ", ".join(["{: 8.3f}".format(i) for i in volts])
-        + "\n\033[J\0338" # Restore cursor position etc.
-    )
-
-
-# Start data acquisition
-try:
-    print("\033[2J\033[H") # Clear screen
-    print(__doc__)
-    print("\nPress CTRL-C to exit.")
-    do_measurement()
-
-except (KeyboardInterrupt):
-    print("\n"*8 + "User exit.\n")
-    sys.exit(0)
+if __name__ == '__main__':
+	main()
