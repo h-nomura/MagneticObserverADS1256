@@ -47,7 +47,7 @@ def do_measurement():
         now = datetime.datetime.now()#get time
         today = '{0:%Y-%m-%d}'.format(now)
         with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(now),'w') as f:
-            data = ['datatime',
+            data = ['{0:%Y-%m-%d}'.format(now),
             'raw_1ch','Magnetic force(nT)_1ch',
             'raw_2ch','Magnetic force(nT)_2ch',
             'raw_3ch','Magnetic force(nT)_3ch',
@@ -62,7 +62,7 @@ def do_measurement():
                 voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
                 MagneticF     = [(i * 1000 / 0.16) for i in voltages]
 
-                data = ['{0:%Y-%m-%d %H:%M:%S%f}'.format(now),
+                data = ['{0:%H:%M:%S%f}'.format(now),
                 raw_channels[0], MagneticF[0],
                 raw_channels[1], MagneticF[1],
                 raw_channels[2], MagneticF[2],
