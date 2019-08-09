@@ -48,10 +48,8 @@ def do_measurement():
         today = '{0:%Y-%m-%d}'.format(now)
         with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(now),'w') as f:
             data = ['{0:%Y-%m-%d}'.format(now),
-            'raw_1ch','Magnetic force(nT)_1ch',
-            'raw_2ch','Magnetic force(nT)_2ch',
-            'raw_3ch','Magnetic force(nT)_3ch',
-            'raw_4ch','Magnetic force(nT)_4ch']
+            'Magnetic force(nT)_1ch','Magnetic force(nT)_2ch',
+            'Magnetic force(nT)_3ch','Magnetic force(nT)_4ch']
             writer = csv.writer(f)
             writer.writerow(data)
             counter = 0
@@ -62,11 +60,9 @@ def do_measurement():
                 voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
                 MagneticF     = [(i * 1000 / 0.16) for i in voltages]
 
-                data = ['{0:%H:%M:%S%f}'.format(now),
-                raw_channels[0], MagneticF[0],
-                raw_channels[1], MagneticF[1],
-                raw_channels[2], MagneticF[2],
-                raw_channels[3], MagneticF[3]]
+                data = ['{0:%H:%M:%S.%f}'.format(now),
+                MagneticF[0], MagneticF[1],
+                MagneticF[2], MagneticF[3]]
                 if counter == 1000:
                     print('{0:%Y-%m-%d  %H:%M:%S}'.format(now) + '  Magnetic force(nT)==' + str(MagneticF[0]))
                     counter = 0
