@@ -8,12 +8,8 @@ import sys
 import datetime
 
 def eliminate_f(date_str):
-    date = datetime.datetime.strptime(date_str, '%H:%M:%S%f')
+    date = datetime.datetime.strptime(date_str, '%H:%M:%S.%f')
     return date.strftime('%H:%M:%S')
-
-def eliminate_f2(date_str):
-    date = datetime.datetime.strptime(date_str, '%H:%M:%S%f')
-    return date.strftime('%H:%M:%S.%f')
 
 def search_start(dataTime,start_dataTime_str):
     i = 0
@@ -44,17 +40,16 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
     startFlag = False
     endFlagNum = False
     for row in f:#row is list
-        # print('2019-08-07 ' + eliminate_f(row[0]))
+        # print('2019-08-09 ' + eliminate_f(row[0]))
         if startFlag == False:
-            if ('2019-08-07 ' + eliminate_f(row[0])) == start_dataTime_str:
+            if ('2019-08-09 ' + eliminate_f(row[0])) == start_dataTime_str:
                 print("START")
                 startFlag = True
         if startFlag == True:
-            if ('2019-08-07 ' + eliminate_f(row[0])) == end_dataTime_str:
-                print("ENDING")
+            if ('2019-08-09 ' + eliminate_f(row[0])) == end_dataTime_str:
                 endFlagNum = True
         if endFlagNum == True:
-            if ('2019-08-07 ' + eliminate_f(row[0])) != end_dataTime_str:
+            if ('2019-08-09 ' + eliminate_f(row[0])) != end_dataTime_str:
                 print("END")
                 endFlagNum = False
                 startFlag = False
@@ -62,17 +57,17 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
         
         if rawFlag == 'RAW':
             if startFlag == True:
-                df_list['dataTime'].append('2019-08-07 ' + eliminate_f2(row[0]))
-                df_list['data'].append(float(row[2]))
+                df_list['dataTime'].append('2019-08-09 ' + row[0])
+                df_list['data'].append(float(row[1]))
         elif rawFlag == '':
-            SAMdata += float(row[2])
+            SAMdata += float(row[1])
             NUMdata += 1
             if NOWdate != '':
                 if startFlag == True:
                     if NOWdate != eliminate_f(row[0]):
-                        df_list['dataTime'].append('2019-08-07 ' + NOWdate)
+                        df_list['dataTime'].append('2019-08-09 ' + NOWdate)
                         df_list['data'].append(SAMdata / NUMdata)
-                        SAMdata = float(row[2])
+                        SAMdata = float(row[1])
                         SPrate = NUMdata
                         NUMdata = 1
             NOWdate = eliminate_f(row[0])
@@ -135,7 +130,7 @@ def main():
     print(header)
     # hour_fig_plot(f,'2019-06-20 23:30:00',15,'l')
     # fig_plot(f,'2019-08-04 00:00:00','2019-08-04 12:00:00','l','',0,0)
-    fig_plot(f,'2019-08-07 11:30:00','2019-08-07 12:30:00','l','',19000,20000)
+    fig_plot(f,'2019-08-09 20:21:00','2019-08-09 20:23:00','l','RAW',18500,19500)
 
 if __name__ == '__main__':
     main()
