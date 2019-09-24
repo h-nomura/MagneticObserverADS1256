@@ -72,8 +72,9 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
                 average += float(row[1])
                 average /= 2
         elif rawFlag == '':
-            SAMdata += float(row[1])
-            NUMdata += 1
+            if startFlag == True:
+                SAMdata += float(row[1])
+                NUMdata += 1
             if NOWdate != '':
                 if startFlag == True:
                     if NOWdate != eliminate_f(row[0]):
@@ -91,8 +92,9 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
                 df_list_raw['data'].append(float(row[1]))
                 average += float(row[1])
                 average /= 2
-            SAMdata += float(row[1])
-            NUMdata += 1
+
+                SAMdata += float(row[1])
+                NUMdata += 1
             if NOWdate != '':
                 if startFlag == True:
                     if NOWdate != eliminate_f(row[0]):
@@ -103,10 +105,10 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
                         NUMdata = 1
             NOWdate = eliminate_f(row[0])
 
-    if rawFlag == '':
+    if rawFlag == '' or rawFlag == 'OVER':
         print(SPrate)
 
-    return df_list['dataTime'],df_list['data'],df_list_raw['dataTime'],df_list_raw['data'],average
+    return df_list['dataTime'],df_list['data'],df_list_raw['dataTime'],df_list_raw['data'],average,SPrate
 
 #ex. start_datetime_str = 2017-08-01 01:00:00
 def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yrange):
@@ -135,11 +137,11 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
             'Magnetic force':dfList[1]
         })
         ax.plot(df['date time'], df['Magnetic force'], color='r')
-    ax.set_title(start_datetime_str + '(JST) to ' + end_datetime_str + '(JST) ' + 'northward component of magnetic force(nT)' + rawFlag)
+    ax.set_title(start_datetime_str + '(JST) to ' + end_datetime_str + '(JST) ' + 'northward component of magnetic force(nT)' + rawFlag + str(dfList[5]))
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H_%M_%S') + end_dir.strftime('-%d_%H_%M_%S') + '_' + fig_size + '_' + 'Magnetic(nT)'+rawFlag+'.png')
+    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Magnetic(nT)'+rawFlag+str(Yrange)+'.png')
     #Splt.show()
 
 def my_makedirs(path):
@@ -168,14 +170,22 @@ def Process(fileName,StartTime,EndTime,rawFlag,ymin,ymax,Yrange):
 
 def main():
     File = [
-    "MI19-08-27_19h53m21s.csv",
-    "MI19-08-20_15h41m40s.csv",
-    "MI19-08-20_15h56m19s.csv",
-    "MI19-08-20_16h10m42s.csv",
+    "MI19-09-20_12h39m47s.csv",
+    "MI19-08-28_17h30m25s.csv",
+    "MI19-09-03_00h00m00s.csv",
+    "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
-    "MI19-08-20_16h39m01s.csv"]
-    Process(File[0],"19:54:00","19:55:00","OVER",0,0,5000)
-    # Process(File[1],"15:42:00","15:52:00","",0,0,5000)
+    "MI19-09-20_12h39m47s.csv"]
+    # Process(File[2],"00:00:00","12:00:00","OVER",0,0,0)
+    # Process(File[2],"00:00:00","12:00:00","OVER",0,0,1000)
+    # Process(File[2],"03:00:00","04:00:00","OVER",0,0,1000)
+    Process(File[0],"12:40:00","12:43:00","OVER",0,0,1000)
+    # Process(File[0],"03:00:00","04:00:00","OVER",0,0,1000)
+    # Process(File[0],"03:00:00","04:00:00","OVER",0,0,200)
+    # Process(File[0],"03:00:00","03:10:00","OVER",0,0,200)
+    # Process(File[0],"03:00:00","03:01:00","OVER",0,0,200)
+    # Process(File[0],"00:00:00","00:10:00","OVER",0,0,3000)
+    # Process(File[1],"17:31:00","17:32:00","OVER",0,0,200)
     # Process(File[2],"15:57:00","16:07:00","",0,0,5000)
     # Process(File[3],"16:11:00","16:21:00","",0,0,5000)
     # Process(File[4],"16:24:00","16:34:00","",0,0,5000)
