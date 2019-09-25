@@ -15,14 +15,13 @@ def _redraw(_, x, y, x2, y2):
     # 現在のグラフを消去する
     plt.cla()
     # 折れ線グラフを再描画する
-    fig1 = plt.plot(x, y)
-    fig2 = plt.plot(x2, y2)
-    return fig1 + fig2
+    plt.plot(x, y)
+    plt.plot(x2, y2)
 
 
 def show_graph():
     # 描画領域
-    fig = plt.figure(figsize=(12, 6))
+    fig = plt.figure(figsize=(10, 6))
     # 描画するデータ (最初は空っぽ)
     x = []
     y = []
@@ -52,7 +51,7 @@ def show_graph():
         'fargs': (x, y, x2, y2),  # 関数の引数 (フレーム番号を除く)
         'interval': 250,  # グラフを更新する間隔 (ミリ秒)
     }
-    animation.FuncAnimation(**params)
+    anime = animation.FuncAnimation(**params)
 
     # グラフを表示する
     plt.show()
