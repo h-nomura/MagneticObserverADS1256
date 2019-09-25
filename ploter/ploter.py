@@ -170,7 +170,7 @@ def Process(fileName,StartTime,EndTime,rawFlag,ymin,ymax,Yrange):
 
 def main():
     File = [
-    "MI19-09-20_12h39m47s.csv",
+    "MI19-09-24_19h35m06s.csv",
     "MI19-08-28_17h30m25s.csv",
     "MI19-09-03_00h00m00s.csv",
     "MI19-09-03_19h21m14s.csv",
@@ -179,7 +179,7 @@ def main():
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,0)
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,1000)
     # Process(File[2],"03:00:00","04:00:00","OVER",0,0,1000)
-    Process(File[0],"12:40:00","12:43:00","OVER",0,0,1000)
+    Process(File[0],"19:41:00","19:42:00","OVER",0,0,200)
     # Process(File[0],"03:00:00","04:00:00","OVER",0,0,1000)
     # Process(File[0],"03:00:00","04:00:00","OVER",0,0,200)
     # Process(File[0],"03:00:00","03:10:00","OVER",0,0,200)
