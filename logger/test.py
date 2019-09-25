@@ -88,24 +88,16 @@ def df_maker(f,rawFlag):
 def fig_plot(f,rawFlag,Yrange):
     dfList = df_maker(f,rawFlag)
     # Figureの初期化
-    fig = plt.figure(figsize=(12, 4.5))
+    fig = plt.figure(figsize=(12, 6))
     # Figure内にAxesを追加()
     ax = fig.add_subplot(111) #...2
     if Yrange != 0:
         ax.set_ylim([dfList[4] - (Yrange/2),dfList[4] + (Yrange/2)])
     ax.yaxis.grid(True)
     if rawFlag == 'RAW' or rawFlag == 'OVER':
-        df = pd.DataFrame({
-            'date time raw':pd.to_datetime(dfList[2], utc=True),
-            'Magnetic force raw':dfList[3]
-        })
-        ax.plot(df['date time raw'], df['Magnetic force raw'], color='b')
+        ax.plot(pd.to_datetime(dfList[2], utc=True), dfList[3], color='b')
     if rawFlag == '' or rawFlag == 'OVER':
-        df = pd.DataFrame({
-            'date time':pd.to_datetime(dfList[0]),
-            'Magnetic force':dfList[1]
-        })
-        ax.plot(df['date time'], df['Magnetic force'], color='r')
+        ax.plot(pd.to_datetime(dfList[0], utc=True), dfList[1], color='r')
     ax.set_title('(JST) ' + 'northward component of magnetic force(nT)' + rawFlag + str(dfList[5]))
     plt.show()
 
@@ -156,9 +148,9 @@ def do_measurement():
         MagneticF     = [(i * 1000 / 0.16) for i in voltages]
 
         data.append(['{0:%H:%M:%S.%f}'.format(now), MagneticF[0], MagneticF[1], MagneticF[2], MagneticF[3]])
-        if counter == 10000:
+        if counter == 1000:
             print('{0:%Y-%m-%d  %H:%M:%S}'.format(now) + '  Magnetic force(nT)==' + str(MagneticF[0]))
-            fig_plot(data,"RAW",200)
+            fig_plot(data,"OVER",200)
             data.clear()
             now = datetime.datetime.now()#get time
             data = [['{0:%Y-%m-%d }'.format(now),
