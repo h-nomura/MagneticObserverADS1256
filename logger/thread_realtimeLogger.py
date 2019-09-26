@@ -54,7 +54,7 @@ def df_maker(f,C_mode):
             dataday = row[0]
             index = 1
         else:
-            if C_mode == 'RAW':
+            if C_mode == 'raw':
                 df_list_raw['dataTime'].append(dataday + row[0])
                 df_list_raw['data'].append(float(row[1]))
                 average += float(row[1])
@@ -62,7 +62,7 @@ def df_maker(f,C_mode):
             elif C_mode == '':
                 SAMdata += float(row[1])
                 NUMdata += 1
-                if NOWdate != '':
+                if NOWdate != '1s average':
                     if NOWdate != eliminate_f(row[0]):
                         df_list['dataTime'].append(dataday + NOWdate)
                         df_list['data'].append(SAMdata / NUMdata)
@@ -72,7 +72,7 @@ def df_maker(f,C_mode):
                         SPrate = NUMdata
                         NUMdata = 1
                 NOWdate = eliminate_f(row[0])
-            elif C_mode == 'OVER':
+            elif C_mode == 'overlay':
                 df_list_raw['dataTime'].append(dataday + row[0])
                 df_list_raw['data'].append(float(row[1]))
                 average += float(row[1])
@@ -122,7 +122,10 @@ def show_graph(C_save,C_range,C_mode,C_Drate):
 
     def _measurement(C_Drate,C_save):
         ads = ADS1256()
-        ads.drate = (DRATE_100 if C_Drate == 100 else DRATE_500 if C_Drate == 500 else DRATE_1000 if C_Drate = 1000 else DRATE_2000)
+        ads.drate = (DRATE_100 if C_Drate == 100 else
+        DRATE_500 if C_Drate == 500 else
+        DRATE_1000 if C_Drate == 1000 else
+        DRATE_2000)
         ads.pga_gain = 1
         ads.cal_self()
         """データを一定間隔で追加するスレッドの処理"""
@@ -150,7 +153,7 @@ def show_graph(C_save,C_range,C_mode,C_Drate):
         'func': _redraw,  # グラフを更新する関数
         'init_func': _init,  # グラフ初期化用の関数 (今回はデータ更新用スレッドの起動)
         'fargs': (ax, data, C_mode, C_range),  # 関数の引数 (フレーム番号を除く)
-        'interval': 200,  # グラフを更新する間隔 (ミリ秒)
+        'interval': 1000,  # グラフを更新する間隔 (ミリ秒)
     }
     anime = animation.FuncAnimation(**params)
 
