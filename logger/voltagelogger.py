@@ -43,7 +43,7 @@ def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
 
-def df_maker(f,C_mode,ch_num):
+def df_maker(f,C_mode):
     df_list = {'dataTime':[],'data':[]}
     df_list_raw = {'dataTime':[],'data':[]}
     SAMdata = 0
@@ -58,13 +58,13 @@ def df_maker(f,C_mode,ch_num):
             index = 1
         else:
             if row[0] != 0:
-                if C_mode == 'raw' or C_mode == 'dual':
+                if C_mode == 'raw':
                     df_list_raw['dataTime'].append(dataday + row[0])
-                    df_list_raw['data'].append(float(row[ch_num]))
-                    average += float(row[ch_num])
+                    df_list_raw['data'].append(float(row[1]))
+                    average += float(row[1])
                     average /= 2
                 elif C_mode == '':
-                    SAMdata += float(row[ch_num])
+                    SAMdata += float(row[1])
                     NUMdata += 1
                     if NOWdate != '1s average':
                         if NOWdate != eliminate_f(row[0]):
@@ -72,23 +72,23 @@ def df_maker(f,C_mode,ch_num):
                             df_list['data'].append(SAMdata / NUMdata)
                             average += (SAMdata / NUMdata)
                             average /= 2
-                            SAMdata = float(row[ch_num])
+                            SAMdata = float(row[1])
                             SPrate = NUMdata
                             NUMdata = 1
                     NOWdate = eliminate_f(row[0])
                 elif C_mode == 'overlay':
                     df_list_raw['dataTime'].append(dataday + row[0])
-                    df_list_raw['data'].append(float(row[ch_num]))
-                    average += float(row[ch_num])
+                    df_list_raw['data'].append(float(row[1]))
+                    average += float(row[1])
                     average /= 2
 
-                    SAMdata += float(row[ch_num])
+                    SAMdata += float(row[1])
                     NUMdata += 1
                     if NOWdate != '':
                         if NOWdate != eliminate_f(row[0]):
                             df_list['dataTime'].append(dataday + NOWdate)
                             df_list['data'].append(SAMdata / NUMdata)
-                            SAMdata = float(row[ch_num])
+                            SAMdata = float(row[1])
                             SPrate = NUMdata
                             NUMdata = 1
                     NOWdate = eliminate_f(row[0])
@@ -104,7 +104,7 @@ def _redraw(_, ax, data, C_mode, C_range):
     print("redraw")
     print(data[990])
 
-    df = df_maker(data,C_mode,1)
+    df = df_maker(data,C_mode)
     # 折れ線グラフを再描画する
     ax.yaxis.grid(True)
     ax.set_ylim([df[4] - (C_range/2),df[4] + (C_range/2)])
@@ -133,9 +133,10 @@ def measurement(plotData,C_save,C_Drate):
         now = datetime.datetime.now()
         # get data
         raw_channels = ads.read_sequence(CH_SEQUENCE)
-        voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
-        MagneticF     = [(i * 1000 / 0.16) for i in voltages]
-        plotData.append(['{0:%H:%M:%S.%f}'.format(now), MagneticF[0], MagneticF[1], MagneticF[2], MagneticF[3]])
+        voltages     = [(i * ads.v_per_digit) for i in raw_channels]
+        plotData.append(['{0:%H:%M:%S.%f}'.format(now),voltages[0],voltages[1],voltages[2],voltages[3]])
+        # MagneticF     = [(i * 1000 / 0.16) for i in voltages]
+        # plotData.append(['{0:%H:%M:%S.%f}'.format(now), MagneticF[0], MagneticF[1], MagneticF[2], MagneticF[3]])
         counter += 1
         if counter >= PLOT_DATA_NUM:
             plotData.pop(1)
@@ -144,32 +145,28 @@ def measurement(plotData,C_save,C_Drate):
 
 def ploting(plotData,C_save,C_range,C_mode,C_Drate):
     fig = plt.figure(figsize=(12, 6))
-    if C_mode == "dual":
-        ax = fig.add_subplot(211)
-        ax2 = fig.add_subplot(212)
-    else:
-        ax = fig.add_subplot(111)
-
+    ax = fig.add_subplot(111)
+    
+    # params = {
+    #     'fig': fig,
+    #     'func': _redraw,  # グラフを更新する関数
+    #     # 'init_func': _init,  # グラフ初期化用の関数 (今回はデータ更新用スレッドの起動)
+    #     'fargs': (ax, plotData, C_mode, C_range),  # 関数の引数 (フレーム番号を除く)
+    #     'interval': 1000,  # グラフを更新する間隔 (ミリ秒)
+    # }
+    # anime = animation.FuncAnimation(**params)
     while True:
-        df = df_maker(plotData ,C_mode,1)
-        if C_mode == "dual":
-            df2 = df_maker(plotData, C_mode,2)
+        # グラフを表示する
+        df = df_maker(plotData ,C_mode)
         # 折れ線グラフを再描画する
         plt.cla()
         ax.yaxis.grid(True)
         ax.set_ylim([df[4] - (C_range/2),df[4] + (C_range/2)])
-        if C_mode == "raw" or C_mode == "overlay" or C_mode == 'dual':
+        if C_mode == "raw" or C_mode == "overlay":
             ax.plot(pd.to_datetime(df[2], utc=True), df[3], color='b')
         if C_mode == "1s average" or C_mode == "overlay":
             ax.plot(pd.to_datetime(df[0], utc=True), df[1], color='r')
-        ax.set_title('(JST) ' + 'magnetic force(nT)' + C_mode +"range="+ str(C_range) +"rate="+ str(df[5]))
-        if C_mode == "dual":
-            ax2.yaxis.grid(True)
-            ax2.set_ylim([df2[4] - (C_range/2),df2[4] + (C_range/2)])
-            if C_mode == "raw" or C_mode == "overlay" or C_mode == 'dual':
-                ax2.plot(pd.to_datetime(df2[2], utc=True), df2[3], color='b')
-            if C_mode == "1s average" or C_mode == "overlay":
-                ax2.plot(pd.to_datetime(df2[0], utc=True), df2[1], color='r')
+        ax.set_title('(JST) ' + 'Voltage(V)' + C_mode +"range="+ str(C_range) +"rate="+ str(df[5]))
         plt.pause(0.01)
 
 def test(plotData):
@@ -197,16 +194,16 @@ def main():
     while True:#set config
         print("Do you want to save the observation data?(yes/no)")
         config_save = input('>> ')
-        print("Set the graph parameters to be displayed. \nEnter the magnetic Force range.(nT,10-80000)")
+        print("Set the graph parameters to be displayed. \nEnter the magnetic Force range.(V,0.1-6)")
         config_range = int(input('>> '))
-        print("Select graph to display(1s average/raw/overlay/dual)")
+        print("Select graph to display(1s average/raw/overlay)")
         config_mode = input('>> ')
         print("Set DRATE(2000/1000/500)")
         config_Drate = int(input('>> '))
 
         if config_save == "yes" or config_save == "no":
-            if 10 <= config_range <= 80000:
-                if config_mode == "1s average" or config_mode == "raw" or config_mode == "overlay"or config_mode == "dual":
+            if 0.1 <= config_range <= 6:
+                if config_mode == "1s average" or config_mode == "raw" or config_mode == "overlay":
                     break
         print("######input errer#######\ntry again!!")
     show_graph(config_save,config_range,config_mode,config_Drate)

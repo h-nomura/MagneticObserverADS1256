@@ -16,7 +16,7 @@ def process1(count, array):
 
 
 def process2(count, array):
-    for i in range(5):
+    while True:
         time.sleep(0.7)
         count.value += 1
         array.append(count.value)
@@ -25,13 +25,15 @@ def process2(count, array):
 
 
 def process3(count, array):
-    for i in range(5):
+    while True:
         time.sleep(0.9)
         count.value += 1
         array.append(count.value)
-        print("process3:" + str(count.value))
+        printer("process3:" + str(count.value))
         print(array)
 
+def printer(text):
+    print(text)
 
 if __name__ == '__main__':
     # Managerオブジェクトの作成
