@@ -195,7 +195,7 @@ def main():
         print("Do you want to save the observation data?(yes/no)")
         config_save = input('>> ')
         print("Set the graph parameters to be displayed. \nEnter the magnetic Force range.(V,0.1-6)")
-        config_range = int(input('>> '))
+        config_range = float(input('>> '))
         print("Select graph to display(1s average/raw/overlay)")
         config_mode = input('>> ')
         print("Set DRATE(2000/1000/500)")
