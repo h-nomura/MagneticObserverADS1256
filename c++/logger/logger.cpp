@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 //////HPADDAlibary//////
 // MIT License
@@ -22,9 +23,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
+int logger(void);
 
 int main(void){
-    printf("Hello World!!\n");
+    while(1){
+     logger();
+     break;   
+    }
+    return 0;
+}
+int logger(){
+    while(1){
+        FILE *fp;
+        char timeData[64];
+        time_t t = time(NULL);
+        strftime(timeData, sizeof(timeData), "MI%Y-%m-%d_%Hh%Mm%Ss.csv", localtime(&t));
+        const char *fname = timeData;
+
+        fp = fopen(fname,"w");
+        if(fp == NULL){
+            printf("%s file open errer!!\n",fname);
+            return -1;
+        }
+        fprintf(fp,"name,data,data,data\n");
+        fclose(fp);
+        break;
+    }
     return 0;
 }
