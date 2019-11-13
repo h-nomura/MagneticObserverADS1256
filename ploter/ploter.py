@@ -39,6 +39,7 @@ def search_end(dataTime,end_dataTime_str,start_arg):
     return -1
 
 def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
+    num = 1
     df_list = {'dataTime':[],'data':[]}
     df_list_raw = {'dataTime':[],'data':[]}
     SAMdata = 0
@@ -50,7 +51,7 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
     dataday = format_to_day(start_dataTime_str)
     average = 0
     for row in f:#row is list
-        # print('2019-08-09 ' + eliminate_f(row[0]))
+        # print(eliminate_f(row[0]))
         if startFlag == False:
             if (dataday + eliminate_f(row[0])) == start_dataTime_str:
                 print("START")
@@ -68,12 +69,12 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
         if rawFlag == 'RAW':
             if startFlag == True:
                 df_list_raw['dataTime'].append(dataday + row[0])
-                df_list_raw['data'].append(float(row[1]))
-                average += float(row[1])
+                df_list_raw['data'].append(float(row[num]))
+                average += float(row[num])
                 average /= 2
         elif rawFlag == '':
             if startFlag == True:
-                SAMdata += float(row[1])
+                SAMdata += float(row[num])
                 NUMdata += 1
             if NOWdate != '':
                 if startFlag == True:
@@ -82,25 +83,26 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
                         df_list['data'].append(SAMdata / NUMdata)
                         average += (SAMdata / NUMdata)
                         average /= 2
-                        SAMdata = float(row[1])
+                        SAMdata = float(row[num])
                         SPrate = NUMdata
                         NUMdata = 1
             NOWdate = eliminate_f(row[0])
         elif rawFlag == 'OVER':
             if startFlag == True:
                 df_list_raw['dataTime'].append(dataday + row[0])
-                df_list_raw['data'].append(float(row[1]))
-                average += float(row[1])
+                df_list_raw['data'].append(float(row[num]))
+                average += float(row[num])
                 average /= 2
 
-                SAMdata += float(row[1])
+                SAMdata += float(row[num])
                 NUMdata += 1
             if NOWdate != '':
                 if startFlag == True:
                     if NOWdate != eliminate_f(row[0]):
+                        print(dataday + NOWdate)
                         df_list['dataTime'].append(dataday + NOWdate)
                         df_list['data'].append(SAMdata / NUMdata)
-                        SAMdata = float(row[1])
+                        SAMdata = float(row[num])
                         SPrate = NUMdata
                         NUMdata = 1
             NOWdate = eliminate_f(row[0])
@@ -124,6 +126,8 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
     ax = fig.add_subplot(111) #...2
     if Yrange != 0:
         ax.set_ylim([dfList[4] - (Yrange/2),dfList[4] + (Yrange/2)])
+    if ymin != 0:
+        ax.set_ylim(ymin,ymax)
     ax.yaxis.grid(True)
     if rawFlag == 'RAW' or rawFlag == 'OVER':
         df = pd.DataFrame({
@@ -170,16 +174,18 @@ def Process(fileName,StartTime,EndTime,rawFlag,ymin,ymax,Yrange):
 
 def main():
     File = [
-    "MI19-10-08_22h24m41s.csv",
-    "MI19-08-28_17h30m25s.csv",
-    "MI19-09-03_00h00m00s.csv",
+    "MI19-11-11_19h58m31s.csv",
+    "MI19-11-03_00h00m00s.csv",
+    "MI19-11-04_00h00m00s.csv",
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,0)
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,1000)
     # Process(File[2],"03:00:00","04:00:00","OVER",0,0,1000)
-    Process(File[0],"22:30:00","22:30:10","OVER",0,0,200)
+    Process(File[0],"20:06:30","20:16:30","OVER",9605,9625,0)
+    # Process(File[1],"00:00:00","23:59:59","OVER",0,0,0)
+    # Process(File[2],"00:00:00","23:59:59","OVER",0,0,0)
     # Process(File[0],"03:00:00","04:00:00","OVER",0,0,1000)
     # Process(File[0],"03:00:00","04:00:00","OVER",0,0,200)
     # Process(File[0],"03:00:00","03:10:00","OVER",0,0,200)
