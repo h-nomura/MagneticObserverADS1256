@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <stdlib.h>
+
+#include <string.h>
 //////HPADDAlibary//////
 // MIT License
 
@@ -24,30 +27,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 int logger(void);
+double get_data(void);
 
 int main(void){
+    char timeData[64];
     while(1){
-     logger();
-     break;   
+        logger();
+        time_t t = time(NULL);
+        strftime(timeData, sizeof(timeData), "start measurement of MI%Y-%m-%d_%Hh%Mm%Ss.csv\n", localtime(&t));
+        printf(timeData);
+        break;   
     }
     return 0;
 }
 int logger(){
-    while(1){
-        FILE *fp;
-        char timeData[64];
-        time_t t = time(NULL);
-        strftime(timeData, sizeof(timeData), "MI%Y-%m-%d_%Hh%Mm%Ss.csv", localtime(&t));
-        const char *fname = timeData;
-
-        fp = fopen(fname,"w");
-        if(fp == NULL){
-            printf("%s file open errer!!\n",fname);
-            return -1;
-        }
-        fprintf(fp,"name,data,data,data\n");
-        fclose(fp);
-        break;
+    FILE *fp;
+    char timeData[1024];
+    char buf[64];
+    time_t t = time(NULL);
+    strftime(timeData, sizeof(timeData), "./data_C_logger/MI%Y-%m-%d_%Hh%Mm%Ss.csv", localtime(&t));
+    const char *fname = timeData;
+    fp = fopen(fname,"w");
+    if(fp == NULL){
+        printf("%s file open errer!!\n",fname);
+        return -1;
     }
+    strftime(timeData,sizeof(timeData), "%Y-%m%d,1ch(nT),2ch(nT),3ch(nT),4ch(nT)\n", localtime(&t));   
+    fprintf(fp,timeData);
+    int num = 0;
+    double data = 0;
+    while(num < 100){
+        t = time(NULL);
+        strftime(timeData, sizeof(timeData), "%H:%M:%S.%f", localtime(&t));
+        data = get_data();
+        snprintf(buf,sizeof(buf),",%f\n",data);
+        strcat(timeData,buf);
+        fprintf(fp,timeData);
+        num++;
+    }
+    fclose(fp);
     return 0;
+}
+
+double get_data(void){
+    return rand()/10000;
 }
