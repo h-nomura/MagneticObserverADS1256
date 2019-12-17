@@ -43,7 +43,7 @@ int logger(){
     }
     strftime(timeData,sizeof(timeData), "%Y-%m-%d,1ch(nT),2ch(nT),3ch(nT),4ch(nT)\n", localtime(&t));   
     fprintf(fp,timeData);
-    int num = 0;
+    // int num = 0;
     UBYTE i = 0;
     // double data = 0;
     double ADC[4] = {0,0,0,0};
@@ -58,22 +58,26 @@ int logger(){
         DEV_ModuleExit();
         exit(0);
     }
-    ADS1256_ConfigADC(ADS1256_GAIN_1,ADS1256_10SPS);
-    ADS1256_SetMode(1);//Differential mode
+    ADS1256_ConfigADC(ADS1256_GAIN_1,ADS1256_30000SPS);
+    ADS1256_SetMode(0);//Differential mode
     ////////////
 
 
-    while(num < 100){
+    while(1){
         // t = time(NULL);
         // strftime(timeData, sizeof(timeData), "%H:%M:%S.%n", localtime(&t));
         strTime(timeData);
         for(i = 0;i < 4;i++){
-            ADC[i] = ADS1256_GetChannalValue(i)*5.0/0x7fffff;
+            ADC[i] = (ADS1256_GetChannalValue(i)*5.0/0x7fffff * 6.970260223 - 15.522769516)*1000/0.16;
         }
         snprintf(buf,sizeof(buf),",%f,%f,%f,%f\n",ADC[0],ADC[1],ADC[2],ADC[3]);
         strcat(timeData,buf);
         fprintf(fp,timeData);
-        num++;
+        // num++;
+        // if(num >= 10000){
+        //     printf(timeData);
+        //     num = 0;
+        // }
     }
     fclose(fp);
     return 0;
