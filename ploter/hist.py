@@ -121,33 +121,35 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
     elif fig_size == 'm':
         fig = plt.figure(figsize=(8, 4.5))
     else:
-        fig = plt.figure(figsize=(12, 4.5))
+        fig = plt.figure(figsize=(7, 5))
     # Figure内にAxesを追加()
     ax = fig.add_subplot(111) #...2
     if Yrange != 0:
-        ax.set_ylim([dfList[4] - (Yrange/2),dfList[4] + (Yrange/2)])
+        ax.set_xlim([dfList[4] - (Yrange/2),dfList[4] + (Yrange/2)])
     if ymin != 0:
-        ax.set_ylim(ymin,ymax)
+        ax.set_xlim(ymin,ymax)
     ax.yaxis.grid(True)
-    ax.tick_params(labelsize=18)
+    ax.xaxis.grid(True)
+    ax.set_yscale('log')
     if rawFlag == 'RAW' or rawFlag == 'OVER':
         df = pd.DataFrame({
             'date time raw':pd.to_datetime(dfList[2]),
             'Magnetic force raw':dfList[3]
         })
-        ax.plot(df['date time raw'], df['Magnetic force raw'], color='g')
+        ax.hist(df['Magnetic force raw'],bins=100, color='g')
     if rawFlag == '' or rawFlag == 'OVER':
         df = pd.DataFrame({
             'date time':pd.to_datetime(dfList[0]),
             'Magnetic force':dfList[1]
         })
-        ax.plot(df['date time'], df['Magnetic force'], color='r')
-    # ax.set_title(start_datetime_str + '(JST) to ' + end_datetime_str + '(JST) ' + 'northward component of magnetic force(nT)' + rawFlag + str(dfList[5]))
-    ax.set_title(start_datetime_str + '(JST) magnetic force(nT)' + rawFlag + str(dfList[5]))
+        ax.hist(df['Magnetic force'],bins=20, color='r')
+    ax.tick_params(labelsize=18)
+    plt.xticks( [9605, 9610, 9615] )
+    ax.set_title(start_datetime_str + 'to ' + end_datetime_str + '(JST) ' + 'Histogram')
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Magnetic(nT)2'+rawFlag+str(Yrange)+'.png')
+    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Histogram2'+rawFlag+str(Yrange)+'.png')
     #Splt.show()
 
 def my_makedirs(path):
