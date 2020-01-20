@@ -50,6 +50,8 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
     endFlagNum = False
     dataday = format_to_day(start_dataTime_str)
     average = 0
+    NumberOFdata = 0
+    NumberOFdataRAW = 0
     for row in f:#row is list
         # print(eliminate_f(row[0]))
         if startFlag == False:
@@ -70,6 +72,7 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
             if startFlag == True:
                 df_list_raw['dataTime'].append(dataday + row[0])
                 df_list_raw['data'].append(float(row[num]))
+                NumberOFdataRAW += 1
                 average += float(row[num])
                 average /= 2
         elif rawFlag == '':
@@ -89,6 +92,7 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
             NOWdate = eliminate_f(row[0])
         elif rawFlag == 'OVER':
             if startFlag == True:
+                NumberOFdataRAW += 1
                 df_list_raw['dataTime'].append(dataday + row[0])
                 df_list_raw['data'].append(float(row[num]))
                 average += float(row[num])
@@ -100,6 +104,7 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
                 if startFlag == True:
                     if NOWdate != eliminate_f(row[0]):
                         print(dataday + NOWdate + " srate = "+ str(NUMdata))
+                        NumberOFdata += 1
                         df_list['dataTime'].append(dataday + NOWdate)
                         df_list['data'].append(SAMdata / NUMdata)
                         SAMdata = float(row[num])
@@ -110,7 +115,7 @@ def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
     if rawFlag == '' or rawFlag == 'OVER':
         print(SPrate)
 
-    return df_list['dataTime'],df_list['data'],df_list_raw['dataTime'],df_list_raw['data'],average,SPrate
+    return df_list['dataTime'],df_list['data'],df_list_raw['dataTime'],df_list_raw['data'],average,SPrate,NumberOFdataRAW,NumberOFdata
 
 #ex. start_datetime_str = 2017-08-01 01:00:00
 def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yrange):
@@ -121,36 +126,100 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
     elif fig_size == 'm':
         fig = plt.figure(figsize=(8, 4.5))
     else:
-        fig = plt.figure(figsize=(7, 5))
+        fig = plt.figure(figsize=(6, 8))
+        
     # Figure内にAxesを追加()
-    ax = fig.add_subplot(111) #...2
+    ax = fig.add_subplot(211) #...2
+    ax2 = fig.add_subplot(212)
+
+
     if Yrange != 0:
-        ax.set_xlim([dfList[4] - (Yrange/2),dfList[4] + (Yrange/2)])
+        ax.set_ylim([dfList[4] - (Yrange/2),dfList[4] + (Yrange/2)])
     if ymin != 0:
-        ax.set_xlim(ymin,ymax)
+        ax.set_ylim(ymin,ymax)
     ax.yaxis.grid(True)
-    ax.xaxis.grid(True)
-    ax.set_yscale('log')
+    ax.tick_params(labelsize=18)
+    ax2.tick_params(labelsize=18)
     if rawFlag == 'RAW' or rawFlag == 'OVER':
         df = pd.DataFrame({
             'date time raw':pd.to_datetime(dfList[2]),
             'Magnetic force raw':dfList[3]
         })
-        ax.hist(df['Magnetic force raw'],bins=100, color='g')
+        ax.plot(df['date time raw'], df['Magnetic force raw'], color='g')
+        # FTT plot
+        N = dfList[6]
+        print(N)
+        dt = 1 / dfList[5]
+        print(dt)
+        # t = np.arange(dfList[2])
+        f = np.array(dfList[3])
+        F = np.fft.fft(f)
+        F_abs = np.abs(F)
+        F_abs_amp = F_abs / N * 2
+        F_abs_amp[0] = F_abs_amp[0] / N
+        F_abs_amp = np.sqrt(F_abs_amp) * 1000
+        fq = np.linspace(0,1.0/dt,N)
+        ax2.set_ylim(1,1000)
+        ax2.set_xlim(0.01,1000)
+        ax2.set_xscale('log')
+        ax2.set_yscale('log')
+        ax2.xaxis.grid(which = "both")
+        ax2.yaxis.grid(which = "both")
+        ax2.set_xlabel("Frequency [Hz]", fontsize=18)
+        ax2.set_ylabel("Noise density [pT√Hz]", fontsize=18)
+        ax2.plot(fq[:int(N/2)+1],F_abs_amp[:int(N/2)+1])
+        ax.set_title(start_datetime_str + '(JST) magnetic force(nT)' + rawFlag + str(dfList[5]))
+        fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
+        end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
+        my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
+        plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + 'Magnetic(nT)2'+rawFlag+'FTTLog2per5' + '.png')
+
+        fig2 = plt.figure(figsize=(12, 8))
+        ax3 = fig2.add_subplot(211)
+        ax4 = fig2.add_subplot(212)
+        ax4.yaxis.grid(True)
+        ax3.tick_params(labelsize=18)
+        ax4.tick_params(labelsize=18)
+        F2 = F
+        fc = 1 #Cut off
+        F2[((fq > fc)&(fq < (152 - fc)))] = 0
+        F2_abs = np.abs(F2)
+        F2_abs_amp = F2_abs / N * 2
+        F2_abs_amp[0] = F2_abs_amp[0] / 2
+        ax3.set_ylim(0,0.3)
+        ax3.plot(fq[:int(N/2)+1],F2_abs_amp[:int(N/2)+1])
+        # ax3.plot(fq,F2_abs_amp)
+
+        F2_ifft = np.fft.ifft(F2)
+        F2_ifft_real = F2_ifft.real
+        ax4.set_ylim(9602,9618)
+        ax4.plot(df['date time raw'], df['Magnetic force raw'], color='g')
+        ax4.plot(df['date time raw'], F2_ifft_real, color='y')
+
     if rawFlag == '' or rawFlag == 'OVER':
         df = pd.DataFrame({
             'date time':pd.to_datetime(dfList[0]),
             'Magnetic force':dfList[1]
         })
-        ax.hist(df['Magnetic force'],bins=20, color='r')
-    ax.tick_params(labelsize=18)
-    ax.set_ylim(0,1000)
-    plt.xticks( [9605, 9610, 9615] )
-    ax.set_title(start_datetime_str + 'to ' + end_datetime_str + '(JST) ' + 'Histogram')
+        ax.plot(df['date time'], df['Magnetic force'], color='r')
+        # FTT plot
+        N = dfList[7]
+        dt = 1
+        # t = np.arange(dfList[2])
+        f = np.array(dfList[1])
+        F = np.fft.fft(f)
+        F_abs = np.abs(F)
+        F_abs_amp = F_abs / N * 2
+        F_abs_amp[0] = F_abs_amp[0] / 2
+        fq = np.linspace(0,1.0/dt,N)
+        # ax2.set_xlim(0.000000001,0.05)
+        # ax2.plot(fq[:int(N/2)+1],F_abs_amp[:int(N/2)+1], marker="o")
+    # ax.set_title(start_datetime_str + '(JST) to ' + end_datetime_str + '(JST) ' + 'northward component of magnetic force(nT)' + rawFlag + str(dfList[5]))
+    ax.set_title(start_datetime_str + '(JST) magnetic force(nT)' + rawFlag + str(dfList[5]))
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Histogram_ori'+rawFlag+str(Yrange)+'.png')
+    # plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_fc' + str(fc) + '_' + 'Magnetic(nT)2'+rawFlag+'FTT2' + '.png')
     #Splt.show()
 
 def my_makedirs(path):
@@ -180,7 +249,7 @@ def Process(fileName,StartTime,EndTime,rawFlag,ymin,ymax,Yrange):
 def main():
     File = [
     "MI2019-11-14_22h31m46s.csv",
-    "crop_MI19-11-11_19h58m31s.csv",
+    "clean_per5crop_MI19-11-11_19h58m31s.csv",
     "MI19-11-04_00h00m00s.csv",
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",

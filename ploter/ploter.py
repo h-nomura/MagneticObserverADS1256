@@ -147,7 +147,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Magnetic(nT)2'+rawFlag+str(Yrange)+'.png')
+    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Magnetic(nT)per5'+rawFlag+str(Yrange)+'.png')
     #Splt.show()
 
 def my_makedirs(path):
@@ -176,8 +176,10 @@ def Process(fileName,StartTime,EndTime,rawFlag,ymin,ymax,Yrange):
 
 def main():
     File = [
-    "MI2019-11-14_22h31m46s.csv",
-    "MI19-11-11_19h58m31s.csv",
+    "crop_MI19-11-11_19h58m31s.csv",
+    "clean_per5crop_MI19-11-11_19h58m31s.csv",
+    "clean_per2crop_MI19-11-11_19h58m31s.csv",
+    "clean_per2crop_MI19-11-11_19h58m31s.csv",
     "MI19-11-04_00h00m00s.csv",
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
@@ -185,7 +187,7 @@ def main():
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,0)
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,1000)
     # Process(File[2],"03:00:00","04:00:00","OVER",0,0,1000)
-    Process(File[1],"20:10:00","20:11:00","OVER",0,0,0)
+    Process(File[1],"20:10:00","20:11:00","OVER",9602,9618,0)
     # Process(File[1],"00:00:00","23:59:59","OVER",0,0,0)
     # Process(File[2],"00:00:00","23:59:59","OVER",0,0,0)
     # Process(File[0],"03:00:00","04:00:00","OVER",0,0,1000)
