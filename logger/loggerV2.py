@@ -42,6 +42,9 @@ def do_measurement():
     ads.pga_gain = 1
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
+    slope = [5.98299, 5.98685, 5.96869, 100]
+    intercept = [-15.28572, -15.24686, -15.22348, 2]
+    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 1]
 
     while True:
         now = datetime.datetime.now()#get time
@@ -59,8 +62,9 @@ def do_measurement():
                 raw_channels = ads.read_sequence(CH_SEQUENCE)
                 #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
                 #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
-                voltages     = [i * ads.v_per_digit for i in raw_channels]
-                MagneticF     = voltages
+                voltages = [i * ads.v_per_digit for i in raw_channels]
+                voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
+                MagneticF = [(voltages_15[i] / transform[i]) for i in range(4)]
 
                 data = ['{0:%H:%M:%S.%f}'.format(now),
                 MagneticF[0], MagneticF[1],
