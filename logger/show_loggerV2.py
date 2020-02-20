@@ -50,35 +50,28 @@ def do_measurement():
     while True:
         now = datetime.datetime.now()#get time
         today = '{0:%Y-%m-%d}'.format(now)
-        with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(now),'w') as f:
-            data = ['{0:%Y-%m-%d}'.format(now),
-            'Magnetic force(nT)_1ch','Magnetic force(nT)_2ch',
-            'Magnetic force(nT)_3ch','Magnetic force(nT)_4ch']
-            writer = csv.writer(f)
-            writer.writerow(data)
-            counter = 0
-            while True:            
-                now = datetime.datetime.now()
-                # get data
-                raw_channels = ads.read_sequence(CH_SEQUENCE)
-                #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
-                #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
-                voltages = [i * ads.v_per_digit for i in raw_channels]
-                voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
-                MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
 
-                data = ['{0:%H:%M:%S.%f}'.format(now),
-                MagneticF[0], MagneticF[1],
-                MagneticF[2], MagneticF[3]]
-                if counter == 1:
-                    #print('{0:%Y-%m-%d  %H:%M:%S}'.format(now) + '  Magnetic force(nT)==' + str(MagneticF[0]))
-                    counter = 0
-                writer = csv.writer(f)
-                writer.writerow(data)
-                counter += 1
-                if '{0:%Y-%m-%d}'.format(now) != today:
-                    break
-                today = '{0:%Y-%m-%d}'.format(now)
+        counter = 0
+        while True:            
+            now = datetime.datetime.now()
+            # get data
+            raw_channels = ads.read_sequence(CH_SEQUENCE)
+            #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
+            #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
+            voltages = [i * ads.v_per_digit for i in raw_channels]
+            voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
+            MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
+            
+            print('{0:%Y-%m-%d  %H:%M:%S}'.format(now))
+            print('X [nT]= ' + str(MagneticF[2]))
+            print('Y [nT]= ' + str(MagneticF[1]))
+            print('Z [nT]= ' + str(MagneticF[0]))
+            print('Temperature [C]= ' + str(MagneticF[3]))
+            print ("\33[6A")
+            counter += 1
+            if '{0:%Y-%m-%d}'.format(now) != today:
+                break
+            today = '{0:%Y-%m-%d}'.format(now)
 
 def main():
     try:
