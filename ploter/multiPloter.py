@@ -6,14 +6,20 @@ import os
 import pandas as pd
 import sys
 import datetime
-import statistics
+from statistics import median
+from statistics import mean
+
 
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 100000
 
 def eliminate_f(date_str):
-    date = datetime.datetime.strptime(date_str, '%H:%M:%S.%f')
-    return date.strftime('%H:%M:%S')
+    try:
+        date = datetime.datetime.strptime(date_str, '%H:%M:%S.%f')
+        return date.strftime('%H:%M:%S')
+    except ValueError:
+        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
+        return date.strftime('%H:%M:%S')
 
 def format_to_day(date_str):
     date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
@@ -61,28 +67,89 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
         
         if startFlag == True:
             df_list_raw['Time'].append(dataday + row[0])
-            df_list_raw['ch1'].append(float(row[1]))
+            df_list_raw['ch1'].append(-1 * float(row[1]))
             df_list_raw['ch2'].append(float(row[2]))
-            df_list_raw['ch3'].append(float(row[3]))
+            df_list_raw['ch3'].append(-1 * float(row[3]))
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
+def get_Srate(time_dat):
+    now_time  = eliminate_f(time_dat[0])
+    i = 0
+    try:
+        #### load head ####
+        while(1):
+            i += 1
+            if now_time != eliminate_f(time_dat[i]):
+                now_time = eliminate_f(time_dat[i])
+                break
+        #### count ####
+        count = 0
+        while(1):
+            i += 1
+            count += 1
+            if now_time != eliminate_f(time_dat[i]):
+                return count
+    except IndexError:
+        return 0
 
-#ex. start_datetime_str = 2017-08-01 01:00:00
+def eliminate_errerdata(Cutoff,time,data):
+    data_median = median(data)
+    arg = []
+    #### search ####
+    for j in range(len(data)):
+        if abs(data[j] - data_median) >= Cutoff:
+            arg.append(j)
+    #### eliminate ####
+    for j in arg:
+        if j == 0:
+            data[j] = (data[j+1] + data[j+2]) / 2
+        else:
+            data[j] = (data[j+1] + data[j-1]) / 2
+    return time, data
+
+def medianFilter(time_dat,dat,Cutoff):
+    out = {'time':[],'data':[]}
+    now_time = eliminate_f(time_dat[0])
+    buf_t = []
+    buf_d = []
+    i = -1
+    try:
+        while(1):
+            i += 1
+            buf_t.append(time_dat[i])
+            buf_d.append(dat[i])            
+            if i+1 == len(dat):
+                clean_data = eliminate_errerdata(Cutoff,buf_t,buf_d)
+                out['time'].extend(clean_data[0])
+                out['data'].extend(clean_data[1])                
+                return out['time'], out['data']
+            if now_time != eliminate_f(time_dat[i+1]):
+                clean_data = eliminate_errerdata(Cutoff,buf_t,buf_d)
+                out['time'].extend(clean_data[0])
+                out['data'].extend(clean_data[1])
+                buf_t.clear
+                buf_d.clear
+    except IndexError:
+        return time_dat,dat
+
+#ex. start_datetime_str = 2017-08-01 01:00:
 def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yrange):
     rawdata = rawdata_maker(f,start_datetime_str,end_datetime_str)
-    # Figureの初期化
-    fig = plt.figure(figsize=(12, 12))
+    # Figure㝮初期化
+    fig = plt.figure(figsize=(20, 12))
     ax_1ch = fig.add_subplot(413)
     ax_2ch = fig.add_subplot(412)
     ax_3ch = fig.add_subplot(411)
     ax_4ch = fig.add_subplot(414)
     if Yrange != 0:
-        median_1ch = statistics.median(rawdata[1])
-        median_2ch = statistics.median(rawdata[2])
-        median_3ch = statistics.median(rawdata[3])
+        median_1ch = median(rawdata[1])
+        median_2ch = median(rawdata[2])
+        median_3ch = median(rawdata[3])
+        median_4ch = median(rawdata[4])
         ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
         ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
         ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
+        ax_4ch.set_ylim([median_4ch - (10),median_4ch + (10)])
 
     ax_1ch.yaxis.grid(True)
     ax_2ch.yaxis.grid(True)
@@ -97,14 +164,33 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
     ax_3ch.set_ylabel('X [nT]', fontsize=18)
     ax_4ch.set_ylabel('Temperature [C]', fontsize=18)
 
-    df_1ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'1ch':rawdata[1]})
-    ax_1ch.plot(df_1ch['time'], df_1ch['1ch'], color = 'r')
-    df_2ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'2ch':rawdata[2]})
-    ax_2ch.plot(df_2ch['time'], df_2ch['2ch'], color = 'g')
-    df_3ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'3ch':rawdata[3]})
-    ax_3ch.plot(df_3ch['time'], df_3ch['3ch'], color = 'b')
-    df_4ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'4ch':rawdata[4]})
-    ax_4ch.plot(df_4ch['time'], df_4ch['4ch'], color = 'k')
+    filterFlag = False
+    if filterFlag == True:
+            buf = medianFilter(rawdata[0],rawdata[1],3)
+            t_1ch = buf[0]
+            d_1ch = buf[1]
+            buf = medianFilter(rawdata[0],rawdata[2],3)
+            t_2ch = buf[0]
+            d_2ch = buf[1]
+            buf = medianFilter(rawdata[0],rawdata[3],3)
+            t_3ch = buf[0]
+            d_3ch = buf[1]
+            buf = medianFilter(rawdata[0],rawdata[4],0.1)
+            t_4ch = buf[0]
+            d_4ch = buf[1]
+            ax_1ch.plot(pd.to_datetime(t_1ch, utc=True), d_1ch, color='r')
+            ax_2ch.plot(pd.to_datetime(t_2ch, utc=True), d_2ch, color='g')
+            ax_3ch.plot(pd.to_datetime(t_3ch, utc=True), d_3ch, color='b')
+            ax_4ch.plot(pd.to_datetime(t_4ch, utc=True), d_4ch, color='k')
+    else:
+        df_1ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'1ch':rawdata[1]})
+        ax_1ch.plot(df_1ch['time'], df_1ch['1ch'], color = 'r')
+        df_2ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'2ch':rawdata[2]})
+        ax_2ch.plot(df_2ch['time'], df_2ch['2ch'], color = 'g')
+        df_3ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'3ch':rawdata[3]})
+        ax_3ch.plot(df_3ch['time'], df_3ch['3ch'], color = 'b')
+        df_4ch = pd.DataFrame({'time':pd.to_datetime(rawdata[0]),'4ch':rawdata[4]})
+        ax_4ch.plot(df_4ch['time'], df_4ch['4ch'], color = 'k')
 
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
@@ -116,7 +202,10 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Magnetic(nT)per5'+rawFlag+str(Yrange)+'.png')
+    if filterFlag == True:
+        plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Magnetic(nT)filterON'+rawFlag+str(Yrange)+'.png') 
+    else:
+        plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' + 'Magnetic(nT)per5'+rawFlag+str(Yrange)+'.png')
     #Splt.show()
 
 def my_makedirs(path):
@@ -145,8 +234,8 @@ def Process(fileName,StartTime,EndTime,rawFlag,ymin,ymax,Yrange):
 
 def main():
     File = [
-    "MI20-02-12_00h00m00s.csv",
-    "MI20-02-12_18h06m58s.csv",
+    "MI20-02-19_00h00m00s.csv",
+    "MI20-02-13_08h32m24s.csv",
     "clean_per2crop_MI19-11-11_19h58m31s.csv",
     "clean_per2crop_MI19-11-11_19h58m31s.csv",
     "MI19-11-04_00h00m00s.csv",
@@ -154,7 +243,8 @@ def main():
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
     #Process(File[0],"00:00:00","00:01:00","OVER",0,0,1000)
-    Process(File[1],"18:19:00","18:20:00","OVER",0,0,200)
+    Process(File[0],"00:00:00","23:59:59","OVER",0,0,100)
+    #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 
 
