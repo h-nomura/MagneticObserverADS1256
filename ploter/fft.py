@@ -6,13 +6,20 @@ import os
 import pandas as pd
 import sys
 import datetime
-
+from statistics import median
+from statistics import mean
+from scipy import signal
+from control.matlab import * #### pip install control // pip install slycot
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 100000
 
 def eliminate_f(date_str):
-    date = datetime.datetime.strptime(date_str, '%H:%M:%S.%f')
-    return date.strftime('%H:%M:%S')
+    try:
+        date = datetime.datetime.strptime(date_str, '%H:%M:%S.%f')
+        return date.strftime('%H:%M:%S')
+    except ValueError:
+        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
+        return date.strftime('%H:%M:%S')
 
 def format_to_day(date_str):
     date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
@@ -37,9 +44,27 @@ def search_end(dataTime,end_dataTime_str,start_arg):
                 return i
         i += 1
     return -1
-
+def get_Srate(time_dat):
+    now_time  = eliminate_f(time_dat[0])
+    i = 0
+    try:
+        #### load head ####
+        while(1):
+            i += 1
+            if now_time != eliminate_f(time_dat[i]):
+                now_time = eliminate_f(time_dat[i])
+                break
+        #### count ####
+        count = 0
+        while(1):
+            i += 1
+            count += 1
+            if now_time != eliminate_f(time_dat[i]):
+                return count
+    except IndexError:
+        return 0
 def df_maker(f,start_dataTime_str,end_dataTime_str,rawFlag):
-    num = 1
+    num = 2
     df_list = {'dataTime':[],'data':[]}
     df_list_raw = {'dataTime':[],'data':[]}
     SAMdata = 0
@@ -126,8 +151,9 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
     elif fig_size == 'm':
         fig = plt.figure(figsize=(8, 4.5))
     else:
-        fig = plt.figure(figsize=(6, 8))
-        
+        fig = plt.figure(figsize=(7, 8))
+        # fig = plt.figure(figsize=(6, 8))
+    
     # Figure内にAxesを追加()
     ax = fig.add_subplot(211) #...2
     ax2 = fig.add_subplot(212)
@@ -145,29 +171,49 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
             'date time raw':pd.to_datetime(dfList[2]),
             'Magnetic force raw':dfList[3]
         })
+              
+        #### LP Filter ####
+        f = get_Srate(dfList[2]) #### Sampling frequency[Hz]
+        fn = f / 2 #### Nyquist frequency[Hz]
+        fs = 27.3 #### Stopband edge frequency[Hz]
+        #### Normalization ####
+        Ws = fs/fn
+
+        N = 5 #### order of the filter
+        bessel_b, bessel_a = signal.bessel(N, Ws, "low")
         ax.plot(df['date time raw'], df['Magnetic force raw'], color='g')
-        # FTT plot
-        N = dfList[6]
-        print(N)
-        dt = 1 / dfList[5]
-        print(dt)
-        # t = np.arange(dfList[2])
-        f = np.array(dfList[3])
-        F = np.fft.fft(f)
-        F_abs = np.abs(F)
-        F_abs_amp = F_abs / N * 2
-        F_abs_amp[0] = F_abs_amp[0] / N
-        F_abs_amp = np.sqrt(F_abs_amp) * 1000
-        fq = np.linspace(0,1.0/dt,N)
-        ax2.set_ylim(1,1000)
-        ax2.set_xlim(0.01,1000)
-        ax2.set_xscale('log')
-        ax2.set_yscale('log')
-        ax2.xaxis.grid(which = "both")
-        ax2.yaxis.grid(which = "both")
-        ax2.set_xlabel("Frequency [Hz]", fontsize=18)
-        ax2.set_ylabel("Noise density [pT√Hz]", fontsize=18)
-        ax2.plot(fq[:int(N/2)+1],F_abs_amp[:int(N/2)+1])
+        df['Magnetic force raw'] = signal.filtfilt(bessel_b, bessel_a, df['Magnetic force raw'])
+        ax.plot(df['date time raw'], df['Magnetic force raw'], color='chartreuse') 
+        for i in range(2):
+            # FTT plot
+            N = dfList[6]
+            print(N)
+            dt = 1 / dfList[5]
+            print(dt)
+            # t = np.arange(dfList[2])
+            if i == 0:
+                f = np.array(dfList[3])
+            else:
+                f = df['Magnetic force raw']
+            F = np.fft.fft(f)
+            F_abs = np.abs(F)
+            F_abs_amp = F_abs / N * 2
+            F_abs_amp[0] = F_abs_amp[0] / N
+            F_abs_amp = np.sqrt(F_abs_amp) * 1000
+            fq = np.linspace(0,1.0/dt,N)
+            ax2.set_ylim(1,1000)
+            # ax2.set_xlim(0.01,1000)
+            # ax2.set_xscale('log')
+            ax2.set_yscale('log')
+            ax2.xaxis.grid(which = "both")
+            ax2.yaxis.grid(which = "both")
+            ax2.set_xlabel("Frequency [Hz]", fontsize=18)
+            ax2.set_ylabel("Noise density [pT√Hz]", fontsize=18)
+            if i == 0:
+                ax2.plot(fq[:int(N/2)+1],F_abs_amp[:int(N/2)+1])
+            else:
+                ax2.plot(fq[:int(N/2)+1],F_abs_amp[:int(N/2)+1],color='c')
+
         ax.set_title(start_datetime_str + '(JST) magnetic force(nT)' + rawFlag + str(dfList[5]))
         fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
         end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
@@ -248,7 +294,7 @@ def Process(fileName,StartTime,EndTime,rawFlag,ymin,ymax,Yrange):
 
 def main():
     File = [
-    "MI2019-11-14_22h31m46s.csv",
+    "MI20-02-19_00h00m00s.csv",
     "clean_per5crop_MI19-11-11_19h58m31s.csv",
     "MI19-11-04_00h00m00s.csv",
     "MI19-09-03_19h21m14s.csv",
@@ -257,7 +303,7 @@ def main():
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,0)
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,1000)
     # Process(File[2],"03:00:00","04:00:00","OVER",0,0,1000)
-    Process(File[1],"20:10:00","20:11:00","OVER",0,0,0)
+    Process(File[0],"00:00:00","00:10:00","OVER",0,0,0)
     # Process(File[1],"00:00:00","23:59:59","OVER",0,0,0)
     # Process(File[2],"00:00:00","23:59:59","OVER",0,0,0)
     # Process(File[0],"03:00:00","04:00:00","OVER",0,0,1000)
