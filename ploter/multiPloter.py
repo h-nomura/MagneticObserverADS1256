@@ -68,33 +68,56 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
         
         if startFlag == True:
             df_list_raw['Time'].append(dataday + row[0])
-            df_list_raw['ch1'].append(-1 * float(row[1]))
+            df_list_raw['ch1'].append(float(row[1]))
             df_list_raw['ch2'].append(float(row[2]))
-            df_list_raw['ch3'].append(-1 * float(row[3]))
+            df_list_raw['ch3'].append(float(row[3]))
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
 
-def sec_average(time_dat,dat):
+def sec_average(time_dat,dat1,dat2,dat3,dat4):
     now = eliminate_f(time_dat[0])
-    buff = []
+    buff1 = []
+    buff2 = []
+    buff3 = []
+    buff4 = []
     i = 0
     ave_t = []
-    ave_d = []
+    ave_d1 = []
+    ave_d2 = []
+    ave_d3 = []
+    ave_d4 = []
     while(1):
-        buff.append(dat[i])
+        buff1.append(dat1[i])
+        buff2.append(dat2[i])
+        buff3.append(dat3[i])
+        buff4.append(dat4[i])
+        # print("i = " + str(i+1) + "len =  "+ str(len(time_dat)-1))
         if i+1 == len(time_dat)-1:
-            buff.append(dat[i+1])
+            buff1.append(dat1[i+1])
+            buff2.append(dat2[i+1])
+            buff3.append(dat3[i+1])
+            buff4.append(dat4[i+1])
             ave_t.append(now)
             now = eliminate_f(time_dat[i+1])
-            ave_d.append(mean(buff))
-            buff.clear
-            return ave_t, ave_d            
+            ave_d1.append(mean(buff1))
+            ave_d2.append(mean(buff2))
+            ave_d3.append(mean(buff3))
+            ave_d4.append(mean(buff4))
+            return ave_t, ave_d1, ave_d2, ave_d3, ave_d4            
 
         if now != eliminate_f(time_dat[i+1]):
             ave_t.append(now)
+            # print(now)
+            # print(len(buff))
             now = eliminate_f(time_dat[i+1])
-            ave_d.append(mean(buff))
-            buff.clear
+            ave_d1.append(mean(buff1))
+            ave_d2.append(mean(buff2))
+            ave_d3.append(mean(buff3))
+            ave_d4.append(mean(buff4))
+            buff1 =[]
+            buff2 =[]
+            buff3 =[]
+            buff4 =[]
         i += 1
 
 
@@ -178,23 +201,26 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw2ch = signal.filtfilt(bessel_b, bessel_a, raw2ch)
         raw3ch = signal.filtfilt(bessel_b, bessel_a, raw3ch)
     if F_flag == "median" or F_flag == "LPF+median" or F_flag == 'ave':
-        win_size = 9
+        win_size = 31
         raw1ch = signal.medfilt(raw1ch, kernel_size= win_size)
         raw2ch = signal.medfilt(raw2ch, kernel_size= win_size)
         raw3ch = signal.medfilt(raw3ch, kernel_size= win_size)
         raw4ch = signal.medfilt(raw4ch, kernel_size= win_size)
     if F_flag == 'ave':
-        ave1ch = sec_average(rawdata[0],raw1ch.tolist)
-        ave2ch = sec_average(rawdata[0],raw2ch.tolist)
-        ave3ch = sec_average(rawdata[0],raw3ch.tolist)
-        ave4ch = sec_average(rawdata[0],raw4ch.tolist)
-        rawtime = pd.to_datetime(ave1ch[0])
-        raw1ch = np.array(ave1ch[1])
-        raw2ch = np.array(ave2ch[1])
-        raw3ch = np.array(ave3ch[1])
-        raw4ch = np.array(ave4ch[1])
+        ave_dat = sec_average(rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
+        rawtime = pd.to_datetime(ave_dat[0])
+        raw1ch = np.array(ave_dat[1])
+        raw2ch = np.array(ave_dat[2])
+        raw3ch = np.array(ave_dat[3])
+        raw4ch = np.array(ave_dat[4])
         
     df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
+
+    fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
+    end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')  
+    my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
+    if F_flag == 'ave':    
+        df_print.to_csv('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.csv')
     ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
     ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'g')
     ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'b')
@@ -206,11 +232,9 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     plt.setp(ax_3ch.get_xticklabels(),visible=False)
 
     # ax.set_title(start_datetime_str + '(JST) to ' + end_datetime_str + '(JST) ' + 'northward component of magnetic force(nT)' + rawFlag + str(dfList[5]))
-    ax_3ch.set_title(start_datetime_str + '(JST) magnetic force(nT)' + F_flag)
-    fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
-    end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')
-    my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + fig_size + '_' +rawFlag+str(Yrange)+F_flag+'.png')
+    ax_3ch.set_title(start_datetime_str + '(UT) magnetic force(nT)' + F_flag)
+
+    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.png')
     #Splt.show()
 
 def my_makedirs(path):
@@ -235,8 +259,12 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
 
 def main():
     File = [
-    "MI20-02-19_00h00m00s.csv",
-    "MI20-02-13_08h32m24s.csv",
+    "UT_MI20-02-14_00h00m00s.csv",
+    "UT_MI20-02-15_00h00m00s.csv",
+    "UT_MI20-02-16_00h00m00s.csv",
+    "UT_MI20-02-17_00h00m00s.csv",
+    "UT_MI20-02-18_00h00m00s.csv",
+    "UT_MI20-02-14_00h00m00s.csv",
     "clean_per2crop_MI19-11-11_19h58m31s.csv",
     "clean_per2crop_MI19-11-11_19h58m31s.csv",
     "MI19-11-04_00h00m00s.csv",
@@ -244,7 +272,21 @@ def main():
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
     #Process(File[0],"00:00:00","00:01:00","OVER",0,0,1000)
-    Process(File[0],"00:00:00","00:10:00","ave",20)
+    # i = 4
+    # Process(File[i],"00:00:00","23:59:59","ave",0)        
+    # Process(File[i],"00:00:00","23:59:59","raw",0)
+    # Process(File[i],"00:00:00","23:59:59","LPF+median",0)
+    # Process(File[i],"00:00:00","23:59:59","ave",80)
+
+    # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
+    # Process(File[4],"00:00:00","23:59:59","raw",80)
+    Process(File[4],"10:30:00","11:30:00","LPF+median",0)
+    # for i in range(5):
+        # Process(File[i],"00:00:00","23:59:59","ave",0)        
+        # Process(File[i],"00:00:00","23:59:59","raw",80)
+        # Process(File[i],"00:00:00","23:59:59","LPF+median",80)
+        # Process(File[i],"00:00:00","23:59:59","ave",80)
+  
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 

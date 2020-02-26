@@ -5,11 +5,12 @@ from pytz import timezone
 from datetime import datetime
 import datetime
 import queue
+from dateutil.tz import gettz
 
 def jst_to_ut(date_str):
-    date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
-    ut_date = timezone('UTC').localize(date)
-    return ut_date.strftime('%Y-%m-%d %H:%M:%S.%f')
+    datetime_jst = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
+    datetime_ut = datetime_jst.astimezone(gettz('Etc/GMT'))
+    return datetime_ut.strftime('%Y-%m-%d %H:%M:%S.%f')
 
 def eliminate_f(date_str):
     try:
@@ -42,9 +43,11 @@ def read_csv(l,path):
         # test += 1
         # if test == 100:
         #     break
+        if year_day == "20-02-20 " and eliminate_f(row[0]) == "10:00:00":
+            break
         l[0].put(jst_to_ut(year_day + row[0]))
         l[1].put(-1 * float(row[1]))
-        l[2].put(float(row[2]))
+        l[2].put(-1 * float(row[2]))
         l[3].put(-1 * float(row[3]))
         l[4].put(float(row[4]))
     print("read_end")
@@ -62,29 +65,29 @@ def write_csv(l):
         today = format_to_day(now)
         for i in range(4):
             buff[i] = l[i+1].get()
-        # if today != yesterday:
-        w_pass = '../logger/data/UT_MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(datatime_(now))
-        with open(w_pass,'w', newline="") as f:
-            data = ['{0:%Y-%m-%d}'.format(datatime_(now)),
-            'Magnetic force(nT)Z_1ch','Magnetic force(nT)Y_2ch',
-            'Magnetic force(nT)X_3ch','Temperature(C)_4ch']
-            writer = csv.writer(f)
-            writer.writerow(data)
-            data = [format_to_time(now),buff[0],buff[1],buff[2],buff[3]]               
-            writer = csv.writer(f)
-            writer.writerow(data)
-            yesterday = today
-            while(1):
-                now = l[0].get()
-                today = format_to_day(now)
-                if today != yesterday:
-                    end = True
-                    break
-                data = [format_to_time(now), l[1].get(), l[2].get(), l[3].get(), l[4].get()]
+        if today != yesterday:
+            w_pass = '../logger/data/UT_MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(datatime_(now))
+            with open(w_pass,'w', newline="") as f:
+                data = ['{0:%Y-%m-%d}'.format(datatime_(now)),
+                'Magnetic force(nT)Z_1ch','Magnetic force(nT)Y_2ch',
+                'Magnetic force(nT)X_3ch','Temperature(C)_4ch']
                 writer = csv.writer(f)
                 writer.writerow(data)
-        if end == True:
-            break
+                data = [format_to_time(now),buff[0],buff[1],buff[2],buff[3]]               
+                writer = csv.writer(f)
+                writer.writerow(data)
+                yesterday = today
+                while(1):
+                    now = l[0].get()
+                    today = format_to_day(now)
+                    if today != yesterday:
+                        end = True
+                        break
+                    data = [format_to_time(now), l[1].get(), l[2].get(), l[3].get(), l[4].get()]
+                    writer = csv.writer(f)
+                    writer.writerow(data)
+            if end == True:
+                break
     return 'output file !! to ' + w_pass
 
 def make_csvfile(ref1, ref2):
@@ -110,7 +113,14 @@ def main():
     make_csvfile("MI20-02-16_00h00m00s.csv","MI20-02-17_00h00m00s.csv") 
     make_csvfile("MI20-02-17_00h00m00s.csv","MI20-02-18_00h00m00s.csv") 
     make_csvfile("MI20-02-18_00h00m00s.csv","MI20-02-19_00h00m00s.csv")
-    make_csvfile("MI20-02-19_00h00m00s.csv","MI20-02-20_00h00m00s.csv")    
+    make_csvfile("MI20-02-13_14h34m47s.csv","MI20-02-14_00h00m00s.csv")
+    make_csvfile("MI20-02-19_00h00m00s.csv","MI20-02-20_00h00m00s.csv") 
+    # now = datetime.datetime.now()
+    # print(now.strftime('%Y-%m-%d %H:%M:%S.%f'))
+    # now_s = jst_to_ut(now.strftime('%Y-%m-%d %H:%M:%S.%f'))
+    # print(now_s)
+
+       
     print("end")
 
 if __name__ == '__main__':
