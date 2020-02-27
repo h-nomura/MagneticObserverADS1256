@@ -74,7 +74,7 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
 
-def sec_average(time_dat,dat1,dat2,dat3,dat4):
+def sec_average(mode,time_dat,dat1,dat2,dat3,dat4):
     now = eliminate_f(time_dat[0])
     buff1 = []
     buff2 = []
@@ -99,10 +99,16 @@ def sec_average(time_dat,dat1,dat2,dat3,dat4):
             buff4.append(dat4[i+1])
             ave_t.append(now)
             now = eliminate_f(time_dat[i+1])
-            ave_d1.append(mean(buff1))
-            ave_d2.append(mean(buff2))
-            ave_d3.append(mean(buff3))
-            ave_d4.append(mean(buff4))
+            if mode == 0:
+                ave_d1.append(mean(buff1))
+                ave_d2.append(mean(buff2))
+                ave_d3.append(mean(buff3))
+                ave_d4.append(mean(buff4))
+            elif mode == 1:
+                ave_d1.append(median(buff1))
+                ave_d2.append(median(buff2))
+                ave_d3.append(median(buff3))
+                ave_d4.append(median(buff4))
             return ave_t, ave_d1, ave_d2, ave_d3, ave_d4            
 
         if now != eliminate_f(time_dat[i+1]):
@@ -110,10 +116,16 @@ def sec_average(time_dat,dat1,dat2,dat3,dat4):
             # print(now)
             # print(len(buff))
             now = eliminate_f(time_dat[i+1])
-            ave_d1.append(mean(buff1))
-            ave_d2.append(mean(buff2))
-            ave_d3.append(mean(buff3))
-            ave_d4.append(mean(buff4))
+            if mode == 0:
+                ave_d1.append(mean(buff1))
+                ave_d2.append(mean(buff2))
+                ave_d3.append(mean(buff3))
+                ave_d4.append(mean(buff4))
+            elif mode == 1:
+                ave_d1.append(median(buff1))
+                ave_d2.append(median(buff2))
+                ave_d3.append(median(buff3))
+                ave_d4.append(median(buff4))
             buff1 =[]
             buff2 =[]
             buff3 =[]
@@ -186,7 +198,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     raw3ch = np.array(rawdata[3])
     raw4ch = np.array(rawdata[4])
 
-    if F_flag == "LPF" or F_flag == "LPF+median" or F_flag == 'ave':
+    if F_flag == "LPF" or F_flag == "LPF+median" or F_flag == 'ave' or F_flag == 'median':
         f = get_Srate(rawdata[0]) #### Sampling frequency[Hz]
         fn = f / 2 #### Nyquist frequency[Hz]
         fs = 27.3 #### Stopband edge frequency[Hz]
@@ -200,27 +212,34 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw1ch = signal.filtfilt(bessel_b, bessel_a, raw1ch)
         raw2ch = signal.filtfilt(bessel_b, bessel_a, raw2ch)
         raw3ch = signal.filtfilt(bessel_b, bessel_a, raw3ch)
-    if F_flag == "median" or F_flag == "LPF+median" or F_flag == 'ave':
+    if F_flag == "LPF+median" or F_flag == 'ave':
         win_size = 31
         raw1ch = signal.medfilt(raw1ch, kernel_size= win_size)
         raw2ch = signal.medfilt(raw2ch, kernel_size= win_size)
         raw3ch = signal.medfilt(raw3ch, kernel_size= win_size)
         raw4ch = signal.medfilt(raw4ch, kernel_size= win_size)
     if F_flag == 'ave':
-        ave_dat = sec_average(rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
+        ave_dat = sec_average(0,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
         rawtime = pd.to_datetime(ave_dat[0])
         raw1ch = np.array(ave_dat[1])
         raw2ch = np.array(ave_dat[2])
         raw3ch = np.array(ave_dat[3])
         raw4ch = np.array(ave_dat[4])
-        
+    if F_flag == 'median':
+        med_dat = sec_average(1,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
+        rawtime = pd.to_datetime(med_dat[0])
+        raw1ch = np.array(med_dat[1])
+        raw2ch = np.array(med_dat[2])
+        raw3ch = np.array(med_dat[3])
+        raw4ch = np.array(med_dat[4])
+
     df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
 
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')  
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    if F_flag == 'ave':    
-        df_print.to_csv('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.csv')
+  #  if F_flag == 'ave':    
+  #      df_print.to_csv('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.csv')
     ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
     ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'g')
     ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'b')
@@ -250,7 +269,7 @@ def rewrite_day(reference_date,num):
     return reference_date[0:8] + '{0:02d}'.format(day) + ' ' + '{0:02d}'.format(hour) + reference_date[13:19]
 
 def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
-    Pass = "..\\logger\\data\\" + fileName
+    Pass = "../logger/data/" + fileName
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
@@ -280,7 +299,7 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    Process(File[4],"10:30:00","11:30:00","LPF+median",0)
+    Process(File[0],"00:00:00","01:00:00","median",0)
     # for i in range(5):
         # Process(File[i],"00:00:00","23:59:59","ave",0)        
         # Process(File[i],"00:00:00","23:59:59","raw",80)
