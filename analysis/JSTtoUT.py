@@ -39,11 +39,16 @@ def read_csv(l,path):
     header = next(f)
     year_day = header[0] + ' '
     # test = 0
+    counter = 0
     for row in f:
+        counter += 1
         # test += 1
         # if test == 100:
         #     break
-        if year_day == "20-02-20 " and eliminate_f(row[0]) == "10:00:00":
+        # if year_day == "20-02-20 " and eliminate_f(row[0]) == "10:00:00":
+        #     break
+        # print(jst_to_ut(year_day + row[0]) + " <<==" + year_day + row[0])
+        if counter >= 10000 and eliminate_f(row[0]) == '00:00:00':
             break
         l[0].put(jst_to_ut(year_day + row[0]))
         l[1].put(-1 * float(row[1]))
@@ -66,6 +71,7 @@ def write_csv(l):
         for i in range(4):
             buff[i] = l[i+1].get()
         if today != yesterday:
+            print("start is ___today= " + today + " yesterday= " + yesterday)
             w_pass = '../logger/data/UT_MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(datatime_(now))
             with open(w_pass,'w', newline="") as f:
                 data = ['{0:%Y-%m-%d}'.format(datatime_(now)),
@@ -81,6 +87,7 @@ def write_csv(l):
                     now = l[0].get()
                     today = format_to_day(now)
                     if today != yesterday:
+                        print("end is ___today= " + today + " yesterday= " + yesterday)
                         end = True
                         break
                     data = [format_to_time(now), l[1].get(), l[2].get(), l[3].get(), l[4].get()]
@@ -113,8 +120,8 @@ def main():
     make_csvfile("MI20-02-16_00h00m00s.csv","MI20-02-17_00h00m00s.csv") 
     make_csvfile("MI20-02-17_00h00m00s.csv","MI20-02-18_00h00m00s.csv") 
     make_csvfile("MI20-02-18_00h00m00s.csv","MI20-02-19_00h00m00s.csv")
-    make_csvfile("MI20-02-13_14h34m47s.csv","MI20-02-14_00h00m00s.csv")
-    make_csvfile("MI20-02-19_00h00m00s.csv","MI20-02-20_00h00m00s.csv") 
+    # make_csvfile("MI20-02-13_14h34m47s.csv","MI20-02-14_00h00m00s.csv")
+    # make_csvfile("MI20-02-19_00h00m00s.csv","MI20-02-20_00h00m00s.csv") 
     # now = datetime.datetime.now()
     # print(now.strftime('%Y-%m-%d %H:%M:%S.%f'))
     # now_s = jst_to_ut(now.strftime('%Y-%m-%d %H:%M:%S.%f'))
