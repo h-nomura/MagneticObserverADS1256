@@ -164,9 +164,9 @@ def BODE_print(b,a):
 def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     rawdata = rawdata_maker(f,start_datetime_str,end_datetime_str)
     # Figure㝮初期化
-    fig = plt.figure(figsize=(20, 12))
-    ax_1ch = fig.add_subplot(413)
-    ax_2ch = fig.add_subplot(412)
+    fig = plt.figure(figsize=(12, 12))
+    ax_1ch = fig.add_subplot(412)
+    ax_2ch = fig.add_subplot(413)
     ax_3ch = fig.add_subplot(411)
     ax_4ch = fig.add_subplot(414)
     if Yrange != 0:
@@ -177,7 +177,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
         ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
         ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
-        ax_4ch.set_ylim([median_4ch - (Yrange/20),median_4ch + (Yrange/20)])
+        ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
 
     ax_1ch.yaxis.grid(True)
     ax_2ch.yaxis.grid(True)
@@ -190,7 +190,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     ax_1ch.set_ylabel('Z [nT]', fontsize=18)
     ax_2ch.set_ylabel('Y [nT]', fontsize=18)
     ax_3ch.set_ylabel('X [nT]', fontsize=18)
-    ax_4ch.set_ylabel('Temperature [C]', fontsize=18)
+    ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
 
     rawtime = pd.to_datetime(rawdata[0])
     raw1ch = np.array(rawdata[1])
@@ -217,22 +217,24 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw1ch = signal.medfilt(raw1ch, kernel_size= win_size)
         raw2ch = signal.medfilt(raw2ch, kernel_size= win_size)
         raw3ch = signal.medfilt(raw3ch, kernel_size= win_size)
-        raw4ch = signal.medfilt(raw4ch, kernel_size= win_size)
+        #raw4ch = np.sqrt(raw1ch **2 + raw2ch **2 + raw3ch **3)
     if F_flag == 'ave':
         ave_dat = sec_average(0,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
         rawtime = pd.to_datetime(ave_dat[0])
         raw1ch = np.array(ave_dat[1])
         raw2ch = np.array(ave_dat[2])
         raw3ch = np.array(ave_dat[3])
-        raw4ch = np.array(ave_dat[4])
+        #raw4ch = np.sqrt(raw1ch **2 + raw2ch **2 + raw3ch **2)
     if F_flag == 'median':
         med_dat = sec_average(1,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
         rawtime = pd.to_datetime(med_dat[0])
         raw1ch = np.array(med_dat[1])
         raw2ch = np.array(med_dat[2])
         raw3ch = np.array(med_dat[3])
-        raw4ch = np.array(med_dat[4])
-
+    
+    raw4ch = np.sqrt(np.square(raw1ch) + np.square(raw2ch) + np.square(raw3ch))
+    #raw4ch = np.array(raw1ch.tolist())
+    print(raw4ch)
     df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
 
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
@@ -240,10 +242,12 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
   #  if F_flag == 'ave':    
   #      df_print.to_csv('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.csv')
-    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
+    print(df_print['4ch'])    
+    print(df_print['3ch'])
+    ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
+    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'b')
     ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'g')
-    ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'b')
-    ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'k')
+    ax_3ch.plot(df_print['time'], raw3ch, color = 'r')
 
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
@@ -299,15 +303,15 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    # Process(File[0],"00:00:00","23:59:59","median",0)
-    for i in range(5):
-        Process(File[i],"00:00:00","23:59:59","ave",0)        
-        Process(File[i],"00:00:00","23:59:59","raw",80)
-        Process(File[i],"00:00:00","23:59:59","raw",0)
-        Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
-        Process(File[i],"00:00:00","23:59:59","ave",80)
-        Process(File[i],"00:00:00","23:59:59","median",80)
-        Process(File[i],"00:00:00","23:59:59","median",0)
+    Process(File[0],"00:00:00","00:01:00","median",50)
+    #for i in range(5):
+    #    Process(File[i],"00:00:00","23:59:59","ave",0)        
+    #    Process(File[i],"00:00:00","23:59:59","raw",80)
+    #    Process(File[i],"00:00:00","23:59:59","raw",0)
+    #    Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
+    #    Process(File[i],"00:00:00","23:59:59","ave",80)
+    #    Process(File[i],"00:00:00","23:59:59","median",80)
+    #    Process(File[i],"00:00:00","23:59:59","median",0)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 
