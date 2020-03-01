@@ -169,15 +169,6 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     ax_2ch = fig.add_subplot(413)
     ax_3ch = fig.add_subplot(411)
     ax_4ch = fig.add_subplot(414)
-    if Yrange != 0:
-        median_1ch = median(rawdata[1])
-        median_2ch = median(rawdata[2])
-        median_3ch = median(rawdata[3])
-        median_4ch = median(rawdata[4])
-        ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
-        ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
-        ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
-        ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
 
     ax_1ch.yaxis.grid(True)
     ax_2ch.yaxis.grid(True)
@@ -244,10 +235,21 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
   #      df_print.to_csv('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.csv')
     print(df_print['4ch'])    
     print(df_print['3ch'])
-    ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
+    
     ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'b')
     ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'g')
-    ax_3ch.plot(df_print['time'], raw3ch, color = 'r')
+    ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'r')
+    ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
+
+    if Yrange != 0:
+        median_1ch = np.median(raw1ch)
+        median_2ch = np.median(raw2ch)
+        median_3ch = np.median(raw3ch)
+        median_4ch = np.median(raw4ch)
+        ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
+        ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
+        ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
+        ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
 
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
@@ -303,15 +305,15 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    Process(File[0],"00:00:00","00:01:00","median",50)
-    #for i in range(5):
-    #    Process(File[i],"00:00:00","23:59:59","ave",0)        
-    #    Process(File[i],"00:00:00","23:59:59","raw",80)
-    #    Process(File[i],"00:00:00","23:59:59","raw",0)
-    #    Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
-    #    Process(File[i],"00:00:00","23:59:59","ave",80)
-    #    Process(File[i],"00:00:00","23:59:59","median",80)
-    #    Process(File[i],"00:00:00","23:59:59","median",0)
+    # Process(File[0],"00:00:00","00:01:00","median",50)
+    for i in range(5):
+       Process(File[i],"00:00:00","23:59:59","ave",0)        
+       Process(File[i],"00:00:00","23:59:59","raw",80)
+       Process(File[i],"00:00:00","23:59:59","raw",0)
+       Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
+       Process(File[i],"00:00:00","23:59:59","ave",80)
+       Process(File[i],"00:00:00","23:59:59","median",80)
+       Process(File[i],"00:00:00","23:59:59","median",0)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 
