@@ -9,7 +9,9 @@ import sys
 import datetime
 from statistics import median
 from statistics import mean
+from statistics import mode
 from control.matlab import * #### pip install control // pip install slycot
+from decimal import Decimal, ROUND_HALF_UP
 
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 100000
@@ -74,6 +76,22 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
 
+def append_lists(l1,l2,l3,l4,dat1,dat2,dat3,dat4):
+    l1.append(dat1)
+    l2.append(dat2)
+    l3.append(dat3)
+    l4.append(dat4)
+    return l1, l2, l3, l4
+
+def my_round(num,dec=0.1):
+    out_str = Decimal(str(num)).quantize(Decimal(str(dec)), rounding=ROUND_HALF_UP)
+    return float(out_str)
+
+def list_round(l):
+    for i in l:
+        out_list = my_round(i)
+    return out_list
+
 def sec_average(mode,time_dat,dat1,dat2,dat3,dat4):
     now = eliminate_f(time_dat[0])
     buff1 = []
@@ -109,6 +127,15 @@ def sec_average(mode,time_dat,dat1,dat2,dat3,dat4):
                 ave_d2.append(median(buff2))
                 ave_d3.append(median(buff3))
                 ave_d4.append(median(buff4))
+            elif mode == 2:
+                buff1 = list_round(buff1)
+                buff2 = list_round(buff2)
+                buff3 = list_round(buff3)
+                buff4 = list_round(buff4)
+                ave_d1.append(mode(buff1))
+                ave_d2.append(mode(buff2))
+                ave_d3.append(mode(buff3))
+                ave_d4.append(mode(buff4))
             return ave_t, ave_d1, ave_d2, ave_d3, ave_d4            
 
         if now != eliminate_f(time_dat[i+1]):
@@ -126,6 +153,15 @@ def sec_average(mode,time_dat,dat1,dat2,dat3,dat4):
                 ave_d2.append(median(buff2))
                 ave_d3.append(median(buff3))
                 ave_d4.append(median(buff4))
+            elif mode == 2:
+                buff1 = list_round(buff1)
+                buff2 = list_round(buff2)
+                buff3 = list_round(buff3)
+                buff4 = list_round(buff4)
+                ave_d1.append(mode(buff1))
+                ave_d2.append(mode(buff2))
+                ave_d3.append(mode(buff3))
+                ave_d4.append(mode(buff4))
             buff1 =[]
             buff2 =[]
             buff3 =[]
@@ -189,7 +225,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     raw3ch = np.array(rawdata[3])
     raw4ch = np.array(rawdata[4])
 
-    if F_flag == "LPF" or F_flag == "LPF+median" or F_flag == 'ave' or F_flag == 'median':
+    if F_flag == "LPF" or F_flag == "LPF+median" or F_flag == 'ave' or F_flag == 'median' or F_flag == 'mode':
         f = get_Srate(rawdata[0]) #### Sampling frequency[Hz]
         fn = f / 2 #### Nyquist frequency[Hz]
         fs = 10 #### Stopband edge frequency[Hz]
@@ -222,7 +258,13 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw1ch = np.array(med_dat[1])
         raw2ch = np.array(med_dat[2])
         raw3ch = np.array(med_dat[3])
-    
+    if F_flag == 'mode':
+        mod_dat = sec_average(2,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
+        rawtime = pd.to_datetime(mod_dat[0])
+        raw1ch = np.array(mod_dat[1])
+        raw2ch = np.array(mod_dat[2])
+        raw3ch = np.array(mod_dat[3])
+
     raw4ch = np.sqrt(np.square(raw1ch) + np.square(raw2ch) + np.square(raw3ch))
     #raw4ch = np.array(raw1ch.tolist())
     df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
@@ -302,7 +344,7 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    Process(File[0],"00:00:00","23:59:59","median",0)
+    Process(File[0],"00:00:00","23:59:59","mode",0)
     #for i in range(5):
     #   Process(File[i],"00:00:00","23:59:59","ave",0)        
     #   Process(File[i],"00:00:00","23:59:59","raw",80)
