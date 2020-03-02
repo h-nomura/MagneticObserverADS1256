@@ -192,7 +192,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     if F_flag == "LPF" or F_flag == "LPF+median" or F_flag == 'ave' or F_flag == 'median':
         f = get_Srate(rawdata[0]) #### Sampling frequency[Hz]
         fn = f / 2 #### Nyquist frequency[Hz]
-        fs = 27.3 #### Stopband edge frequency[Hz]
+        fs = 10 #### Stopband edge frequency[Hz]
         #### Normalization ####
         Ws = fs/fn
 
@@ -302,15 +302,15 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    # Process(File[0],"00:00:00","00:01:00","median",50)
-    for i in range(5):
-       Process(File[i],"00:00:00","23:59:59","ave",0)        
-       Process(File[i],"00:00:00","23:59:59","raw",80)
-       Process(File[i],"00:00:00","23:59:59","raw",0)
-       Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
-       Process(File[i],"00:00:00","23:59:59","ave",80)
-       Process(File[i],"00:00:00","23:59:59","median",80)
-       Process(File[i],"00:00:00","23:59:59","median",0)
+    Process(File[0],"00:00:00","23:59:59","median",0)
+    #for i in range(5):
+    #   Process(File[i],"00:00:00","23:59:59","ave",0)        
+    #   Process(File[i],"00:00:00","23:59:59","raw",80)
+    #   Process(File[i],"00:00:00","23:59:59","raw",0)
+    #   Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
+    #   Process(File[i],"00:00:00","23:59:59","ave",80)
+    #   Process(File[i],"00:00:00","23:59:59","median",80)
+    #   Process(File[i],"00:00:00","23:59:59","median",0)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 
