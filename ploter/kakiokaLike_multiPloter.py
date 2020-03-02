@@ -225,7 +225,6 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     
     raw4ch = np.sqrt(np.square(raw1ch) + np.square(raw2ch) + np.square(raw3ch))
     #raw4ch = np.array(raw1ch.tolist())
-    print(raw4ch)
     df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
 
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
@@ -233,8 +232,6 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
   #  if F_flag == 'ave':    
   #      df_print.to_csv('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.csv')
-    print(df_print['4ch'])    
-    print(df_print['3ch'])
     
     ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'b')
     ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'g')
@@ -259,7 +256,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     # ax.set_title(start_datetime_str + '(JST) to ' + end_datetime_str + '(JST) ' + 'northward component of magnetic force(nT)' + rawFlag + str(dfList[5]))
     ax_3ch.set_title(start_datetime_str + '(UT) magnetic force(nT)' + F_flag)
 
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'.png')
+    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'kLike.png')
     #Splt.show()
 
 def my_makedirs(path):

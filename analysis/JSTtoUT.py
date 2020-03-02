@@ -115,11 +115,11 @@ def make_csvfile(ref1, ref2):
     print(result)
 
 def main():
-    make_csvfile("MI20-02-14_00h00m00s.csv","MI20-02-15_00h00m00s.csv") 
-    make_csvfile("MI20-02-15_00h00m00s.csv","MI20-02-16_00h00m00s.csv") 
-    make_csvfile("MI20-02-16_00h00m00s.csv","MI20-02-17_00h00m00s.csv") 
-    make_csvfile("MI20-02-17_00h00m00s.csv","MI20-02-18_00h00m00s.csv") 
-    make_csvfile("MI20-02-18_00h00m00s.csv","MI20-02-19_00h00m00s.csv")
+    #make_csvfile("MI20-02-14_00h00m00s.csv","MI20-02-15_00h00m00s.csv") 
+    #make_csvfile("MI20-02-15_00h00m00s.csv","MI20-02-16_00h00m00s.csv") 
+    #make_csvfile("MI20-02-16_00h00m00s.csv","MI20-02-17_00h00m00s.csv") 
+    #make_csvfile("MI20-02-17_00h00m00s.csv","MI20-02-18_00h00m00s.csv") 
+    make_csvfile("MI20-02-17_00h00m00s.csv","MI20-02-18_00h00m00s.csv")
     # make_csvfile("MI20-02-13_14h34m47s.csv","MI20-02-14_00h00m00s.csv")
     # make_csvfile("MI20-02-19_00h00m00s.csv","MI20-02-20_00h00m00s.csv") 
     # now = datetime.datetime.now()
