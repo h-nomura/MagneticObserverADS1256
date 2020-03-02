@@ -175,11 +175,11 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
         #### LP Filter ####
         f = get_Srate(dfList[2]) #### Sampling frequency[Hz]
         fn = f / 2 #### Nyquist frequency[Hz]
-        fs = 27.3 #### Stopband edge frequency[Hz]
+        fs = 10 #### Stopband edge frequency[Hz]
         #### Normalization ####
         Ws = fs/fn
 
-        N = 5 #### order of the filter
+        N = 6 #### order of the filter
         bessel_b, bessel_a = signal.bessel(N, Ws, "low")
         ax.plot(df['date time raw'], df['Magnetic force raw'], color='g')
         df['Magnetic force raw'] = signal.filtfilt(bessel_b, bessel_a, df['Magnetic force raw'])

@@ -19,8 +19,8 @@ def BODE_print(b,a):
 
 def main():
     # パラメータ設定
-    fs = 150                  # サンプリング周波数[Hz]
-    fpass = 26.5                       # 通過遮断周波数[Hz]
+    fs = 155                  # サンプリング周波数[Hz]
+    fpass = 10                       # 通過遮断周波数[Hz]
     fstop = 30                       # 阻止域遮断周波数[Hz]
     gpass = 0.4                      # 通過域最大損失量[dB]
     gstop = 20                       # 阻止域最小減衰量[dB]
@@ -31,9 +31,10 @@ def main():
     ws = fstop/fn                    # 正規化阻止域遮断周波数(無次元)
 
 
-    N = 5 #### order of the filter
+    N = 6 #### order of the filter
     # n, wn = signal.bessel(N, ws, "low")
-    b, a = signal.iirfilter(N, wp, rp=gpass, rs=gstop, btype='low',ftype='bessel')
+    # b, a = signal.iirfilter(N, wp, rp=gpass, rs=gstop, btype='low',ftype='bessel')
+    b, a = signal.bessel(N, wp, "low")
     BODE_print(b, a)
     print("end")
 
