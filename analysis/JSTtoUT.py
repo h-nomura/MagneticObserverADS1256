@@ -45,8 +45,8 @@ def read_csv(l,path):
         # test += 1
         # if test == 100:
         #     break
-        # if year_day == "20-02-20 " and eliminate_f(row[0]) == "10:00:00":
-        #     break
+        if year_day == "2020-02-20 " and eliminate_f(row[0]) == "10:00:00":
+            break
         # print(jst_to_ut(year_day + row[0]) + " <<==" + year_day + row[0])
         if counter >= 10000 and eliminate_f(row[0]) == '00:00:00':
             break
@@ -119,7 +119,7 @@ def main():
     #make_csvfile("MI20-02-15_00h00m00s.csv","MI20-02-16_00h00m00s.csv") 
     #make_csvfile("MI20-02-16_00h00m00s.csv","MI20-02-17_00h00m00s.csv") 
     #make_csvfile("MI20-02-17_00h00m00s.csv","MI20-02-18_00h00m00s.csv") 
-    make_csvfile("MI20-02-17_00h00m00s.csv","MI20-02-18_00h00m00s.csv")
+    make_csvfile("MI20-02-19_00h00m00s.csv","MI20-02-20_00h00m00s.csv")
     # make_csvfile("MI20-02-13_14h34m47s.csv","MI20-02-14_00h00m00s.csv")
     # make_csvfile("MI20-02-19_00h00m00s.csv","MI20-02-20_00h00m00s.csv") 
     # now = datetime.datetime.now()

@@ -291,6 +291,18 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
 
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+
+    x = []
+    x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00','00:00:00']
+    for s in x_axis:
+        x.append(format_to_day()
+    x_axis_np = pd.to_datetime(np.array(x_axis))
+    
+    ax_1ch.set_xticks(x_axis_np)
+    ax_2ch.set_xticks(x_axis_np)
+    ax_3ch.set_xticks(x_axis_np)
+    ax_4ch.set_xticks(x_axis_np)
+    
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
     plt.setp(ax_3ch.get_xticklabels(),visible=False)
@@ -328,7 +340,7 @@ def main():
     "UT_MI20-02-16_00h00m00s.csv",
     "UT_MI20-02-17_00h00m00s.csv",
     "UT_MI20-02-18_00h00m00s.csv",
-    "UT_MI20-02-14_00h00m00s.csv",
+    "UT_MI20-02-19_00h00m00s.csv",
     "clean_per2crop_MI19-11-11_19h58m31s.csv",
     "clean_per2crop_MI19-11-11_19h58m31s.csv",
     "MI19-11-04_00h00m00s.csv",
@@ -344,15 +356,17 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    Process(File[0],"00:00:00","23:59:59","mode",0)
-    #for i in range(5):
-    #   Process(File[i],"00:00:00","23:59:59","ave",0)        
-    #   Process(File[i],"00:00:00","23:59:59","raw",80)
-    #   Process(File[i],"00:00:00","23:59:59","raw",0)
-    #   Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
-    #   Process(File[i],"00:00:00","23:59:59","ave",80)
-    #   Process(File[i],"00:00:00","23:59:59","median",80)
-    #   Process(File[i],"00:00:00","23:59:59","median",0)
+    #Process(File[0],"00:00:00","23:59:59","mode",0)
+    for i in range(6):
+        Process(File[i],"00:00:00","23:59:59","raw",0)        
+        Process(File[i],"00:00:00","23:59:59","raw",80)
+        Process(File[i],"00:00:00","23:59:59","ave",0)
+        Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
+        Process(File[i],"00:00:00","23:59:59","ave",80)
+        Process(File[i],"00:00:00","23:59:59","median",80)
+        Process(File[i],"00:00:00","23:59:59","median",0)
+        Process(File[i],"00:00:00","23:59:59","mode",0)
+        Process(File[i],"00:00:00","23:59:59","mode",80)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 
