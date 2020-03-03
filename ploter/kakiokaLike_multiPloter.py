@@ -25,8 +25,12 @@ def eliminate_f(date_str):
         return date.strftime('%H:%M:%S')
 
 def format_to_day(date_str):
-    date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
-    return date.strftime('%Y-%m-%d ')
+    try:
+        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+        return date.strftime('%Y-%m-%d ')
+    except ValueError:
+        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
+        return date.strftime('%Y-%m-%d ')        
 
 def search_start(dataTime,start_dataTime_str):
     i = 0
@@ -295,8 +299,8 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     x = []
     x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00','00:00:00']
     for s in x_axis:
-        x.append(format_to_day()
-    x_axis_np = pd.to_datetime(np.array(x_axis))
+        x.append(format_to_day(rawdata[0][[0]) + s))
+    x_axis_np = pd.to_datetime(np.array(x))
     
     ax_1ch.set_xticks(x_axis_np)
     ax_2ch.set_xticks(x_axis_np)
