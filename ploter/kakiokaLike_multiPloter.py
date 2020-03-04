@@ -12,6 +12,7 @@ from statistics import mean
 from statistics import mode
 from control.matlab import * #### pip install control // pip install slycot
 from decimal import Decimal, ROUND_HALF_UP
+import collections
 
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 100000
@@ -92,11 +93,32 @@ def my_round(num,dec=0.1):
     return float(out_str)
 
 def list_round(l):
+    out_list = []
     for i in l:
-        out_list = my_round(i)
+        out_list.append(my_round(i))
     return out_list
 
-def sec_average(mode,time_dat,dat1,dat2,dat3,dat4):
+def my_mode(l):
+    mode_l = collections.Counter(l).most_common()
+    #### found 2 equally ####
+    if len(mode_l) == 1:
+        return mode_l[0][0]
+    if mode_l[0][1] == mode_l[1][1]:
+        i = 0
+        while(1):
+            if i + 1 == len(mode_l):
+                break
+            if mode_l[i][1] != mode_l[i+1][1]:
+                break
+            i += 1
+        mode_sum = []
+        for j in range(i+1):
+            mode_sum.append(mode_l[i][0])
+        return float(mean(mode_sum))
+    else:
+        return mode_l[0][0]
+
+def sec_average(op,time_dat,dat1,dat2,dat3,dat4):
     now = eliminate_f(time_dat[0])
     buff1 = []
     buff2 = []
@@ -121,25 +143,25 @@ def sec_average(mode,time_dat,dat1,dat2,dat3,dat4):
             buff4.append(dat4[i+1])
             ave_t.append(now)
             now = eliminate_f(time_dat[i+1])
-            if mode == 0:
+            if op == 0:
                 ave_d1.append(mean(buff1))
                 ave_d2.append(mean(buff2))
                 ave_d3.append(mean(buff3))
                 ave_d4.append(mean(buff4))
-            elif mode == 1:
+            elif op == 1:
                 ave_d1.append(median(buff1))
                 ave_d2.append(median(buff2))
                 ave_d3.append(median(buff3))
                 ave_d4.append(median(buff4))
-            elif mode == 2:
+            elif op == 2:
                 buff1 = list_round(buff1)
                 buff2 = list_round(buff2)
                 buff3 = list_round(buff3)
                 buff4 = list_round(buff4)
-                ave_d1.append(mode(buff1))
-                ave_d2.append(mode(buff2))
-                ave_d3.append(mode(buff3))
-                ave_d4.append(mode(buff4))
+                ave_d1.append(my_mode(buff1))
+                ave_d2.append(my_mode(buff2))
+                ave_d3.append(my_mode(buff3))
+                ave_d4.append(my_mode(buff4))
             return ave_t, ave_d1, ave_d2, ave_d3, ave_d4            
 
         if now != eliminate_f(time_dat[i+1]):
@@ -147,25 +169,25 @@ def sec_average(mode,time_dat,dat1,dat2,dat3,dat4):
             # print(now)
             # print(len(buff))
             now = eliminate_f(time_dat[i+1])
-            if mode == 0:
+            if op == 0:
                 ave_d1.append(mean(buff1))
                 ave_d2.append(mean(buff2))
                 ave_d3.append(mean(buff3))
                 ave_d4.append(mean(buff4))
-            elif mode == 1:
+            elif op == 1:
                 ave_d1.append(median(buff1))
                 ave_d2.append(median(buff2))
                 ave_d3.append(median(buff3))
                 ave_d4.append(median(buff4))
-            elif mode == 2:
+            elif op == 2:
                 buff1 = list_round(buff1)
                 buff2 = list_round(buff2)
                 buff3 = list_round(buff3)
                 buff4 = list_round(buff4)
-                ave_d1.append(mode(buff1))
-                ave_d2.append(mode(buff2))
-                ave_d3.append(mode(buff3))
-                ave_d4.append(mode(buff4))
+                ave_d1.append(my_mode(buff1))
+                ave_d2.append(my_mode(buff2))
+                ave_d3.append(my_mode(buff3))
+                ave_d4.append(my_mode(buff4))
             buff1 =[]
             buff2 =[]
             buff3 =[]
@@ -297,9 +319,9 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
 
     x = []
-    x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00','00:00:00']
+    x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
     for s in x_axis:
-        x.append(format_to_day(rawdata[0][[0]) + s))
+        x.append(format_to_day(rawdata[0][0]) + s)
     x_axis_np = pd.to_datetime(np.array(x))
     
     ax_1ch.set_xticks(x_axis_np)
@@ -360,16 +382,16 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    #Process(File[0],"00:00:00","23:59:59","mode",0)
+    #Process(File[0],"00:00:00","00:10:00","mode",0)
     for i in range(6):
-        Process(File[i],"00:00:00","23:59:59","raw",0)        
+        Process(File[i],"00:00:00","23:59:59","mode",0)        
         Process(File[i],"00:00:00","23:59:59","raw",80)
         Process(File[i],"00:00:00","23:59:59","ave",0)
         Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
         Process(File[i],"00:00:00","23:59:59","ave",80)
         Process(File[i],"00:00:00","23:59:59","median",80)
         Process(File[i],"00:00:00","23:59:59","median",0)
-        Process(File[i],"00:00:00","23:59:59","mode",0)
+        Process(File[i],"00:00:00","23:59:59","raw",0)
         Process(File[i],"00:00:00","23:59:59","mode",80)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
