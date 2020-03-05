@@ -252,6 +252,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     raw4ch = np.array(rawdata[4])
 
     if F_flag == "LPF" or F_flag == "LPF+median" or F_flag == 'ave' or F_flag == 'median' or F_flag == 'mode':
+        print('Low Pass Filter')
         f = get_Srate(rawdata[0]) #### Sampling frequency[Hz]
         fn = f / 2 #### Nyquist frequency[Hz]
         fs = 10 #### Stopband edge frequency[Hz]
@@ -266,12 +267,14 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw2ch = signal.filtfilt(bessel_b, bessel_a, raw2ch)
         raw3ch = signal.filtfilt(bessel_b, bessel_a, raw3ch)
     if F_flag == "LPF+median" or F_flag == 'ave':
+        print('Median Filter')
         win_size = 31
         raw1ch = signal.medfilt(raw1ch, kernel_size= win_size)
         raw2ch = signal.medfilt(raw2ch, kernel_size= win_size)
         raw3ch = signal.medfilt(raw3ch, kernel_size= win_size)
         #raw4ch = np.sqrt(raw1ch **2 + raw2ch **2 + raw3ch **3)
     if F_flag == 'ave':
+        print('1s mean')
         ave_dat = sec_average(0,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
         rawtime = pd.to_datetime(ave_dat[0])
         raw1ch = np.array(ave_dat[1])
@@ -279,12 +282,14 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw3ch = np.array(ave_dat[3])
         #raw4ch = np.sqrt(raw1ch **2 + raw2ch **2 + raw3ch **2)
     if F_flag == 'median':
+        print('1s median')
         med_dat = sec_average(1,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
         rawtime = pd.to_datetime(med_dat[0])
         raw1ch = np.array(med_dat[1])
         raw2ch = np.array(med_dat[2])
         raw3ch = np.array(med_dat[3])
     if F_flag == 'mode':
+        print('1s mode')
         mod_dat = sec_average(2,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
         rawtime = pd.to_datetime(mod_dat[0])
         raw1ch = np.array(mod_dat[1])
