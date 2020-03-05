@@ -23,7 +23,7 @@ def eliminate_f(date_str):
         return date.strftime('%H:%M:%S')
     except ValueError:
         date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
-        return date.strftime('%H:%M:%S')
+        return date.strftime('%Y-%m-%d %H:%M:%S')
 
 def format_to_day(date_str):
     try:
@@ -336,7 +336,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     # ax.set_title(start_datetime_str + '(JST) to ' + end_datetime_str + '(JST) ' + 'northward component of magnetic force(nT)' + rawFlag + str(dfList[5]))
     ax_3ch.set_title(start_datetime_str + '(UT) magnetic force(nT)' + F_flag)
 
-    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'kLike.png')
+    plt.savefig('./fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_kLike.png')
     #Splt.show()
 
 def my_makedirs(path):
@@ -385,13 +385,13 @@ def main():
     #Process(File[0],"00:00:00","00:10:00","mode",0)
     for i in range(6):
         Process(File[i],"00:00:00","23:59:59","mode",0)        
-        Process(File[i],"00:00:00","23:59:59","raw",80)
+        # Process(File[i],"00:00:00","23:59:59","raw",80)
         Process(File[i],"00:00:00","23:59:59","ave",0)
-        Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
+        # Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
         Process(File[i],"00:00:00","23:59:59","ave",80)
         Process(File[i],"00:00:00","23:59:59","median",80)
         Process(File[i],"00:00:00","23:59:59","median",0)
-        Process(File[i],"00:00:00","23:59:59","raw",0)
+        # Process(File[i],"00:00:00","23:59:59","raw",0)
         Process(File[i],"00:00:00","23:59:59","mode",80)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
