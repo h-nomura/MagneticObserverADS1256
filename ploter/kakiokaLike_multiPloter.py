@@ -268,7 +268,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw3ch = signal.filtfilt(bessel_b, bessel_a, raw3ch)
     if F_flag == "LPF+median" or F_flag == 'ave':
         print('Median Filter')
-        win_size = 31
+        win_size = 61
         raw1ch = signal.medfilt(raw1ch, kernel_size= win_size)
         raw2ch = signal.medfilt(raw2ch, kernel_size= win_size)
         raw3ch = signal.medfilt(raw3ch, kernel_size= win_size)
@@ -389,15 +389,15 @@ def main():
     # Process(File[4],"00:00:00","23:59:59","raw",80)
     #Process(File[0],"00:00:00","00:10:00","mode",0)
     for i in range(6):
-        Process(File[i],"00:00:00","23:59:59","mode",0)        
+        # Process(File[i],"00:00:00","23:59:59","mode",0)        
         # Process(File[i],"00:00:00","23:59:59","raw",80)
         Process(File[i],"00:00:00","23:59:59","ave",0)
         # Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
         Process(File[i],"00:00:00","23:59:59","ave",80)
-        Process(File[i],"00:00:00","23:59:59","median",80)
-        Process(File[i],"00:00:00","23:59:59","median",0)
+        # Process(File[i],"00:00:00","23:59:59","median",80)
+        # Process(File[i],"00:00:00","23:59:59","median",0)
         # Process(File[i],"00:00:00","23:59:59","raw",0)
-        Process(File[i],"00:00:00","23:59:59","mode",80)
+        # Process(File[i],"00:00:00","23:59:59","mode",80)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 

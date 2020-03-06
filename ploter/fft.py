@@ -175,7 +175,7 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
         #### LP Filter ####
         f = get_Srate(dfList[2]) #### Sampling frequency[Hz]
         fn = f / 2 #### Nyquist frequency[Hz]
-        fs = 10 #### Stopband edge frequency[Hz]
+        fs = 27 #### Stopband edge frequency[Hz]
         #### Normalization ####
         Ws = fs/fn
 
@@ -202,11 +202,12 @@ def fig_plot(f,start_datetime_str,end_datetime_str,fig_size,rawFlag,ymin,ymax,Yr
             F_abs_amp = np.sqrt(F_abs_amp) * 1000
             fq = np.linspace(0,1.0/dt,N)
             ax2.set_ylim(1,1000)
-            # ax2.set_xlim(0.01,1000)
-            # ax2.set_xscale('log')
+            ax2.set_xlim(0.01,1000)
+            ax2.set_xscale('log')
             ax2.set_yscale('log')
             ax2.xaxis.grid(which = "both")
             ax2.yaxis.grid(which = "both")
+            ax.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
             ax2.set_xlabel("Frequency [Hz]", fontsize=18)
             ax2.set_ylabel("Noise density [pT√Hz]", fontsize=18)
             if i == 0:
@@ -303,7 +304,7 @@ def main():
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,0)
     # Process(File[2],"00:00:00","12:00:00","OVER",0,0,1000)
     # Process(File[2],"03:00:00","04:00:00","OVER",0,0,1000)
-    Process(File[0],"00:00:00","00:10:00","OVER",0,0,0)
+    Process(File[0],"00:00:00","01:00:00","OVER",0,0,0)
     # Process(File[1],"00:00:00","23:59:59","OVER",0,0,0)
     # Process(File[2],"00:00:00","23:59:59","OVER",0,0,0)
     # Process(File[0],"03:00:00","04:00:00","OVER",0,0,1000)
