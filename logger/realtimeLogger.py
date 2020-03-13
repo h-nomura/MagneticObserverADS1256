@@ -24,7 +24,7 @@ import math
 import itertools
 
 from time import sleep
-
+from datetime import timezone
 from statistics import mean
 from statistics import median
 
@@ -236,7 +236,7 @@ def measurement(plotData,C_save,C_Drate):
     intercept = [-15.28572, -15.24686, -15.22348, 2]
     transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 1]
     # 描画するデータ 
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(timezone.utc)
     plotData.append(['{0:%Y-%m-%d }'.format(now),
     'Magnetic force(nT)_1ch','Magnetic force(nT)_2ch',
     'Magnetic force(nT)_3ch','Magnetic force(nT)_4ch']) 
@@ -256,7 +256,7 @@ def measurement(plotData,C_save,C_Drate):
         writer.writerow(saveData)
         counter = 0
         while True:
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(timezone.utc)
             #### get data ####
             raw_channels = ads.read_sequence(CH_SEQUENCE)
             voltages = [i * ads.v_per_digit for i in raw_channels]
