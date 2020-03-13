@@ -240,8 +240,8 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     ax_3ch.set_ylabel('X [nT]', fontsize=18)
     ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
 
-    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'b')
-    ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'g')
+    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'g')
+    ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
     ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'r')
     ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
 
