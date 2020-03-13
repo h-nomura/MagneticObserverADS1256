@@ -420,17 +420,17 @@ def main():
     #Process(File[0],"00:00:00","00:10:00","mode",0)
     
     for i in range(6):
-        day_1hour(File[i],"median",20)
+        #day_1hour(File[i],"median",20)
 
-        # Process(File[i],"00:00:00","23:59:59","mode",0)        
-        # Process(File[i],"00:00:00","23:59:59","raw",80)
-        # Process(File[i],"00:00:00","23:59:59","ave",0)
-        # Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
-        # Process(File[i],"00:00:00","23:59:59","ave",80)
-        # Process(File[i],"00:00:00","23:59:59","median",80)
-        # Process(File[i],"00:00:00","23:59:59","median",0)
-        # Process(File[i],"00:00:00","23:59:59","raw",0)
-        # Process(File[i],"00:00:00","23:59:59","mode",80)
+        Process(File[i],"00:00:00","23:59:59","mode",0)        
+        Process(File[i],"00:00:00","23:59:59","raw",80)
+        Process(File[i],"00:00:00","23:59:59","ave",0)
+        Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
+        Process(File[i],"00:00:00","23:59:59","ave",80)
+        Process(File[i],"00:00:00","23:59:59","median",80)
+        Process(File[i],"00:00:00","23:59:59","median",0)
+        Process(File[i],"00:00:00","23:59:59","raw",0)
+        Process(File[i],"00:00:00","23:59:59","mode",80)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 
