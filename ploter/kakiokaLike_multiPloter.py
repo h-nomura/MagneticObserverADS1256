@@ -419,7 +419,7 @@ def main():
     # Process(File[4],"00:00:00","23:59:59","raw",80)
     #Process(File[0],"00:00:00","00:10:00","mode",0)
     
-    for i in range(6):
+    for i in [2,3,4,5]:
         #day_1hour(File[i],"median",20)
 
         Process(File[i],"00:00:00","23:59:59","mode",0)        
