@@ -4,6 +4,7 @@ from ADS1256_definitions import *
 from pipyadc import ADS1256
 
 import time, datetime
+from datetime import timedelta, timezone
 import csv
 
 if not os.path.exists("/dev/spidev0.1"):
@@ -48,18 +49,20 @@ def do_measurement():
     off_set = [-0.44,-0.27,0.37,0]
 
     while True:
-        now = datetime.datetime.now()#get time
+        now = datetime.datetime.now(timezone.utc)#get time
         today = '{0:%Y-%m-%d}'.format(now)
 
         counter = 0
         while True:            
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(timezone.utc)
             # get data
             raw_channels = ads.read_sequence(CH_SEQUENCE)
             #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
             #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
             voltages = [i * ads.v_per_digit for i in raw_channels]
+            # voltages = [2.5,2.5,2.5,0]
             voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
+            # voltages_15 = [0,0,0,0]
             MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
             
             print('{0:%Y-%m-%d  %H:%M:%S}'.format(now))
