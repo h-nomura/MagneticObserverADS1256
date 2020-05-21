@@ -250,7 +250,7 @@ def dat_reader(filename):
     out = [dat_t,dat_1,dat_2,dat_3]
     return out
                 
-def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
+def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
     fig = plt.figure(figsize=(12, 12))
     ax_1ch = fig.add_subplot(411)
     ax_2ch = fig.add_subplot(413)
@@ -321,7 +321,7 @@ def data_process(filename,F_flag,Yrange):
     title = filename[0:8] + '(UT) magnetic force(nT)' + F_flag
     # fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d') + '_' + str(Yrange)+F_flag+'.png'
     fig_path = './fig/'  + fig_dir.strftime('%Y-%m-%d') + '_' + str(Yrange)+F_flag+'.png'
-    fig_plot(df_print, title, fig_path)
+    fig_plot(df_print, title, fig_path,Yrange)
 
 def main():
     l = [
@@ -341,7 +341,10 @@ def main():
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
     for i in range(6):
-        data_process(l[i],'flux',100)
+        data_process(l[i],'flux',80)
+        data_process(l[i],'flux',40)
+        data_process(l[i],'flux',20)
+        data_process(l[i],'flux',0)
 
 if __name__ == '__main__':
     main()
