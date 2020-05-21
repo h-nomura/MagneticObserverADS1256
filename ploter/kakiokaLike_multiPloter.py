@@ -31,6 +31,14 @@ def format_to_day(date_str):
         return date.strftime('%Y-%m-%d ')
     except ValueError:
         date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
+        return date.strftime('%Y-%m-%d ')  
+
+def format_to_day_T(date_timestamp):
+    try:
+        date = date_timestamp
+        return date.strftime('%Y-%m-%d ')
+    except ValueError:
+        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
         return date.strftime('%Y-%m-%d ')        
 
 def search_start(dataTime,start_dataTime_str):
@@ -259,8 +267,9 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     
     x = []
     x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
+    print(":type:"+ str(type(df_print['time'][0])))
     for s in x_axis:
-        x.append(format_to_day(df_print['time'][0]) + s)
+        x.append(format_to_day_T(df_print['time'][0]) + s)
     x_axis_np = pd.to_datetime(np.array(x))
     ax_1ch.set_xticks(x_axis_np)
     ax_2ch.set_xticks(x_axis_np)
