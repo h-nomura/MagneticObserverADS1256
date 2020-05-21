@@ -257,15 +257,15 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
 
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     
-    # x = []
-    # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
-    # for s in x_axis:
-    #     x.append(format_to_day(df_print['time'][0]) + s)
-    # x_axis_np = pd.to_datetime(np.array(x))
-    # ax_1ch.set_xticks(x_axis_np)
-    # ax_2ch.set_xticks(x_axis_np)
-    # ax_3ch.set_xticks(x_axis_np)
-    # ax_4ch.set_xticks(x_axis_np)
+    x = []
+    x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
+    for s in x_axis:
+        x.append(format_to_day(df_print['time'][0]) + s)
+    x_axis_np = pd.to_datetime(np.array(x))
+    ax_1ch.set_xticks(x_axis_np)
+    ax_2ch.set_xticks(x_axis_np)
+    ax_3ch.set_xticks(x_axis_np)
+    ax_4ch.set_xticks(x_axis_np)
     
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
@@ -396,6 +396,20 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
+    "MI20-04-17_00h00m00s.csv",
+    "MI20-04-18_00h00m00s.csv",
+    "MI20-04-19_00h00m00s.csv",
+    "MI20-04-20_00h00m00s.csv",
+    "MI20-04-21_00h00m00s.csv",
+    "MI20-04-22_00h00m00s.csv",
+    "MI20-04-23_00h00m00s.csv",
+    "MI20-04-24_00h00m00s.csv",
+    "MI20-04-25_00h00m00s.csv",
+    "MI20-04-26_00h00m00s.csv",
+    "MI20-04-27_00h00m00s.csv",
+    "MI20-04-28_00h00m00s.csv",
+    "MI20-04-29_00h00m00s.csv",
+    "MI20-04-15_09h45m40s.csv",
     "UT_MI20-02-14_00h00m00s.csv",
     "UT_MI20-02-15_00h00m00s.csv",
     "UT_MI20-02-16_00h00m00s.csv",
@@ -417,20 +431,20 @@ def main():
 
     # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
     # Process(File[4],"00:00:00","23:59:59","raw",80)
-    #Process(File[0],"00:00:00","00:10:00","mode",0)
-    
-    for i in [2,3,4,5]:
-        #day_1hour(File[i],"median",20)
+    # for i in range(13):
+    #     Process(File[0],str(10+i) +":00:00",str(11+i)+":00:00","median",40)
+    for i in [14,15,16,17,18,19]:
+        # day_1hour(File[i],"median",20)
 
-        Process(File[i],"00:00:00","23:59:59","mode",0)        
-        Process(File[i],"00:00:00","23:59:59","raw",80)
-        Process(File[i],"00:00:00","23:59:59","ave",0)
-        Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
-        Process(File[i],"00:00:00","23:59:59","ave",80)
+        # Process(File[i],"00:00:00","23:59:59","mode",0)        
+        # Process(File[i],"00:00:00","23:59:59","raw",80)
+        # Process(File[i],"00:00:00","23:59:59","ave",0)
+        # Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
+        # Process(File[i],"00:00:00","23:59:59","ave",80)
         Process(File[i],"00:00:00","23:59:59","median",80)
-        Process(File[i],"00:00:00","23:59:59","median",0)
-        Process(File[i],"00:00:00","23:59:59","raw",0)
-        Process(File[i],"00:00:00","23:59:59","mode",80)
+        # Process(File[i],"00:00:00","23:59:59","median",0)
+        # Process(File[i],"00:00:00","23:59:59","raw",0)
+        # Process(File[i],"00:00:00","23:59:59","mode",80)
     #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
     print('test')
 
