@@ -88,131 +88,6 @@ def append_lists(l1,l2,l3,l4,dat1,dat2,dat3,dat4):
     l4.append(dat4)
     return l1, l2, l3, l4
 
-def my_round(num,dec=0.1):
-    out_str = Decimal(str(num)).quantize(Decimal(str(dec)), rounding=ROUND_HALF_UP)
-    return float(out_str)
-
-def list_round(l):
-    out_list = []
-    for i in l:
-        out_list.append(my_round(i))
-    return out_list
-
-def my_mode(l):
-    mode_l = collections.Counter(l).most_common()
-    #### found 2 equally ####
-    if len(mode_l) == 1:
-        return mode_l[0][0]
-    if mode_l[0][1] == mode_l[1][1]:
-        i = 0
-        while(1):
-            if i + 1 == len(mode_l):
-                break
-            if mode_l[i][1] != mode_l[i+1][1]:
-                break
-            i += 1
-        mode_sum = []
-        for j in range(i+1):
-            mode_sum.append(mode_l[j][0])
-        return float(mean(mode_sum))
-    else:
-        return mode_l[0][0]
-
-def sec_average(op,time_dat,dat1,dat2,dat3,dat4):
-    now = eliminate_f(time_dat[0])
-    buff1 = []
-    buff2 = []
-    buff3 = []
-    buff4 = []
-    i = 0
-    ave_t = []
-    ave_d1 = []
-    ave_d2 = []
-    ave_d3 = []
-    ave_d4 = []
-    while(1):
-        buff1.append(dat1[i])
-        buff2.append(dat2[i])
-        buff3.append(dat3[i])
-        buff4.append(dat4[i])
-        # print("i = " + str(i+1) + "len =  "+ str(len(time_dat)-1))
-        if i+1 == len(time_dat)-1:
-            buff1.append(dat1[i+1])
-            buff2.append(dat2[i+1])
-            buff3.append(dat3[i+1])
-            buff4.append(dat4[i+1])
-            ave_t.append(now)
-            now = eliminate_f(time_dat[i+1])
-            if op == 0:
-                ave_d1.append(mean(buff1))
-                ave_d2.append(mean(buff2))
-                ave_d3.append(mean(buff3))
-                ave_d4.append(mean(buff4))
-            elif op == 1:
-                ave_d1.append(median(buff1))
-                ave_d2.append(median(buff2))
-                ave_d3.append(median(buff3))
-                ave_d4.append(median(buff4))
-            elif op == 2:
-                buff1 = list_round(buff1)
-                buff2 = list_round(buff2)
-                buff3 = list_round(buff3)
-                buff4 = list_round(buff4)
-                ave_d1.append(my_mode(buff1))
-                ave_d2.append(my_mode(buff2))
-                ave_d3.append(my_mode(buff3))
-                ave_d4.append(my_mode(buff4))
-            return ave_t, ave_d1, ave_d2, ave_d3, ave_d4            
-
-        if now != eliminate_f(time_dat[i+1]):
-            ave_t.append(now)
-            # print(now)
-            # print(len(buff))
-            now = eliminate_f(time_dat[i+1])
-            if op == 0:
-                ave_d1.append(mean(buff1))
-                ave_d2.append(mean(buff2))
-                ave_d3.append(mean(buff3))
-                ave_d4.append(mean(buff4))
-            elif op == 1:
-                ave_d1.append(median(buff1))
-                ave_d2.append(median(buff2))
-                ave_d3.append(median(buff3))
-                ave_d4.append(median(buff4))
-            elif op == 2:
-                buff1 = list_round(buff1)
-                buff2 = list_round(buff2)
-                buff3 = list_round(buff3)
-                buff4 = list_round(buff4)
-                ave_d1.append(my_mode(buff1))
-                ave_d2.append(my_mode(buff2))
-                ave_d3.append(my_mode(buff3))
-                ave_d4.append(my_mode(buff4))
-            buff1 =[]
-            buff2 =[]
-            buff3 =[]
-            buff4 =[]
-        i += 1
-
-def get_Srate(time_dat):
-    now_time  = eliminate_f(time_dat[0])
-    i = 0
-    try:
-        #### load head ####
-        while(1):
-            i += 1
-            if now_time != eliminate_f(time_dat[i]):
-                now_time = eliminate_f(time_dat[i])
-                break
-        #### count ####
-        count = 0
-        while(1):
-            i += 1
-            count += 1
-            if now_time != eliminate_f(time_dat[i]):
-                return count
-    except IndexError:
-        return 0
 
 
 def convert_data(day_str,raw_str):
@@ -308,6 +183,13 @@ def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
 def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
+def clop_time(data, start_time, end_time):
+    start_arg = 0
+    end_arg = 0
+
+
+    return start_arg, end_arg
+
 def data_process(filename,F_flag,Yrange):
     rawdata = dat_reader(filename)
     rawtime = pd.to_datetime(rawdata[0])
