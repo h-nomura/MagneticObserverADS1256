@@ -264,17 +264,18 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
         ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
 
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-    
-    x = []
-    x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
-    print(":type:"+ str(type(df_print['time'][0])))
-    for s in x_axis:
-        x.append(format_to_day_T(df_print['time'][0]) + s)
-    x_axis_np = pd.to_datetime(np.array(x))
-    ax_1ch.set_xticks(x_axis_np)
-    ax_2ch.set_xticks(x_axis_np)
-    ax_3ch.set_xticks(x_axis_np)
-    ax_4ch.set_xticks(x_axis_np)
+    time_scale = False
+    if time_scale == True:
+        x = []
+        x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
+        print(":type:"+ str(type(df_print['time'][0])))
+        for s in x_axis:
+            x.append(format_to_day_T(df_print['time'][0]) + s)
+        x_axis_np = pd.to_datetime(np.array(x))
+        ax_1ch.set_xticks(x_axis_np)
+        ax_2ch.set_xticks(x_axis_np)
+        ax_3ch.set_xticks(x_axis_np)
+        ax_4ch.set_xticks(x_axis_np)
     
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
@@ -378,13 +379,13 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag ,Yrange)
 
 def day_1hour(File, f_type, Yrange):
-        Process(File,"00:00:00","01:00:00",f_type,Yrange)
-        Process(File,"01:00:00","02:00:00",f_type,Yrange)
-        Process(File,"02:00:00","03:00:00",f_type,Yrange)
-        Process(File,"03:00:00","04:00:00",f_type,Yrange)
-        Process(File,"04:00:00","05:00:00",f_type,Yrange)
-        Process(File,"05:00:00","06:00:00",f_type,Yrange)
-        Process(File,"06:00:00","07:00:00",f_type,Yrange)
+        #Process(File,"00:00:00","01:00:00",f_type,Yrange)
+        #Process(File,"01:00:00","02:00:00",f_type,Yrange)
+        #Process(File,"02:00:00","03:00:00",f_type,Yrange)
+        #Process(File,"03:00:00","04:00:00",f_type,Yrange)
+        #Process(File,"04:00:00","05:00:00",f_type,Yrange)
+        #Process(File,"05:00:00","06:00:00",f_type,Yrange)
+        #Process(File,"06:00:00","07:00:00",f_type,Yrange)
         Process(File,"07:00:00","08:00:00",f_type,Yrange)
         Process(File,"08:00:00","09:00:00",f_type,Yrange)
         Process(File,"09:00:00","10:00:00",f_type,Yrange)
@@ -405,6 +406,13 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
+    "MI20-06-01_06h47m11s.csv",
+    "MI20-05-27_00h00m00s.csv",
+    "MI20-05-28_00h00m00s.csv",
+    "MI20-05-29_00h00m00s.csv",
+    "MI20-05-30_00h00m00s.csv",
+    "MI20-05-31_00h00m00s.csv",
+    "MI20-05-26_06h09m32s.csv",
     "MI20-04-17_00h00m00s.csv",
     "MI20-04-18_00h00m00s.csv",
     "MI20-04-19_00h00m00s.csv",
@@ -442,15 +450,21 @@ def main():
     # Process(File[4],"00:00:00","23:59:59","raw",80)
     # for i in range(13):
     #     Process(File[0],str(10+i) +":00:00",str(11+i)+":00:00","median",40)
-    for i in [14,15,16,17,18,19]:
-        # day_1hour(File[i],"median",20)
+    # Process(File[0],"06:10:00","06:20:00","median",40)
+    # Process(File[0],"06:20:00","06:30:00","median",40)
+    # Process(File[0],"06:30:00","06:40:00","median",40)
+    # Process(File[0],"06:40:00","06:50:00","median",40)
+    # Process(File[0],"06:50:00","07:00:00","median",40)
+    # Process(File[0],"07:00:00","07:10:00","median",40)
+    for i in [0]:
+        day_1hour(File[i],"median",20)
 
         # Process(File[i],"00:00:00","23:59:59","mode",0)        
         # Process(File[i],"00:00:00","23:59:59","raw",80)
         # Process(File[i],"00:00:00","23:59:59","ave",0)
         # Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
         # Process(File[i],"00:00:00","23:59:59","ave",80)
-        Process(File[i],"00:00:00","23:59:59","median",80)
+        # Process(File[i],"00:00:00","23:59:59","median",80)
         # Process(File[i],"00:00:00","23:59:59","median",0)
         # Process(File[i],"00:00:00","23:59:59","raw",0)
         # Process(File[i],"00:00:00","23:59:59","mode",80)
