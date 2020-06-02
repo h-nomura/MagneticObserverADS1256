@@ -163,9 +163,9 @@ def _redraw(_, ax, data, C_mode, C_range):
         d_2ch = df[2]
         d_3ch = df[3]
         d_4ch = df[4]
-    ax_1ch.set_ylabel('Z [nT]', fontsize=18)
+    ax_1ch.set_ylabel('X [nT]', fontsize=18)
     ax_2ch.set_ylabel('Y [nT]', fontsize=18)
-    ax_3ch.set_ylabel('X [nT]', fontsize=18)
+    ax_3ch.set_ylabel('Z [nT]', fontsize=18)
     ax_4ch.set_ylabel('Temperature [C]', fontsize=18)
     ax_1ch.set_ylim([mean(d_1ch) - (C_range/2),mean(d_1ch) + (C_range/2)])
     ax_2ch.set_ylim([mean(d_2ch) - (C_range/2),mean(d_2ch) + (C_range/2)])
@@ -178,9 +178,9 @@ def _redraw(_, ax, data, C_mode, C_range):
 
 def ploting(plotData,C_save,C_range,C_mode,C_Drate):
     fig = plt.figure(figsize=(12, 12))
-    ax_1ch = fig.add_subplot(413) #Z axis
+    ax_1ch = fig.add_subplot(411) #Z axis
     ax_2ch = fig.add_subplot(412) #Y axis
-    ax_3ch = fig.add_subplot(411) #X axis
+    ax_3ch = fig.add_subplot(413) #X axis
     ax_4ch = fig.add_subplot(414)
 
     while True:
@@ -216,9 +216,9 @@ def ploting(plotData,C_save,C_range,C_mode,C_Drate):
                 d_3ch = df[3]
                 d_4ch = df[4]
 
-            ax_1ch.set_ylabel('Z [nT]', fontsize=18)
+            ax_1ch.set_ylabel('X [nT]', fontsize=18)
             ax_2ch.set_ylabel('Y [nT]', fontsize=18)
-            ax_3ch.set_ylabel('X [nT]', fontsize=18)
+            ax_3ch.set_ylabel('Z [nT]', fontsize=18)
             ax_4ch.set_ylabel('Temperature [C]', fontsize=18)
             ax_1ch.set_ylim([mean(d_1ch) - (C_range/2),mean(d_1ch) + (C_range/2)])
             ax_2ch.set_ylim([mean(d_2ch) - (C_range/2),mean(d_2ch) + (C_range/2)])
@@ -258,7 +258,8 @@ def measurement(plotData,C_save,C_Drate):
         while True:
             now = datetime.datetime.now(timezone.utc)
             #### get data ####
-            raw_channels = ads.read_sequence(CH_SEQUENCE)
+            # raw_channels = ads.read_sequence(CH_SEQUENCE)
+            raw_channels = ads.read_continue(CH_SEQUENCE)
             voltages = [i * ads.v_per_digit for i in raw_channels]
             voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
             MagF = [(voltages_15[i] / transform[i]) for i in range(4)]

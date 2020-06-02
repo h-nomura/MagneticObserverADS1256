@@ -230,9 +230,9 @@ def BODE_print(b,a):
 
 def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     fig = plt.figure(figsize=(12, 12))
-    ax_1ch = fig.add_subplot(412)
+    ax_1ch = fig.add_subplot(411)
     ax_2ch = fig.add_subplot(413)
-    ax_3ch = fig.add_subplot(411)
+    ax_3ch = fig.add_subplot(412)
     ax_4ch = fig.add_subplot(414)
 
     ax_1ch.yaxis.grid(True)
@@ -243,9 +243,9 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     ax_2ch.tick_params(labelsize=18)
     ax_3ch.tick_params(labelsize=18)
     ax_4ch.tick_params(labelsize=18)
-    ax_1ch.set_ylabel('Z [nT]', fontsize=18)
+    ax_1ch.set_ylabel('X [nT]', fontsize=18)
     ax_2ch.set_ylabel('Y [nT]', fontsize=18)
-    ax_3ch.set_ylabel('X [nT]', fontsize=18)
+    ax_3ch.set_ylabel('Z [nT]', fontsize=18)
     ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
 
     ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'g')
