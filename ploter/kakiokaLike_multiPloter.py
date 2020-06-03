@@ -248,9 +248,9 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     ax_3ch.set_ylabel('Z [nT]', fontsize=18)
     ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
 
-    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'g')
+    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
     ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
-    ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'r')
+    ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
     ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
 
     if Yrange != 0:
@@ -282,7 +282,7 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     plt.setp(ax_3ch.get_xticklabels(),visible=False)
     if dat_path != '':    
         df_print.to_csv(dat_path)
-    ax_3ch.set_title(title)
+    ax_1ch.set_title(title)
     plt.savefig(fig_path)
 
 #ex. start_datetime_str = 2017-08-01 01:00:
@@ -348,11 +348,11 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
     title = start_datetime_str + '(UT) magnetic force(nT)' + F_flag
     fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_kLike.png'
-    fig_plot(df_print,title, fig_path,Yrange=Yrange)
+    fig_plot(df_print,title, fig_path,Yrange=int(Yrange))
     
     Yrange = Yrange / 2
     fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_kLike.png'
-    fig_plot(df_print,title, fig_path)
+    fig_plot(df_print,title, fig_path,Yrange=int(Yrange))
 
     Yrange = 0
     fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_kLike.png'
@@ -406,7 +406,7 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
-    "MI20-06-01_06h47m11s.csv",
+    "MI20-06-03_01h02m06s.csv",
     "MI20-05-27_00h00m00s.csv",
     "MI20-05-28_00h00m00s.csv",
     "MI20-05-29_00h00m00s.csv",
@@ -457,8 +457,14 @@ def main():
     # Process(File[0],"06:50:00","07:00:00","median",40)
     # Process(File[0],"07:00:00","07:10:00","median",40)
     for i in [0]:
-        day_1hour(File[i],"median",20)
-
+        # day_1hour(File[i],"median",20)
+        Process(File[i],"01:50:00","01:55:00","median",40)
+        Process(File[i],"01:50:00","01:55:00","raw",40)
+        Process(File[i],"01:30:00","01:35:00","median",40)
+        Process(File[i],"01:30:00","01:35:00","raw",40)
+        Process(File[i],"01:10:00","02:10:00","median",40)
+        Process(File[i],"02:10:00","03:10:00","median",40)
+        # Process(File[i],"02:10:00","03:10:00","raw",40)
         # Process(File[i],"00:00:00","23:59:59","mode",0)        
         # Process(File[i],"00:00:00","23:59:59","raw",80)
         # Process(File[i],"00:00:00","23:59:59","ave",0)
