@@ -406,6 +406,8 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
+    "MI20-04-18_00h00m00s.csv",
+    "UT_MI20-02-14_00h00m00s.csv",
     "MI20-06-03_01h02m06s.csv",
     "MI20-05-27_00h00m00s.csv",
     "MI20-05-28_00h00m00s.csv",
@@ -458,12 +460,12 @@ def main():
     # Process(File[0],"07:00:00","07:10:00","median",40)
     for i in [0]:
         # day_1hour(File[i],"median",20)
-        Process(File[i],"01:50:00","01:55:00","median",40)
-        Process(File[i],"01:50:00","01:55:00","raw",40)
-        Process(File[i],"01:30:00","01:35:00","median",40)
-        Process(File[i],"01:30:00","01:35:00","raw",40)
-        Process(File[i],"01:10:00","02:10:00","median",40)
-        Process(File[i],"02:10:00","03:10:00","median",40)
+        Process(File[i],"01:30:00","01:31:00","raw",10)
+        # Process(File[i],"01:50:00","01:55:00","raw",40)
+        # Process(File[i],"01:30:00","01:35:00","median",40)
+        # Process(File[i],"01:30:00","01:35:00","raw",40)
+        # Process(File[i],"01:10:00","02:10:00","median",40)
+        # Process(File[i],"02:10:00","03:10:00","median",40)
         # Process(File[i],"02:10:00","03:10:00","raw",40)
         # Process(File[i],"00:00:00","23:59:59","mode",0)        
         # Process(File[i],"00:00:00","23:59:59","raw",80)
