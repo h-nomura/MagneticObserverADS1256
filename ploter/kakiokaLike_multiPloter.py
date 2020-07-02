@@ -38,7 +38,7 @@ def format_to_day_T(date_timestamp):
         date = date_timestamp
         return date.strftime('%Y-%m-%d ')
     except ValueError:
-        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
+        date = datetime.datetime.strptime(date_timestamp, '%Y-%m-%d %H:%M:%S.%f')
         return date.strftime('%Y-%m-%d ')        
 
 def search_start(dataTime,start_dataTime_str):
@@ -84,7 +84,7 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
         if startFlag == True:
             df_list_raw['Time'].append(dataday + row[0])
             df_list_raw['ch1'].append(float(row[1]))
-            df_list_raw['ch2'].append(float(row[2]))
+            df_list_raw['ch2'].append(-1 * float(row[2]))
             df_list_raw['ch3'].append(float(row[3]))
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
@@ -267,7 +267,8 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     time_scale = False
     if time_scale == True:
         x = []
-        x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
+        # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
+        x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
         print(":type:"+ str(type(df_print['time'][0])))
         for s in x_axis:
             x.append(format_to_day_T(df_print['time'][0]) + s)
@@ -284,6 +285,7 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
         df_print.to_csv(dat_path)
     ax_1ch.set_title(title)
     plt.savefig(fig_path)
+    plt.close()
 
 #ex. start_datetime_str = 2017-08-01 01:00:
 def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
@@ -324,6 +326,7 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw2ch = np.array(ave_dat[2])
         raw3ch = np.array(ave_dat[3])
         #raw4ch = np.sqrt(raw1ch **2 + raw2ch **2 + raw3ch **2)
+    
     if F_flag == 'median':
         print('1s median')
         med_dat = sec_average(1,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
@@ -331,6 +334,20 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw1ch = np.array(med_dat[1])
         raw2ch = np.array(med_dat[2])
         raw3ch = np.array(med_dat[3])
+
+        f = 1 #### Sampling frequency[Hz]
+        fn = f / 2 #### Nyquist frequency[Hz]
+        fs = 0.1 #### Stopband edge frequency[Hz]
+        #### Normalization ####
+        Ws = fs/fn
+
+        N = 5 #### order of the filter
+        bessel_b, bessel_a = signal.bessel(N, Ws, "low")
+        # BODE_print(bessel_b, bessel_a)
+
+        raw1ch = signal.filtfilt(bessel_b, bessel_a, raw1ch)
+        raw2ch = signal.filtfilt(bessel_b, bessel_a, raw2ch)
+        raw3ch = signal.filtfilt(bessel_b, bessel_a, raw3ch)
     if F_flag == 'mode':
         print('1s mode')
         mod_dat = sec_average(2,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
@@ -381,11 +398,11 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
 def day_1hour(File, f_type, Yrange):
         #Process(File,"00:00:00","01:00:00",f_type,Yrange)
         #Process(File,"01:00:00","02:00:00",f_type,Yrange)
-        #Process(File,"02:00:00","03:00:00",f_type,Yrange)
-        #Process(File,"03:00:00","04:00:00",f_type,Yrange)
-        #Process(File,"04:00:00","05:00:00",f_type,Yrange)
-        #Process(File,"05:00:00","06:00:00",f_type,Yrange)
-        #Process(File,"06:00:00","07:00:00",f_type,Yrange)
+        Process(File,"02:00:00","03:00:00",f_type,Yrange)
+        Process(File,"03:00:00","04:00:00",f_type,Yrange)
+        Process(File,"04:00:00","05:00:00",f_type,Yrange)
+        Process(File,"05:00:00","06:00:00",f_type,Yrange)
+        Process(File,"06:00:00","07:00:00",f_type,Yrange)
         Process(File,"07:00:00","08:00:00",f_type,Yrange)
         Process(File,"08:00:00","09:00:00",f_type,Yrange)
         Process(File,"09:00:00","10:00:00",f_type,Yrange)
@@ -406,7 +423,15 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
-    "MI20-04-18_00h00m00s.csv",
+    "MI20-06-17_01h52m20s.csv",
+    "MI20-06-18_00h00m00s.csv",
+    "MI20-06-19_00h00m00s.csv",
+    "MI20-06-20_00h00m00s.csv",
+    "MI20-06-21_00h00m00s.csv",
+    "MI20-06-22_00h00m00s.csv",
+    "MI20-06-23_00h00m00s.csv",
+    "MI20-06-24_00h00m00s.csv",
+    "MI20-06-25_00h00m00s.csv",
     "UT_MI20-02-14_00h00m00s.csv",
     "MI20-06-03_01h02m06s.csv",
     "MI20-05-27_00h00m00s.csv",
@@ -458,9 +483,11 @@ def main():
     # Process(File[0],"06:40:00","06:50:00","median",40)
     # Process(File[0],"06:50:00","07:00:00","median",40)
     # Process(File[0],"07:00:00","07:10:00","median",40)
-    for i in [0]:
+    # Process(File[8],"15:00:00","17:00:00","median",20)
+    day_1hour(File[0],"median",20)
+    # for i in [1,2,3,4,5,6,7,8]:
         # day_1hour(File[i],"median",20)
-        Process(File[i],"01:30:00","01:31:00","raw",10)
+        # Process(File[i],"00:00:00","23:59:59","median",80)
         # Process(File[i],"01:50:00","01:55:00","raw",40)
         # Process(File[i],"01:30:00","01:35:00","median",40)
         # Process(File[i],"01:30:00","01:35:00","raw",40)
