@@ -101,8 +101,8 @@ def convert_data(day_str,raw_str):
     except ValueError:
         return -1
     return out
-def dat_reader(filename):
 
+def dat_reader(filename):
     day = filename[0:4]+'-'+filename[4:6]+'-'+filename[6:8]+' '
     print(day)
     dat_t = []
@@ -162,16 +162,20 @@ def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
 
     ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     
-    x = []
-    x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
-    for s in x_axis:
-        x.append(format_to_day(str(df_print['time'][0])) + s)
-    x_axis_np = pd.to_datetime(np.array(x))
-    ax_1ch.set_xticks(x_axis_np)
-    ax_2ch.set_xticks(x_axis_np)
-    ax_3ch.set_xticks(x_axis_np)
-    ax_4ch.set_xticks(x_axis_np)
-    
+    axisFlag = True
+    if axisFlag == True:
+        x = []
+        x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
+        # x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
+
+        for s in x_axis:
+            x.append(format_to_day(str(df_print['time'][0])) + s)
+        x_axis_np = pd.to_datetime(np.array(x))
+        ax_1ch.set_xticks(x_axis_np)
+        ax_2ch.set_xticks(x_axis_np)
+        ax_3ch.set_xticks(x_axis_np)
+        ax_4ch.set_xticks(x_axis_np)
+        
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
     plt.setp(ax_3ch.get_xticklabels(),visible=False)
@@ -179,34 +183,63 @@ def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
         df_print.to_csv(dat_path)
     ax_1ch.set_title(title)
     plt.savefig(fig_path)
+    plt.close()
 
 def my_makedirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
-def clop_time(data, start_time, end_time):
+
+def search_arg(data, start_time, end_time):
     start_arg = 0
     end_arg = 0
+    i = 0
+    while(1):
+        # print(data[i][11:19])
+        if data[i][11:19] == start_time:
+            start_arg = i
+        if data[i][11:19] == end_time:
+            end_arg = i
+            break
+        i += 1
+    return start_arg, end_arg+1
 
+#format pass time
+def format_PT(t):
+    return t[0:2] + t[3:5] + t[6:8]
 
-    return start_arg, end_arg
-
-def data_process(filename,F_flag,Yrange):
+def data_process(filename, start_time, end_time, F_flag, Yrange):
     rawdata = dat_reader(filename)
-    rawtime = pd.to_datetime(rawdata[0])
-    raw1ch = np.array(rawdata[1])
-    raw2ch = np.array(rawdata[2])
-    raw3ch = np.array(rawdata[3])
+    s_arg, e_arg = search_arg(rawdata[0], start_time, end_time)
+    rawtime = pd.to_datetime(rawdata[0][s_arg:e_arg])
+    raw1ch = np.array(rawdata[1][s_arg:e_arg])
+    raw2ch = np.array(rawdata[2][s_arg:e_arg])
+    raw3ch = np.array(rawdata[3][s_arg:e_arg])
+    # raw2ch = np.array(rawdata[2][s_arg:e_arg])
+    # raw3ch = np.array(rawdata[3][s_arg:e_arg])
     raw4ch = np.sqrt(np.square(raw1ch) + np.square(raw2ch) + np.square(raw3ch))
+
     df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
     fig_dir = datetime.datetime.strptime(filename[0:8], '%Y%m%d')
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    title = filename[0:8] + '(UT) magnetic force(nT)' + F_flag
+    title = filename[0:8] + start_time +" - "+ end_time + '(UT) magnetic force(nT)' + F_flag
     # fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d') + '_' + str(Yrange)+F_flag+'.png'
-    fig_path = './fig/'  + fig_dir.strftime('%Y-%m-%d') + '_' + str(Yrange)+F_flag+'.png'
+    fig_path = './fig/'  + fig_dir.strftime('%Y-%m-%d') +"_"+ format_PT(start_time) +"_"+ format_PT(end_time) + '_' + str(Yrange)+F_flag+'.png'
+    # print(df_print)
+    # print(rawdata[0][0])
+    # print(type(rawdata[0][0]))
     fig_plot(df_print, title, fig_path,Yrange)
 
 def main():
     l = [
+    "20200618-1Hz.dat",
+    "20200619-1Hz.dat",
+    "20200620-1Hz.dat",
+    "20200621-1Hz.dat",
+    "20200622-1Hz.dat",
+    "20200623-1Hz.dat",
+    "20200624-1Hz.dat",
+    "20200625-1Hz.dat",
+    "20200617-1Hz.dat",
     "20200214-1Hz.dat",
     "20200215-1Hz.dat",
     "20200216-1Hz.dat",
@@ -222,11 +255,22 @@ def main():
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
-    for i in range(6):
-        data_process(l[i],'flux',80)
-        data_process(l[i],'flux',40)
-        data_process(l[i],'flux',20)
-        data_process(l[i],'flux',0)
+    # data_process(l[0], '01:55:00', '02:00:00','flux',0)
+    # data_process(l[2], '11:00:00', '12:00:00','flux',20)
+    # data_process(l[0], '00:17:00', '01:47:00','flux',20)
+    # data_process(l[0], '00:17:00', '00:47:00','flux',20)
+    # data_process(l[0], '00:47:00', '01:17:00','flux',20)
+    # data_process(l[0], '01:17:00', '01:47:00','flux',20)
+    # data_process(l[0], '02:10:00', '03:10:00','flux',20)
+    # data_process(l[0], '01:10:00', '02:10:00','flux',0)
+    # data_process(l[7], '15:00:00', '17:00:00','flux',10)
+    # data_process(l[7], '15:00:00', '17:00:00','flux',20)
+
+    for i in range(8):
+        data_process(l[i],"00:00:00","23:59:59",'flux',80)
+    #     data_process(l[i],"00:00:00","23:59:59",'flux',40)
+    #     data_process(l[i],"00:00:00","23:59:59",'flux',20)
+    #     data_process(l[i],"00:00:00","23:59:59",'flux',0)
 
 if __name__ == '__main__':
     main()
