@@ -375,28 +375,9 @@ def main():
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
-
-    Process(File[1],"00:00:00","00:01:00","median",20)
-    # for i in [1,2,3,4,5,6,7,8]:
-        # day_1hour(File[i],"median",20)
-        # Process(File[i],"00:00:00","23:59:59","median",80)
-        # Process(File[i],"01:50:00","01:55:00","raw",40)
-        # Process(File[i],"01:30:00","01:35:00","median",40)
-        # Process(File[i],"01:30:00","01:35:00","raw",40)
-        # Process(File[i],"01:10:00","02:10:00","median",40)
-        # Process(File[i],"02:10:00","03:10:00","median",40)
-        # Process(File[i],"02:10:00","03:10:00","raw",40)
-        # Process(File[i],"00:00:00","23:59:59","mode",0)        
-        # Process(File[i],"00:00:00","23:59:59","raw",80)
-        # Process(File[i],"00:00:00","23:59:59","ave",0)
-        # Process(File[i],"00:00:00","23:59:59","LPF+median",80) 
-        # Process(File[i],"00:00:00","23:59:59","ave",80)
-        # Process(File[i],"00:00:00","23:59:59","median",80)
-        # Process(File[i],"00:00:00","23:59:59","median",0)
-        # Process(File[i],"00:00:00","23:59:59","raw",0)
-        # Process(File[i],"00:00:00","23:59:59","mode",80)
-    #Process(File[1],"09:50:00","09:50:01","OVER",0,0,50)
-    print('test')
+    for i in [1,2,3,4,5,6,7,8]:
+        Process(File[i],"00:00:00","23:59:59","median",80)
+    Process(File[0],"02:00:00","23:59:59","median",20)
 
 
 
