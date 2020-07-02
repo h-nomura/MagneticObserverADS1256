@@ -25,6 +25,12 @@ def eliminate_f(date_str):
         date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
         return date.strftime('%Y-%m-%d %H:%M:%S')
 
+def add_day(date_str):
+    date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+    date = date + datetime.timedelta(days=1)
+    return date.strftime('%Y-%m-%d ')
+
+
 def format_to_day(date_str):
     try:
         date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
@@ -84,7 +90,7 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
         if startFlag == True:
             df_list_raw['Time'].append(dataday + row[0])
             df_list_raw['ch1'].append(float(row[1]))
-            df_list_raw['ch2'].append(-1 * float(row[2]))
+            df_list_raw['ch2'].append(float(row[2]))
             df_list_raw['ch3'].append(float(row[3]))
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
@@ -125,37 +131,76 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     ax_2ch.set_ylabel('Y [nT]', fontsize=18)
     ax_3ch.set_ylabel('Z [nT]', fontsize=18)
     # ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
+    FFT_flag = True
+    if FFT_flag == True:
+        N = len(df_print['time'])
+        dt = 1 #sampling freq
+        F1 = np.fft.fft(df_print['1ch'])
+        F2 = np.fft.fft(df_print['2ch'])
+        F3 = np.fft.fft(df_print['3ch'])
+        F_abs1 = np.abs(F1)
+        F_abs2 = np.abs(F2)
+        F_abs3 = np.abs(F3)
+        F_abs_amp1 = F_abs1 / N * 2
+        F_abs_amp2 = F_abs2 / N * 2
+        F_abs_amp3 = F_abs3 / N * 2
+        F_abs_amp1[0] = F_abs_amp1[0] / N
+        F_abs_amp2[0] = F_abs_amp2[0] / N
+        F_abs_amp3[0] = F_abs_amp3[0] / N
+        F_abs_amp1 = np.sqrt(F_abs_amp1) * 1000
+        F_abs_amp2 = np.sqrt(F_abs_amp2) * 1000
+        F_abs_amp3 = np.sqrt(F_abs_amp3) * 1000
+        fq = np.linspace(0,1.0/dt,N)
+        # ax_1ch.set_ylim(1,1000)
+        # ax_2ch.set_ylim(1,1000)
+        # ax_3ch.set_ylim(1,1000)
+        # ax_1ch.set_xlim(0.01,1000)
+        # ax_2ch.set_xlim(0.01,1000)
+        # ax_3ch.set_xlim(0.01,1000)
+        ax_1ch.set_xscale('log')
+        ax_2ch.set_xscale('log')
+        ax_3ch.set_xscale('log')
+        ax_1ch.set_yscale('log')
+        ax_2ch.set_yscale('log')
+        ax_3ch.set_yscale('log')
+        # ax_1ch.xaxis.grid(which = "both")
+        # ax_1ch.yaxis.grid(which = "both")
+        ax_1ch.plot(fq[:int(N/2)+1], F_abs_amp1[:int(N/2)+1], color = 'r')
+        ax_2ch.plot(fq[:int(N/2)+1], F_abs_amp2[:int(N/2)+1], color = 'b')
+        ax_3ch.plot(fq[:int(N/2)+1], F_abs_amp3[:int(N/2)+1], color = 'g')
+    else:
+        ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
+        ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
+        ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
+        # ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
 
-    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
-    ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
-    ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
-    # ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
+        if Yrange != 0:
+            median_1ch = np.median(df_print['1ch'])
+            median_2ch = np.median(df_print['2ch'])
+            median_3ch = np.median(df_print['3ch'])
+            # median_4ch = np.median(df_print['4ch'])
+            ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
+            ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
+            ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
+            # ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
 
-    if Yrange != 0:
-        median_1ch = np.median(df_print['1ch'])
-        median_2ch = np.median(df_print['2ch'])
-        median_3ch = np.median(df_print['3ch'])
-        # median_4ch = np.median(df_print['4ch'])
-        ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
-        ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
-        ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
-        # ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
-
-    ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-    time_scale = False
-    if time_scale == True:
-        x = []
-        # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
-        x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
-        print(":type:"+ str(type(df_print['time'][0])))
-        for s in x_axis:
-            x.append(format_to_day_T(df_print['time'][0]) + s)
-        x_axis_np = pd.to_datetime(np.array(x))
-        ax_1ch.set_xticks(x_axis_np)
-        ax_2ch.set_xticks(x_axis_np)
-        ax_3ch.set_xticks(x_axis_np)
-        # ax_4ch.set_xticks(x_axis_np)
-    
+        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+        time_scale = False
+        if time_scale == True:
+            x = []
+            # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
+            # x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00']
+            x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
+            print(":type:"+ str(type(df_print['time'][0])))
+            for s in x_axis:
+                x.append(format_to_day_T(df_print['time'][0]) + s)
+            # x.append(add_day(format_to_day_T(df_print['time'][0]) + '00:00:00'))
+            x_axis_np = pd.to_datetime(np.array(x))
+            ax_1ch.set_xticks(x_axis_np)
+            ax_2ch.set_xticks(x_axis_np)
+            ax_3ch.set_xticks(x_axis_np)
+            # ax_4ch.set_xticks(x_axis_np)
+        
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
     # plt.setp(ax_3ch.get_xticklabels(),visible=False)
@@ -283,11 +328,11 @@ def main():
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
     # Process(File[0],"07:00:00","07:10:00","median",40)
-    Process(File[0],"02:00:00","23:59:59","median",80)
+    Process(File[0],"13:00:00","14:00:00","medianFFT",20)
     # day_1hour(File[0],"median",20)
-    for i in [1,2,3,4,5,6,7,8]:
+    # for i in [1,2,3,4,5,6,7,8]:
         # day_1hour(File[i],"median",20)
-        Process(File[i],"00:00:00","23:59:59","median",80)
+        # Process(File[i],"00:00:00","23:59:59","medianFFT",120)
 
 
 if __name__ == '__main__':
