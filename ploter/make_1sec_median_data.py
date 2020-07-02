@@ -33,6 +33,14 @@ def format_to_day(date_str):
         date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
         return date.strftime('%Y-%m-%d ')  
 
+def format_to_time(date_str):
+    try:
+        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+        return date.strftime('%H:%M:%S.%f')
+    except ValueError:
+        date = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S.%f')
+        return date.strftime('%H:%M:%S.%f')  
+
 def format_to_day_T(date_timestamp):
     try:
         date = date_timestamp
@@ -228,65 +236,6 @@ def BODE_print(b,a):
     bode(bessel)
     plt.savefig("./fig/bode.png")
 
-def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 12))
-    ax_1ch = fig.add_subplot(411)
-    ax_2ch = fig.add_subplot(413)
-    ax_3ch = fig.add_subplot(412)
-    ax_4ch = fig.add_subplot(414)
-
-    ax_1ch.yaxis.grid(True)
-    ax_2ch.yaxis.grid(True)
-    ax_3ch.yaxis.grid(True)
-    ax_4ch.yaxis.grid(True)
-    ax_1ch.tick_params(labelsize=18)
-    ax_2ch.tick_params(labelsize=18)
-    ax_3ch.tick_params(labelsize=18)
-    ax_4ch.tick_params(labelsize=18)
-    ax_1ch.set_ylabel('X [nT]', fontsize=18)
-    ax_2ch.set_ylabel('Y [nT]', fontsize=18)
-    ax_3ch.set_ylabel('Z [nT]', fontsize=18)
-    ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
-
-    ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
-    ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
-    ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
-    ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
-
-    if Yrange != 0:
-        median_1ch = np.median(df_print['1ch'])
-        median_2ch = np.median(df_print['2ch'])
-        median_3ch = np.median(df_print['3ch'])
-        median_4ch = np.median(df_print['4ch'])
-        ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
-        ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
-        ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
-        ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
-
-    ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-    time_scale = False
-    if time_scale == True:
-        x = []
-        # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
-        x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
-        print(":type:"+ str(type(df_print['time'][0])))
-        for s in x_axis:
-            x.append(format_to_day_T(df_print['time'][0]) + s)
-        x_axis_np = pd.to_datetime(np.array(x))
-        ax_1ch.set_xticks(x_axis_np)
-        ax_2ch.set_xticks(x_axis_np)
-        ax_3ch.set_xticks(x_axis_np)
-        ax_4ch.set_xticks(x_axis_np)
-    
-    plt.setp(ax_1ch.get_xticklabels(),visible=False)
-    plt.setp(ax_2ch.get_xticklabels(),visible=False)
-    plt.setp(ax_3ch.get_xticklabels(),visible=False)
-    if dat_path != '':    
-        df_print.to_csv(dat_path)
-    ax_1ch.set_title(title)
-    plt.savefig(fig_path)
-    plt.close()
-
 #ex. start_datetime_str = 2017-08-01 01:00:
 def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     rawdata = rawdata_maker(f,start_datetime_str,end_datetime_str)
@@ -311,12 +260,14 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw1ch = signal.filtfilt(bessel_b, bessel_a, raw1ch)
         raw2ch = signal.filtfilt(bessel_b, bessel_a, raw2ch)
         raw3ch = signal.filtfilt(bessel_b, bessel_a, raw3ch)
+        raw4ch = signal.filtfilt(bessel_b, bessel_a, raw4ch)
     if F_flag == "LPF+median" or F_flag == 'ave':
         print('Median Filter')
         win_size = 61
         raw1ch = signal.medfilt(raw1ch, kernel_size= win_size)
         raw2ch = signal.medfilt(raw2ch, kernel_size= win_size)
         raw3ch = signal.medfilt(raw3ch, kernel_size= win_size)
+        raw4ch = signal.medfilt(raw4ch, kernel_size= win_size)
         #raw4ch = np.sqrt(raw1ch **2 + raw2ch **2 + raw3ch **3)
     if F_flag == 'ave':
         print('1s mean')
@@ -325,29 +276,19 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw1ch = np.array(ave_dat[1])
         raw2ch = np.array(ave_dat[2])
         raw3ch = np.array(ave_dat[3])
+        raw4ch = np.array(ave_dat[4])
         #raw4ch = np.sqrt(raw1ch **2 + raw2ch **2 + raw3ch **2)
     
     if F_flag == 'median':
         print('1s median')
         med_dat = sec_average(1,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
-        rawtime = pd.to_datetime(med_dat[0])
+        rawtime = med_dat[0]
         raw1ch = np.array(med_dat[1])
         raw2ch = np.array(med_dat[2])
         raw3ch = np.array(med_dat[3])
+        raw4ch = np.array(med_dat[4])
 
-        f = 1 #### Sampling frequency[Hz]
-        fn = f / 2 #### Nyquist frequency[Hz]
-        fs = 0.1 #### Stopband edge frequency[Hz]
-        #### Normalization ####
-        Ws = fs/fn
-
-        N = 5 #### order of the filter
-        bessel_b, bessel_a = signal.bessel(N, Ws, "low")
-        # BODE_print(bessel_b, bessel_a)
-
-        raw1ch = signal.filtfilt(bessel_b, bessel_a, raw1ch)
-        raw2ch = signal.filtfilt(bessel_b, bessel_a, raw2ch)
-        raw3ch = signal.filtfilt(bessel_b, bessel_a, raw3ch)
+        
     if F_flag == 'mode':
         print('1s mode')
         mod_dat = sec_average(2,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
@@ -355,25 +296,11 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
         raw1ch = np.array(mod_dat[1])
         raw2ch = np.array(mod_dat[2])
         raw3ch = np.array(mod_dat[3])
+        raw4ch = np.array(mod_dat[4])
 
-    raw4ch = np.sqrt(np.square(raw1ch) + np.square(raw2ch) + np.square(raw3ch))
-    #raw4ch = np.array(raw1ch.tolist())
-    df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
-
-    fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
-    end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')  
-    my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    title = start_datetime_str + '(UT) magnetic force(nT)' + F_flag
-    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_kLike.png'
-    fig_plot(df_print,title, fig_path,Yrange=int(Yrange))
-    
-    Yrange = Yrange / 2
-    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_kLike.png'
-    fig_plot(df_print,title, fig_path,Yrange=int(Yrange))
-
-    Yrange = 0
-    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_kLike.png'
-    fig_plot(df_print,title, fig_path)
+    print(format_to_day(rawtime[0])[0:10] + "!!")
+    print(rawtime[0])
+    return [rawtime,raw1ch,raw2ch,raw3ch,raw4ch]
 
 def my_makedirs(path):
     if not os.path.isdir(path):
@@ -393,38 +320,20 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
     print(header)
-    data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag ,Yrange)
+    data = data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag ,Yrange)
+    wPass = "../logger/data/1sec_median_" + fileName
+    rowAmount = len(data[0])
+    with open(wPass, 'w', newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([format_to_day(data[0][0])[0:10],"1ch(nT)","2ch(nT)","3ch(nT)"])
+        for i in range(rowAmount):
+            writer.writerow([format_to_time(data[0][i]),data[1][i],data[2][i],data[3][i],data[4][i]])
 
-def day_1hour(File, f_type, Yrange):
-        #Process(File,"00:00:00","01:00:00",f_type,Yrange)
-        #Process(File,"01:00:00","02:00:00",f_type,Yrange)
-        Process(File,"02:00:00","03:00:00",f_type,Yrange)
-        Process(File,"03:00:00","04:00:00",f_type,Yrange)
-        Process(File,"04:00:00","05:00:00",f_type,Yrange)
-        Process(File,"05:00:00","06:00:00",f_type,Yrange)
-        Process(File,"06:00:00","07:00:00",f_type,Yrange)
-        Process(File,"07:00:00","08:00:00",f_type,Yrange)
-        Process(File,"08:00:00","09:00:00",f_type,Yrange)
-        Process(File,"09:00:00","10:00:00",f_type,Yrange)
-        Process(File,"10:00:00","11:00:00",f_type,Yrange)
-        Process(File,"11:00:00","12:00:00",f_type,Yrange)
-        Process(File,"12:00:00","13:00:00",f_type,Yrange)
-        Process(File,"13:00:00","14:00:00",f_type,Yrange)
-        Process(File,"14:00:00","15:00:00",f_type,Yrange)
-        Process(File,"15:00:00","16:00:00",f_type,Yrange)
-        Process(File,"16:00:00","17:00:00",f_type,Yrange)
-        Process(File,"17:00:00","18:00:00",f_type,Yrange)
-        Process(File,"18:00:00","19:00:00",f_type,Yrange)
-        Process(File,"19:00:00","20:00:00",f_type,Yrange)
-        Process(File,"20:00:00","21:00:00",f_type,Yrange)
-        Process(File,"21:00:00","22:00:00",f_type,Yrange)
-        Process(File,"22:00:00","23:00:00",f_type,Yrange)
-        Process(File,"23:00:00","23:59:59",f_type,Yrange)
 
 def main():
     File = [
     "MI20-06-17_01h52m20s.csv",
-    "1sec_median_MI20-06-18_00h00m00s.csv",
+    "MI20-06-18_00h00m00s.csv",
     "MI20-06-19_00h00m00s.csv",
     "MI20-06-20_00h00m00s.csv",
     "MI20-06-21_00h00m00s.csv",
@@ -466,25 +375,8 @@ def main():
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
-    #Process(File[0],"00:00:00","00:01:00","OVER",0,0,1000)
-    # i = 4
-    # Process(File[i],"00:00:00","23:59:59","ave",0)        
-    # Process(File[i],"00:00:00","23:59:59","raw",0)
-    # Process(File[i],"00:00:00","23:59:59","LPF+median",0)
-    # Process(File[i],"00:00:00","23:59:59","ave",80)
 
-    # Process(File[3],"00:00:00","23:59:59","LPF+median",0)
-    # Process(File[4],"00:00:00","23:59:59","raw",80)
-    # for i in range(13):
-    #     Process(File[0],str(10+i) +":00:00",str(11+i)+":00:00","median",40)
-    # Process(File[0],"06:10:00","06:20:00","median",40)
-    # Process(File[0],"06:20:00","06:30:00","median",40)
-    # Process(File[0],"06:30:00","06:40:00","median",40)
-    # Process(File[0],"06:40:00","06:50:00","median",40)
-    # Process(File[0],"06:50:00","07:00:00","median",40)
-    # Process(File[0],"07:00:00","07:10:00","median",40)
-    Process(File[1],"00:00:00","00:00:50","raw",20)
-    # day_1hour(File[0],"median",20)
+    Process(File[1],"00:00:00","00:01:00","median",20)
     # for i in [1,2,3,4,5,6,7,8]:
         # day_1hour(File[i],"median",20)
         # Process(File[i],"00:00:00","23:59:59","median",80)

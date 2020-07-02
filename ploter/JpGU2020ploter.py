@@ -483,7 +483,7 @@ def main():
     # Process(File[0],"06:40:00","06:50:00","median",40)
     # Process(File[0],"06:50:00","07:00:00","median",40)
     # Process(File[0],"07:00:00","07:10:00","median",40)
-    Process(File[1],"00:00:00","00:00:50","raw",20)
+    Process(File[1],"00:00:00","00:00:50","median",20)
     # day_1hour(File[0],"median",20)
     # for i in [1,2,3,4,5,6,7,8]:
         # day_1hour(File[i],"median",20)
