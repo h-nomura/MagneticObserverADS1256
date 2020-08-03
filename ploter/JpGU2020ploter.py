@@ -90,7 +90,7 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
         if startFlag == True:
             df_list_raw['Time'].append(dataday + row[0])
             df_list_raw['ch1'].append(float(row[1]))
-            df_list_raw['ch2'].append(float(row[2]))
+            df_list_raw['ch2'].append(-1 * float(row[2]))
             df_list_raw['ch3'].append(float(row[3]))
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
@@ -114,9 +114,9 @@ def list_round(l):
 
 def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     fig = plt.figure(figsize=(12, 12))
-    ax_1ch = fig.add_subplot(411)
-    ax_2ch = fig.add_subplot(412)
-    ax_3ch = fig.add_subplot(413)
+    ax_1ch = fig.add_subplot(311)
+    ax_2ch = fig.add_subplot(312)
+    ax_3ch = fig.add_subplot(313)
     # ax_4ch = fig.add_subplot(414)
 
     ax_1ch.yaxis.grid(True)
@@ -131,10 +131,12 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     ax_2ch.set_ylabel('Y [nT]', fontsize=18)
     ax_3ch.set_ylabel('Z [nT]', fontsize=18)
     # ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
-    FFT_flag = True
+    FFT_flag = False
     if FFT_flag == True:
         N = len(df_print['time'])
-        dt = 1 #sampling freq
+        dt = 1
+        # dt = (60*60*24) / len(df_print['time'])#sampling freq
+        print("sampling = " + str(1 / dt))
         F1 = np.fft.fft(df_print['1ch'])
         F2 = np.fft.fft(df_print['2ch'])
         F3 = np.fft.fft(df_print['3ch'])
@@ -163,8 +165,26 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
         ax_1ch.set_yscale('log')
         ax_2ch.set_yscale('log')
         ax_3ch.set_yscale('log')
-        # ax_1ch.xaxis.grid(which = "both")
+        ax_1ch.xaxis.grid(which = "both")
+        ax_2ch.xaxis.grid(which = "both")
+        ax_3ch.xaxis.grid(which = "both")
+        y_axis_np = np.array([1,10**1,10**2,10**3,10**4])
+        ax_1ch.set_yticks(y_axis_np)
+        ax_2ch.set_yticks(y_axis_np)
+        ax_3ch.set_yticks(y_axis_np)
         # ax_1ch.yaxis.grid(which = "both")
+        # ax_2ch.yaxis.grid(which = "both")
+        # ax_3ch.yaxis.grid(which = "both")
+        yLimit = [1,10**4]
+        # yLimit = [1,10**3]
+        ax_1ch.set_ylim(yLimit)
+        ax_2ch.set_ylim(yLimit)
+        ax_3ch.set_ylim(yLimit)
+        xLimit = [10**(-5),1]
+        # xLimit = [10**(-4),1]
+        ax_1ch.set_xlim(xLimit)
+        ax_2ch.set_xlim(xLimit)
+        ax_3ch.set_xlim(xLimit)
         ax_1ch.plot(fq[:int(N/2)+1], F_abs_amp1[:int(N/2)+1], color = 'r')
         ax_2ch.plot(fq[:int(N/2)+1], F_abs_amp2[:int(N/2)+1], color = 'b')
         ax_3ch.plot(fq[:int(N/2)+1], F_abs_amp3[:int(N/2)+1], color = 'g')
@@ -173,7 +193,9 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
         ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
         ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
         # ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
-
+        ax_1ch.xaxis.grid(True)
+        ax_2ch.xaxis.grid(True)
+        ax_3ch.xaxis.grid(True)
         if Yrange != 0:
             median_1ch = np.median(df_print['1ch'])
             median_2ch = np.median(df_print['2ch'])
@@ -183,14 +205,22 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
             ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
             ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
             # ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
-
-        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+            ax_1ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+            ax_2ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+            ax_3ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
+        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
         time_scale = False
         if time_scale == True:
             x = []
             # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
             # x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00']
-            x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
+            # x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00']
+            # x_axis = ['16:00:00','16:00:10','16:00:20','16:00:30','16:00:40','16:00:50','16:01:00']
+            # x_axis = ['15:20:00','15:21:00','15:22:00','15:23:00','15:24:00','15:25:00']
+            # x_axis = ['15:22:00','15:22:10','15:22:20','15:22:30','15:22:40','15:22:50','15:23:00']
+            x_axis = [':22:00','15:22:10','15:22:20','15:22:30','15:22:40','15:22:50','15:23:00']
             print(":type:"+ str(type(df_print['time'][0])))
             for s in x_axis:
                 x.append(format_to_day_T(df_print['time'][0]) + s)
@@ -199,7 +229,7 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
             ax_1ch.set_xticks(x_axis_np)
             ax_2ch.set_xticks(x_axis_np)
             ax_3ch.set_xticks(x_axis_np)
-            # ax_4ch.set_xticks(x_axis_np)
+            # ax_1ch.xaxis.set_major_locator(mpl.ticker.FixedLocator(x_axis_np))
         
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
@@ -257,33 +287,39 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag ,Yrange)
 
 def day_1hour(File, f_type, Yrange):
-        Process(File,"00:00:00","01:00:00",f_type,Yrange)
-        Process(File,"01:00:00","02:00:00",f_type,Yrange)
-        Process(File,"02:00:00","03:00:00",f_type,Yrange)
-        Process(File,"03:00:00","04:00:00",f_type,Yrange)
-        Process(File,"04:00:00","05:00:00",f_type,Yrange)
-        Process(File,"05:00:00","06:00:00",f_type,Yrange)
-        Process(File,"06:00:00","07:00:00",f_type,Yrange)
-        Process(File,"07:00:00","08:00:00",f_type,Yrange)
-        Process(File,"08:00:00","09:00:00",f_type,Yrange)
-        Process(File,"09:00:00","10:00:00",f_type,Yrange)
-        Process(File,"10:00:00","11:00:00",f_type,Yrange)
-        Process(File,"11:00:00","12:00:00",f_type,Yrange)
-        Process(File,"12:00:00","13:00:00",f_type,Yrange)
-        Process(File,"13:00:00","14:00:00",f_type,Yrange)
-        Process(File,"14:00:00","15:00:00",f_type,Yrange)
-        Process(File,"15:00:00","16:00:00",f_type,Yrange)
-        Process(File,"16:00:00","17:00:00",f_type,Yrange)
-        Process(File,"17:00:00","18:00:00",f_type,Yrange)
-        Process(File,"18:00:00","19:00:00",f_type,Yrange)
-        Process(File,"19:00:00","20:00:00",f_type,Yrange)
-        Process(File,"20:00:00","21:00:00",f_type,Yrange)
-        Process(File,"21:00:00","22:00:00",f_type,Yrange)
-        Process(File,"22:00:00","23:00:00",f_type,Yrange)
-        Process(File,"23:00:00","23:59:59",f_type,Yrange)
+        # Process(File,"00:00:00","01:00:00","median"+str(1),Yrange)
+        # Process(File,"01:00:00","02:00:00","median"+str(2),Yrange)
+        # Process(File,"02:00:00","03:00:00","median"+str(3),Yrange)
+        # Process(File,"03:00:00","04:00:00","median"+str(4),Yrange)
+        # Process(File,"04:00:00","05:00:00","median"+str(5),Yrange)
+        # Process(File,"05:00:00","06:00:00","median"+str(6),Yrange)
+        # Process(File,"06:00:00","07:00:00","median"+str(7),Yrange)
+        # Process(File,"07:00:00","08:00:00","median"+str(8),Yrange)
+        Process(File,"08:00:00","09:00:00","median"+str(9),Yrange)
+        Process(File,"09:00:00","10:00:00","median"+str(10),Yrange)
+        Process(File,"10:00:00","11:00:00","median"+str(11),Yrange)
+        Process(File,"11:00:00","12:00:00","median"+str(12),Yrange)
+        Process(File,"12:00:00","13:00:00","median"+str(13),Yrange)
+        Process(File,"13:00:00","14:00:00","median"+str(14),Yrange)
+        Process(File,"14:00:00","15:00:00","median"+str(15),Yrange)
+        Process(File,"15:00:00","16:00:00","median"+str(16),Yrange)
+        Process(File,"16:00:00","17:00:00","median"+str(17),Yrange)
+        Process(File,"17:00:00","18:00:00","median"+str(18),Yrange)
+        Process(File,"18:00:00","19:00:00","median"+str(19),Yrange)
+        Process(File,"19:00:00","20:00:00","median"+str(20),Yrange)
+        Process(File,"20:00:00","21:00:00","median"+str(21),Yrange)
+        Process(File,"21:00:00","22:00:00","median"+str(22),Yrange)
+        Process(File,"22:00:00","23:00:00","median"+str(23),Yrange)
+        Process(File,"23:00:00","23:59:59","median"+str(24),Yrange)
 
 def main():
     File = [
+    "MI20-07-31_03h19m50s.csv",
+    "1sec_median_MI20-07-31_03h19m50s.csv",
+    "1sec_median_MI20-07-18_00h00m00s.csv",
+    "1sec_median_MI20-07-19_00h00m00s.csv",
+    "1sec_median_MI20-07-20_00h00m00s.csv",
+    "1sec_median_MI20-07-21_00h00m00s.csv",
     "1sec_median_MI20-06-17_01h52m20s.csv",
     "1sec_median_MI20-06-18_00h00m00s.csv",
     "1sec_median_MI20-06-19_00h00m00s.csv",
@@ -293,6 +329,7 @@ def main():
     "1sec_median_MI20-06-23_00h00m00s.csv",
     "1sec_median_MI20-06-24_00h00m00s.csv",
     "1sec_median_MI20-06-25_00h00m00s.csv",
+    "MI20-06-25_00h00m00s.csv",
     "UT_MI20-02-14_00h00m00s.csv",
     "MI20-06-03_01h02m06s.csv",
     "MI20-05-27_00h00m00s.csv",
@@ -327,12 +364,15 @@ def main():
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
-    # Process(File[0],"07:00:00","07:10:00","median",40)
-    Process(File[0],"13:00:00","14:00:00","medianFFT",20)
+    # Process(File[8],"15:22:00","15:23:00","median",20)
+    Process(File[1],"05:45:00","05:50:00","madian",20)
+    Process(File[0],"05:45:00","05:50:00","raw",20)
+    # day_1hour(File[1],"median",20)
+    # Process(File[1],"00:00:00","23:59:59","medianFFT",120)
     # day_1hour(File[0],"median",20)
-    # for i in [1,2,3,4,5,6,7,8]:
-        # day_1hour(File[i],"median",20)
-        # Process(File[i],"00:00:00","23:59:59","medianFFT",120)
+    # for i in [0,1,2,3]:
+    #     day_1hour(File[i],"median",20)
+    #     Process(File[i],"00:00:00","23:59:59","median",50)
 
 
 if __name__ == '__main__':

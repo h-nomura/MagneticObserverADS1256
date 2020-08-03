@@ -138,9 +138,9 @@ def dat_reader(filename):
                 
 def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
     fig = plt.figure(figsize=(12, 12))
-    ax_1ch = fig.add_subplot(411)
-    ax_2ch = fig.add_subplot(412)
-    ax_3ch = fig.add_subplot(413)
+    ax_1ch = fig.add_subplot(311)
+    ax_2ch = fig.add_subplot(312)
+    ax_3ch = fig.add_subplot(313)
     # ax_4ch = fig.add_subplot(414)
 
     ax_1ch.yaxis.grid(True)
@@ -156,8 +156,7 @@ def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
     ax_3ch.set_ylabel('Z [nT]', fontsize=18)
     # ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
 
-    
-    FFT_flag = False
+    FFT_flag = True
     if FFT_flag == True:
         N = len(df_print['time'])
         dt = 1 #sampling freq
@@ -189,12 +188,37 @@ def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
         ax_1ch.set_yscale('log')
         ax_2ch.set_yscale('log')
         ax_3ch.set_yscale('log')
-        # ax_1ch.xaxis.grid(which = "both")
+        ax_1ch.xaxis.grid(which = "both")
+        ax_2ch.xaxis.grid(which = "both")
+        ax_3ch.xaxis.grid(which = "both")
+        y_axis_np = np.array([1,10**1,10**2,10**3,10**4])
+        ax_1ch.set_yticks(y_axis_np)
+        ax_2ch.set_yticks(y_axis_np)
+        ax_3ch.set_yticks(y_axis_np)
         # ax_1ch.yaxis.grid(which = "both")
+        # ax_2ch.yaxis.grid(which = "both")
+        # ax_3ch.yaxis.grid(which = "both")
+        yLimit = [1,10**4]
+        # yLimit = [1,10**3]
+        ax_1ch.set_ylim(yLimit)
+        ax_2ch.set_ylim(yLimit)
+        ax_3ch.set_ylim(yLimit)
+        xLimit = [10**(-5),1]
+        # xLimit = [10**(-4),1]
+        ax_1ch.set_xlim(xLimit)
+        ax_2ch.set_xlim(xLimit)
+        ax_3ch.set_xlim(xLimit)
         ax_1ch.plot(fq[:int(N/2)+1], F_abs_amp1[:int(N/2)+1], color = 'r')
         ax_2ch.plot(fq[:int(N/2)+1], F_abs_amp2[:int(N/2)+1], color = 'b')
         ax_3ch.plot(fq[:int(N/2)+1], F_abs_amp3[:int(N/2)+1], color = 'g')
     else:
+        ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
+        ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
+        ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
+        # ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
+        ax_1ch.xaxis.grid(True)
+        ax_2ch.xaxis.grid(True)
+        ax_3ch.xaxis.grid(True)
         if Yrange != 0:
             median_1ch = np.median(df_print['1ch'])
             median_2ch = np.median(df_print['2ch'])
@@ -205,26 +229,26 @@ def fig_plot(df_print, title, fig_path, Yrange = 0, dat_path = ''):
             ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
             # ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
 
-        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-        
-        time_scale = False
+        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
+        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
+        time_scale = True
         if time_scale == True:
             x = []
             # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
-            # x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00']
-            x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
+            x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00']
+            # x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00',]
             print(":type:"+ str(type(df_print['time'][0])))
             for s in x_axis:
                 x.append(format_to_day_T(df_print['time'][0]) + s)
-            # x.append(add_day(format_to_day_T(df_print['time'][0]) + '00:00:00'))
+            x.append(add_day(format_to_day_T(df_print['time'][0]) + '00:00:00'))
             x_axis_np = pd.to_datetime(np.array(x))
             ax_1ch.set_xticks(x_axis_np)
             ax_2ch.set_xticks(x_axis_np)
             ax_3ch.set_xticks(x_axis_np)
-        ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
-        ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
-        ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
-        # ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
+            ax_1ch.set_xlim([x_axis_np[0],x_axis_np[-1]])
+            ax_2ch.set_xlim([x_axis_np[0],x_axis_np[-1]])
+            ax_3ch.set_xlim([x_axis_np[0],x_axis_np[-1]])
+            # ax_1ch.xaxis.set_major_locator(mpl.ticker.FixedLocator(x_axis_np))
     
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
@@ -313,10 +337,10 @@ def main():
     # data_process(l[0], '01:17:00', '01:47:00','flux',20)
     # data_process(l[0], '02:10:00', '03:10:00','flux',20)
     # data_process(l[0], '01:10:00', '02:10:00','flux',0)
-    data_process(l[8], '13:00:00', '14:00:00','flux',10)
-    data_process(l[8], '13:00:00', '14:00:00','flux',20)
-    # for i in range(8):
-        # data_process(l[i],"00:00:00","23:59:59",'flux_FFT',120)
+    # data_process(l[8], '13:00:00', '14:00:00','flux',10)
+    # data_process(l[7], '15:00:00', '17:00:00','fluxFFT',10)
+    for i in range(8):
+        data_process(l[i],"00:00:00","23:59:59",'fluxFFT',120)
     #     data_process(l[i],"00:00:00","23:59:59",'flux',40)
     #     data_process(l[i],"00:00:00","23:59:59",'flux',20)
     #     data_process(l[i],"00:00:00","23:59:59",'flux',0)

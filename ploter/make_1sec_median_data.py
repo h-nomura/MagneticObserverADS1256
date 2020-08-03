@@ -332,6 +332,11 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
 
 def main():
     File = [
+    "MI20-08-03_09h25m55s.csv",
+    "MI20-07-18_00h00m00s.csv",
+    "MI20-07-19_00h00m00s.csv",
+    "MI20-07-20_00h00m00s.csv",
+    "MI20-07-21_00h00m00s.csv",
     "MI20-06-17_01h52m20s.csv",
     "MI20-06-18_00h00m00s.csv",
     "MI20-06-19_00h00m00s.csv",
@@ -375,9 +380,9 @@ def main():
     "MI19-09-03_19h21m14s.csv",
     "MI19-08-20_16h23m17s.csv",
     "MI19-09-20_12h39m47s.csv"]
-    for i in [1,2,3,4,5,6,7,8]:
-        Process(File[i],"00:00:00","23:59:59","median",80)
-    Process(File[0],"02:00:00","23:59:59","median",20)
+    #for i in range(4):
+        # Process(File[i],"00:00:00","23:59:59","median",80)
+    Process(File[0],"09:30:00","10:00:00","median",20)
 
 
 
