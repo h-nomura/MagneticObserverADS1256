@@ -70,8 +70,8 @@ def do_measurement():
                 MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
 
                 data = ['{0:%H:%M:%S.%f}'.format(now),
-                MagneticF[0], MagneticF[1],
-                MagneticF[2], MagneticF[3]]
+                '{:.4f}'.format(MagneticF[0]), '{:.4f}'.format(MagneticF[1]),
+                '{:.4f}'.format(MagneticF[2]), '{:.4f}'.format(MagneticF[3])]
                 if counter == 1:
                     #print('{0:%Y-%m-%d  %H:%M:%S}'.format(now) + '  Magnetic force(nT)==' + str(MagneticF[0]))
                     counter = 0

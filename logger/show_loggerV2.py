@@ -65,12 +65,13 @@ def do_measurement():
             voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
             # voltages_15 = [0,0,0,0]
             MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
+            # MagneticF = [voltages[i] for i in range(4)]
             
             print('{0:%Y-%m-%d  %H:%M:%S}'.format(now))
-            print('X [nT]= ' + str(MagneticF[0]))
-            print('Y [nT]= ' + str(MagneticF[1]))
-            print('Z [nT]= ' + str(MagneticF[2]))
-            print('Temperature [C]= ' + str(MagneticF[3]))
+            print('X [nT]= ' + '{:.4f}'.format(MagneticF[0]))
+            print('Y [nT]= ' + '{:.4f}'.format(MagneticF[1]))
+            print('Z [nT]= ' + '{:.4f}'.format(MagneticF[2]))
+            print('Temperature [C]= ' + '{:.2f}'.format(MagneticF[3]))
             print ("\33[6A")
             counter += 1
             if '{0:%Y-%m-%d}'.format(now) != today:
