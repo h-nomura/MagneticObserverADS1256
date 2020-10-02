@@ -43,10 +43,11 @@ def do_measurement():
     ads.pga_gain = 1
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
-    slope = [5.98299, 5.98685, 5.96869, 25*1000/156]#160.05]
-    intercept = [-15.28572, -15.24686, -15.22348, -25*106/39]#-67.86]
-    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 1]
-    off_set = [-0.44,-0.27,0.37,0]
+    # 1009B:1015A:1007A:LM60
+    slope = [5.983008908, 5.986294071, 5.969294712, 0.996870146]
+    intercept = [-15.2799896, -15.24849903, -15.22909284, 0]
+    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 6.25*0.001]
+    off_set = [0.30,-0.34,-0.10,424*0.001]
 
     while True:
         now = datetime.datetime.now(timezone.utc)#get time
