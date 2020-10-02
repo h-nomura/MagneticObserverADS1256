@@ -66,8 +66,9 @@ def do_measurement():
                 #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
                 #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
                 voltages = [i * ads.v_per_digit for i in raw_channels]
-                voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
-                MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
+                # voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
+                # MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
+                MagneticF = [voltages[i] for i in range(4)]
 
                 data = ['{0:%H:%M:%S.%f}'.format(now),
                 '{:.4f}'.format(MagneticF[0]), '{:.4f}'.format(MagneticF[1]),
