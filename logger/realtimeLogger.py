@@ -39,7 +39,7 @@ Diff4_5 = POS_AIN4|NEG_AIN5
 Diff6_7 = POS_AIN6|NEG_AIN7
 CH_SEQUENCE = (Diff0_1,Diff2_3,Diff4_5,Diff6_7)
 
-PLOT_DATA_NUM = 1000
+PLOT_DATA_NUM = 201
 
 def eliminate_f(date_str):
     try:
@@ -132,7 +132,8 @@ def _redraw(_, ax, data, C_mode, C_range):
     # 現在のグラフを消去する
     plt.cla()
     print("redraw")
-    print(data[990])
+    
+    # print(data[990])
 
     df = df_maker(data,C_mode)
     # 折れ線グラフを再描画する
@@ -141,28 +142,12 @@ def _redraw(_, ax, data, C_mode, C_range):
     ax_3ch.yaxis.grid(True)
     ax_4ch.yaxis.grid(True)
     
-    if C_mode == 'filter':
-        buf = medianFilter(df[0],df[1],3)
-        t_1ch = buf[0]
-        d_1ch = buf[1]
-        buf = medianFilter(df[0],df[2],3)
-        t_2ch = buf[0]
-        d_2ch = buf[1]
-        buf = medianFilter(df[0],df[3],3)
-        t_3ch = buf[0]
-        d_3ch = buf[1]
-        buf = medianFilter(df[0],df[4],0.1)
-        t_4ch = buf[0]
-        d_4ch = buf[1]
-    else:
-        t_1ch = df[0]
-        t_2ch = df[0]
-        t_3ch = df[0]
-        t_4ch = df[0]
-        d_1ch = df[1]
-        d_2ch = df[2]
-        d_3ch = df[3]
-        d_4ch = df[4]
+    t_1ch = df[0]
+    d_1ch = df[1]
+    d_2ch = df[2]
+    d_3ch = df[3]
+    d_4ch = df[4]
+
     ax_1ch.set_ylabel('X [nT]', fontsize=18)
     ax_2ch.set_ylabel('Y [nT]', fontsize=18)
     ax_3ch.set_ylabel('Z [nT]', fontsize=18)
@@ -171,10 +156,10 @@ def _redraw(_, ax, data, C_mode, C_range):
     ax_2ch.set_ylim([mean(d_2ch) - (C_range/2),mean(d_2ch) + (C_range/2)])
     ax_3ch.set_ylim([mean(d_3ch) - (C_range/2),mean(d_3ch) + (C_range/2)])
     ax_1ch.plot(pd.to_datetime(t_1ch, utc=True), d_1ch, color='r')
-    ax_2ch.plot(pd.to_datetime(t_2ch, utc=True), d_2ch, color='g')
-    ax_3ch.plot(pd.to_datetime(t_3ch, utc=True), d_3ch, color='b')
-    ax_4ch.plot(pd.to_datetime(t_4ch, utc=True), d_4ch, color='k')
-    ax_3ch.set_title('(JST) ' + 'magnetic force(nT)' + C_mode +"range="+ str(C_range) +"rate="+ str(df[5]))
+    ax_2ch.plot(pd.to_datetime(t_1ch, utc=True), d_2ch, color='g')
+    ax_3ch.plot(pd.to_datetime(t_1ch, utc=True), d_3ch, color='b')
+    ax_4ch.plot(pd.to_datetime(t_1ch, utc=True), d_4ch, color='k')
+    ax_1ch.set_title('(JST) ' + 'magnetic force(nT)' + C_mode +"range="+ str(C_range) +"rate="+ str(df[5]))
 
 def ploting(plotData,C_save,C_range,C_mode,C_Drate):
     fig = plt.figure(figsize=(12, 12))
@@ -193,28 +178,11 @@ def ploting(plotData,C_save,C_range,C_mode,C_Drate):
             ax_3ch.yaxis.grid(True)
             ax_4ch.yaxis.grid(True)
             
-            if C_mode == 'filter':
-                buf = medianFilter(df[0],df[1],3)
-                t_1ch = buf[0]
-                d_1ch = buf[1]
-                buf = medianFilter(df[0],df[2],3)
-                t_2ch = buf[0]
-                d_2ch = buf[1]
-                buf = medianFilter(df[0],df[3],3)
-                t_3ch = buf[0]
-                d_3ch = buf[1]
-                buf = medianFilter(df[0],df[4],0.1)
-                t_4ch = buf[0]
-                d_4ch = buf[1]
-            else:
-                t_1ch = df[0]
-                t_2ch = df[0]
-                t_3ch = df[0]
-                t_4ch = df[0]
-                d_1ch = df[1]
-                d_2ch = df[2]
-                d_3ch = df[3]
-                d_4ch = df[4]
+            t_1ch = df[0]
+            d_1ch = df[1]
+            d_2ch = df[2]
+            d_3ch = df[3]
+            d_4ch = df[4]
 
             ax_1ch.set_ylabel('X [nT]', fontsize=18)
             ax_2ch.set_ylabel('Y [nT]', fontsize=18)
@@ -224,17 +192,19 @@ def ploting(plotData,C_save,C_range,C_mode,C_Drate):
             ax_2ch.set_ylim([mean(d_2ch) - (C_range/2),mean(d_2ch) + (C_range/2)])
             ax_3ch.set_ylim([mean(d_3ch) - (C_range/2),mean(d_3ch) + (C_range/2)])
             ax_1ch.plot(pd.to_datetime(t_1ch, utc=True), d_1ch, color='r')
-            ax_2ch.plot(pd.to_datetime(t_2ch, utc=True), d_2ch, color='g')
-            ax_3ch.plot(pd.to_datetime(t_3ch, utc=True), d_3ch, color='b')
-            ax_4ch.plot(pd.to_datetime(t_4ch, utc=True), d_4ch, color='k')
+            ax_2ch.plot(pd.to_datetime(t_1ch, utc=True), d_2ch, color='g')
+            ax_3ch.plot(pd.to_datetime(t_1ch, utc=True), d_3ch, color='b')
+            ax_4ch.plot(pd.to_datetime(t_1ch, utc=True), d_4ch, color='k')
 
-            ax_3ch.set_title('(JST) ' + 'magnetic force(nT)' + C_mode +"range="+ str(C_range) +"rate="+ str(get_Srate(df[0])))
+            ax_1ch.set_title('(JST) ' + 'magnetic force(nT)' + C_mode +"range="+ str(C_range) +"rate="+ str(get_Srate(df[0])))
             plt.pause(0.01)
 
 def measurement(plotData,C_save,C_Drate):
-    slope = [5.98299, 5.98685, 5.96869, 100]
-    intercept = [-15.28572, -15.24686, -15.22348, 2]
-    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 1]
+    #1007B:1029A:1024A:LM60
+    slope = [6.041297912, 6.032822234, 6.024782582, 1.004970735]
+    intercept = [-15.21584595, -15.20405742, -15.17129194, -0.000415594]
+    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 6.25*0.001]
+    off_set = [0,0,0,424*0.001]
     # 描画するデータ 
     now = datetime.datetime.now(timezone.utc)
     plotData.append(['{0:%Y-%m-%d }'.format(now),
@@ -258,11 +228,11 @@ def measurement(plotData,C_save,C_Drate):
         while True:
             now = datetime.datetime.now(timezone.utc)
             #### get data ####
-            # raw_channels = ads.read_sequence(CH_SEQUENCE)
-            raw_channels = ads.read_continue(CH_SEQUENCE)
+            raw_channels = ads.read_sequence(CH_SEQUENCE)
+            # raw_channels = ads.read_continue(CH_SEQUENCE)
             voltages = [i * ads.v_per_digit for i in raw_channels]
             voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
-            MagF = [(voltages_15[i] / transform[i]) for i in range(4)]
+            MagF = [((voltages_15[i] - off_set[i]) / transform[i]) for i in range(4)]
             #### test ####
             #sleep(0.1)
             #MagF = [8 + random.random(),8 + random.random(),8 + random.random(),2 + random.random()]
@@ -304,8 +274,8 @@ def main():
         config_save = "yes"
         print("Set the graph parameters to be displayed. \nEnter the magnetic Force range.(nT,10-80000)")
         config_range = int(input('>> '))
-        print("Select graph to display(raw/filter)")
-        config_mode = input('>> ')
+        # print("Select graph to display(raw/filter)")
+        config_mode = "raw"
         #config_mode = "raw"
         print("Set DRATE(2000/1000/500)")
         config_Drate = int(input('>> '))
