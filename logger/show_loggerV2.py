@@ -64,8 +64,8 @@ def do_measurement():
             # voltages = [2.5,2.5,2.5,0]
             voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
             # voltages_15 = [0,0,0,0]
-            # MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
-            MagneticF = [voltages[i] for i in range(4)]
+            MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
+            # MagneticF = [voltages[i] for i in range(4)]
             
             print('{0:%Y-%m-%d  %H:%M:%S}'.format(now))
             print('X [nT]= ' + '{:.4f}'.format(MagneticF[0]))
