@@ -19,7 +19,7 @@ def sec_format(sec_str):
 
 def main():
     row_num = 0
-    with open('./data/MIMPiTest-2020-09-11_14-41-24.csv') as f:
+    with open('./data/MIMPiTest-2020-09-14_19-07-08.csv') as f:
         reader = csv.reader(f)
         for row in reader:
             row_num += 1

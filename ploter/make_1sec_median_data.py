@@ -92,7 +92,7 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
         if startFlag == True:
             df_list_raw['Time'].append(dataday + row[0])
             df_list_raw['ch1'].append(float(row[1]))
-            df_list_raw['ch2'].append(-1 * float(row[2]))
+            df_list_raw['ch2'].append(float(row[2]))
             df_list_raw['ch3'].append(float(row[3]))
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
@@ -314,7 +314,7 @@ def rewrite_day(reference_date,num):
         day += 1 #Here, we do not consider DAY overflow
     return reference_date[0:8] + '{0:02d}'.format(day) + ' ' + '{0:02d}'.format(hour) + reference_date[13:19]
 
-def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
+def Process(fileName,StartTime,EndTime, F_flag):
     Pass = "../logger/data/" + fileName
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
@@ -332,58 +332,10 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
 
 def main():
     File = [
-    "MI20-08-03_09h25m55s.csv",
-    "MI20-07-18_00h00m00s.csv",
-    "MI20-07-19_00h00m00s.csv",
-    "MI20-07-20_00h00m00s.csv",
-    "MI20-07-21_00h00m00s.csv",
-    "MI20-06-17_01h52m20s.csv",
-    "MI20-06-18_00h00m00s.csv",
-    "MI20-06-19_00h00m00s.csv",
-    "MI20-06-20_00h00m00s.csv",
-    "MI20-06-21_00h00m00s.csv",
-    "MI20-06-22_00h00m00s.csv",
-    "MI20-06-23_00h00m00s.csv",
-    "MI20-06-24_00h00m00s.csv",
-    "MI20-06-25_00h00m00s.csv",
-    "UT_MI20-02-14_00h00m00s.csv",
-    "MI20-06-03_01h02m06s.csv",
-    "MI20-05-27_00h00m00s.csv",
-    "MI20-05-28_00h00m00s.csv",
-    "MI20-05-29_00h00m00s.csv",
-    "MI20-05-30_00h00m00s.csv",
-    "MI20-05-31_00h00m00s.csv",
-    "MI20-05-26_06h09m32s.csv",
-    "MI20-04-17_00h00m00s.csv",
-    "MI20-04-18_00h00m00s.csv",
-    "MI20-04-19_00h00m00s.csv",
-    "MI20-04-20_00h00m00s.csv",
-    "MI20-04-21_00h00m00s.csv",
-    "MI20-04-22_00h00m00s.csv",
-    "MI20-04-23_00h00m00s.csv",
-    "MI20-04-24_00h00m00s.csv",
-    "MI20-04-25_00h00m00s.csv",
-    "MI20-04-26_00h00m00s.csv",
-    "MI20-04-27_00h00m00s.csv",
-    "MI20-04-28_00h00m00s.csv",
-    "MI20-04-29_00h00m00s.csv",
-    "MI20-04-15_09h45m40s.csv",
-    "UT_MI20-02-14_00h00m00s.csv",
-    "UT_MI20-02-15_00h00m00s.csv",
-    "UT_MI20-02-16_00h00m00s.csv",
-    "UT_MI20-02-17_00h00m00s.csv",
-    "UT_MI20-02-18_00h00m00s.csv",
-    "UT_MI20-02-19_00h00m00s.csv",
-    "clean_per2crop_MI19-11-11_19h58m31s.csv",
-    "clean_per2crop_MI19-11-11_19h58m31s.csv",
-    "MI19-11-04_00h00m00s.csv",
-    "MI19-09-03_19h21m14s.csv",
-    "MI19-08-20_16h23m17s.csv",
-    "MI19-09-20_12h39m47s.csv"]
-    #for i in range(4):
-        # Process(File[i],"00:00:00","23:59:59","median",80)
-    Process(File[0],"09:30:00","10:00:00","median",20)
+    "MI20-10-03_04h56m47s@inabu_byNo1",
+    "MI20-10-03_04h55m55s@inabu_byNo2"]
 
+    Process(File[0],"09:00:00","23:59:59","median")
 
 
 if __name__ == '__main__':

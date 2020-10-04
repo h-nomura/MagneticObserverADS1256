@@ -89,10 +89,10 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
         
         if startFlag == True:
             df_list_raw['Time'].append(dataday + row[0])
-            df_list_raw['ch1'].append(float(row[1]))
-            df_list_raw['ch2'].append(float(row[2]))
-            df_list_raw['ch3'].append(float(row[3]))
-            df_list_raw['ch4'].append(float(row[4]))
+            df_list_raw['ch1'].append(float(row[1])*1000000)
+            df_list_raw['ch2'].append(float(row[2])*1000000)
+            df_list_raw['ch3'].append(float(row[3])*1000000)
+            df_list_raw['ch4'].append(float(row[4])*1000000)
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
 
 def append_lists(l1,l2,l3,l4,dat1,dat2,dat3,dat4):
@@ -127,9 +127,12 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
     ax_2ch.tick_params(labelsize=18)
     ax_3ch.tick_params(labelsize=18)
     # ax_4ch.tick_params(labelsize=18)
-    ax_1ch.set_ylabel('X [nT]', fontsize=18)
-    ax_2ch.set_ylabel('Y [nT]', fontsize=18)
-    ax_3ch.set_ylabel('Z [nT]', fontsize=18)
+    # ax_1ch.set_ylabel('X [nT]', fontsize=18)
+    # ax_2ch.set_ylabel('Y [nT]', fontsize=18)
+    # ax_3ch.set_ylabel('Z [nT]', fontsize=18)
+    ax_1ch.set_ylabel('1ch [μV]', fontsize=18)
+    ax_2ch.set_ylabel('2ch [μV]', fontsize=18)
+    ax_3ch.set_ylabel('3ch [μV]', fontsize=18)
     # ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
     FFT_flag = False
     if FFT_flag == True:
@@ -197,6 +200,7 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
         ax_2ch.xaxis.grid(True)
         ax_3ch.xaxis.grid(True)
         if Yrange != 0:
+            print("aaaaaaaaaaaaaaaaaaa")
             median_1ch = np.median(df_print['1ch'])
             median_2ch = np.median(df_print['2ch'])
             median_3ch = np.median(df_print['3ch'])
@@ -205,9 +209,9 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
             ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
             ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
             # ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
-        ax_1ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
-        ax_2ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
-        ax_3ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+            ax_1ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+            ax_2ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+            ax_3ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
         ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
         # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
@@ -254,8 +258,9 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
     fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')  
     my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    title = start_datetime_str + '(UT) magnetic force(nT)' + F_flag
-    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_jpgu.png'
+    title = start_datetime_str + '(UT) ' + F_flag
+    # fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_jpgu.png'
+    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_jpguDT.png'
     fig_plot(df_print,title, fig_path,Yrange=int(Yrange))
     
     Yrange = Yrange / 2
@@ -296,8 +301,8 @@ def day_1hour(File, f_type, Yrange):
         # Process(File,"06:00:00","07:00:00",f_type+str(7),Yrange)
         # Process(File,"07:00:00","08:00:00",f_type+str(8),Yrange)
         # Process(File,"08:00:00","09:00:00",f_type+str(9),Yrange)
-        Process(File,"09:00:00","10:00:00",f_type+str(10),Yrange)
-        Process(File,"10:00:00","11:00:00",f_type+str(11),Yrange)
+        # Process(File,"09:00:00","10:00:00",f_type+str(10),Yrange)
+        # Process(File,"10:00:00","11:00:00",f_type+str(11),Yrange)
         Process(File,"11:00:00","12:00:00",f_type+str(12),Yrange)
         Process(File,"12:00:00","13:00:00",f_type+str(13),Yrange)
         Process(File,"13:00:00","14:00:00",f_type+str(14),Yrange)
@@ -314,9 +319,9 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
-    "MI20-09-11_05h41m04s.csv",
-    "1sec_median_MI20-10-02_08h25m50s.csv",
-    "1sec_median_MI20-10-02_08h25m57s.csv",
+    "DT9824_20-09-11_05h41m24s.csv",
+    "DT9824_20-09-14_10h07m08s.csv",
+    "1sec_median_MI20-07-18_00h00m00s.csv",
     "1sec_median_MI20-07-19_00h00m00s.csv",
     "1sec_median_MI20-07-20_00h00m00s.csv",
     "1sec_median_MI20-07-21_00h00m00s.csv",
@@ -366,10 +371,9 @@ def main():
     "MI19-09-20_12h39m47s.csv"]
     # Process(File[8],"15:22:00","15:23:00","median",20)
     # Process(File[0],"14:45:00","14:50:00","madian",20)
-    # Process(File[1],"03:55:00","03:58:00","madinan",20)
-    # Process(File[1],"04:00:00","05:00:00","madinan",20)
-    # day_1hour(File[2],"median",20)
-    Process(File[2],"09:00:00","21:00:00","median",200)
+    # Process(File[0],"06:50:00","07:00:00","raw",400)
+    day_1hour(File[1],"raw",400)
+    # Process(File[1],"00:00:00","23:59:59","medianFFT",120)
     # day_1hour(File[0],"median",20)/
     # for i in [0,1,2,3]:
     #     day_1hour(File[i],"median",20)
