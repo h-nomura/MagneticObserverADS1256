@@ -43,45 +43,41 @@ def do_measurement():
     ads.pga_gain = 1
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
-    slope = [5.98299, 5.98685, 5.96869, 25*1000/156]
-    intercept = [-15.28572, -15.24686, -15.22348, -25*106/39]
-    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 1]
-    off_set = [-0.44,-0.27,0.37,0]
+    #1007B:1029A:1024A:LM60
+    slope = [6.041297912, 6.032822234, 6.024782582, 1.004970735]
+    intercept = [-15.21584595, -15.20405742, -15.17129194, -0.000415594]
+    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 6.25*0.001]
+    off_set = [0,0,0,424*0.001]
 
     while True:
         now = datetime.datetime.now(timezone.utc)#get time
         today = '{0:%Y-%m-%d}'.format(now)
-        with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(now),'w') as f:
-            data = ['{0:%Y-%m-%d}'.format(now),
-            'Magnetic force(nT)_1ch','Magnetic force(nT)_2ch',
-            'Magnetic force(nT)_3ch','Magnetic force(nT)_4ch']
-            writer = csv.writer(f)
-            writer.writerow(data)
-            counter = 0
-            while True:            
-                now = datetime.datetime.now(timezone.utc)
-                # get data
-                # raw_channels = ads.read_sequence(CH_SEQUENCE)
-                raw_channels = ads.read_continue(CH_SEQUENCE)
-                #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
-                #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
-                voltages = [i * ads.v_per_digit for i in raw_channels]
-                voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
-                MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
-                # MagneticF = [voltages[i] for i in range(4)]
 
-                data = ['{0:%H:%M:%S.%f}'.format(now),
-                '{:.4f}'.format(MagneticF[0]), '{:.4f}'.format(MagneticF[1]),
-                '{:.4f}'.format(MagneticF[2]), '{:.4f}'.format(MagneticF[3])]
-                if counter == 1:
-                    #print('{0:%Y-%m-%d  %H:%M:%S}'.format(now) + '  Magnetic force(nT)==' + str(MagneticF[0]))
-                    counter = 0
-                writer = csv.writer(f)
-                writer.writerow(data)
-                counter += 1
-                if '{0:%Y-%m-%d}'.format(now) != today:
-                    break
-                today = '{0:%Y-%m-%d}'.format(now)
+        counter = 0
+        while True:            
+            now = datetime.datetime.now(timezone.utc)
+            # get data
+            # raw_channels = ads.read_sequence(CH_SEQUENCE)
+            raw_channels = ads.read_continue(CH_SEQUENCE)
+            #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
+            #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
+            voltages = [i * ads.v_per_digit for i in raw_channels]
+            # voltages = [2.5,2.5,2.5,0]
+            voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
+            # voltages_15 = [0,0,0,0]
+            MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
+            # MagneticF = [voltages[i] for i in range(4)]
+            
+            print('{0:%Y-%m-%d  %H:%M:%S}'.format(now))
+            print('X [nT]= ' + '{:.4f}'.format(MagneticF[0]))
+            print('Y [nT]= ' + '{:.4f}'.format(MagneticF[1]))
+            print('Z [nT]= ' + '{:.4f}'.format(MagneticF[2]))
+            print('Temperature [C]= ' + '{:.2f}'.format(MagneticF[3]))
+            print ("\33[6A")
+            counter += 1
+            if '{0:%Y-%m-%d}'.format(now) != today:
+                break
+            today = '{0:%Y-%m-%d}'.format(now)
 
 def main():
     try:

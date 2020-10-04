@@ -43,10 +43,11 @@ def do_measurement():
     ads.pga_gain = 1
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
-    slope = [5.98299, 5.98685, 5.96869, 1]#160.05]
-    intercept = [-15.28572, -15.24686, -15.22348, 0]#-67.86]
-    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 1]
-    off_set = [-0.44,-0.27,0.37,0]
+    # 1009B:1015A:1007A:LM60
+    slope = [5.983008908, 5.986294071, 5.969294712, 0.996870146]
+    intercept = [-15.2799896, -15.24849903, -15.22909284, 0]
+    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 6.25*0.001]
+    off_set = [0.30,-0.34,-0.10,424*0.001]
 
     while True:
         now = datetime.datetime.now(timezone.utc)#get time
@@ -65,12 +66,13 @@ def do_measurement():
             voltages_15 = [(voltages[i] * slope[i] + intercept[i]) for i in range(4)]
             # voltages_15 = [0,0,0,0]
             MagneticF = [(voltages_15[i] - off_set[i])/ transform[i] for i in range(4)]
+            # MagneticF = [voltages[i] for i in range(4)]
             
             print('{0:%Y-%m-%d  %H:%M:%S}'.format(now))
-            print('X [nT]= ' + str(MagneticF[0]))
-            print('Y [nT]= ' + str(MagneticF[1]))
-            print('Z [nT]= ' + str(MagneticF[2]))
-            print('Temperature [C]= ' + str(MagneticF[3]))
+            print('X [nT]= ' + '{:.4f}'.format(MagneticF[0]))
+            print('Y [nT]= ' + '{:.4f}'.format(MagneticF[1]))
+            print('Z [nT]= ' + '{:.4f}'.format(MagneticF[2]))
+            print('Temperature [C]= ' + '{:.2f}'.format(MagneticF[3]))
             print ("\33[6A")
             counter += 1
             if '{0:%Y-%m-%d}'.format(now) != today:

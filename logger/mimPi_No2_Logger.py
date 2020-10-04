@@ -15,7 +15,7 @@ Diff2_3 = POS_AIN2|NEG_AIN3
 Diff4_5 = POS_AIN4|NEG_AIN5
 Diff6_7 = POS_AIN6|NEG_AIN7
 CH_SEQUENCE = (Diff0_1,Diff2_3,Diff4_5,Diff6_7)
-def do_measurement():
+def do_measurement(site):
     ### STEP 1: Initialise ADC object using default configuration:
     # (Note1: See ADS1256_default_config.py, see ADS1256 datasheet)
     # (Note2: Input buffer on means limited voltage range 0V...3V for 5V supply)
@@ -43,18 +43,19 @@ def do_measurement():
     ads.pga_gain = 1
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
-    slope = [5.98299, 5.98685, 5.96869, 25*1000/156]
-    intercept = [-15.28572, -15.24686, -15.22348, -25*106/39]
-    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 1]
-    off_set = [-0.44,-0.27,0.37,0]
+    #1007B:1029A:1024A:LM60
+    slope = [6.041297912, 6.032822234, 6.024782582, 1.004970735]
+    intercept = [-15.21584595, -15.20405742, -15.17129194, -0.000415594]
+    transform = [0.16*0.001, 0.16*0.001, 0.16*0.001, 6.25*0.001]
+    off_set = [0,0,0,424*0.001]
 
     while True:
         now = datetime.datetime.now(timezone.utc)#get time
         today = '{0:%Y-%m-%d}'.format(now)
-        with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}.csv'.format(now),'w') as f:
+        with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}@'.format(now)+site+'_byNo2.csv','w') as f:
             data = ['{0:%Y-%m-%d}'.format(now),
-            'Magnetic force(nT)_1ch','Magnetic force(nT)_2ch',
-            'Magnetic force(nT)_3ch','Magnetic force(nT)_4ch']
+            '8B1007B(nT)_1ch','8B1029A(nT)_2ch',
+            '8B1024A(nT)_3ch','LM60(C)_4ch']
             writer = csv.writer(f)
             writer.writerow(data)
             counter = 0
@@ -88,7 +89,9 @@ def main():
         # print("\033[2J\033[H") # Clear screen
         print(__doc__)
         print("\nPress CTRL-C to exit.")
-        do_measurement()
+        print("Enter a site")
+        site = str(input('>> '))
+        do_measurement(site)
 
     except (KeyboardInterrupt):
         print("\n"*8 + "User exit.\n")
