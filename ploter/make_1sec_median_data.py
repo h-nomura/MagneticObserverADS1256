@@ -335,7 +335,7 @@ def main():
     "MI20-10-03_04h56m47s@inabu_byNo1.csv",
     "MI20-10-03_04h55m55s@inabu_byNo2.csv"]
 
-    Process(File[0],"09:00:00","23:59:59","median")
+    Process(File[0],"05:00:00","23:59:59","median")
 
 
 if __name__ == '__main__':
