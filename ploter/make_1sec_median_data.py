@@ -332,8 +332,8 @@ def Process(fileName,StartTime,EndTime, F_flag):
 
 def main():
     File = [
-    "MI20-10-03_04h56m47s@inabu_byNo1",
-    "MI20-10-03_04h55m55s@inabu_byNo2"]
+    "MI20-10-03_04h56m47s@inabu_byNo1.csv",
+    "MI20-10-03_04h55m55s@inabu_byNo2.csv"]
 
     Process(File[0],"09:00:00","23:59:59","median")
 
