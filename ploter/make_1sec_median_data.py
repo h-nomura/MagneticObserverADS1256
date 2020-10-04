@@ -237,7 +237,7 @@ def BODE_print(b,a):
     plt.savefig("./fig/bode.png")
 
 #ex. start_datetime_str = 2017-08-01 01:00:
-def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
+def data_process(f,start_datetime_str,end_datetime_str,F_flag):
     rawdata = rawdata_maker(f,start_datetime_str,end_datetime_str)
     rawtime = pd.to_datetime(rawdata[0])
     raw1ch = np.array(rawdata[1])
@@ -320,7 +320,7 @@ def Process(fileName,StartTime,EndTime, F_flag):
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
     print(header)
-    data = data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag ,Yrange)
+    data = data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag)
     wPass = "../logger/data/1sec_median_" + fileName
     rowAmount = len(data[0])
     with open(wPass, 'w', newline="") as f:
