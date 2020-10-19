@@ -352,15 +352,14 @@ def Process(fileName,StartTime,EndTime, F_flag):
 
 def main():
     File = [
-    "MI20-10-05_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-06_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-07_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-08_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-09_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-10_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-11_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-04_00h00m00s@inabu_byNo1.csv"]
-    for i in range(8):
+    "MI20-10-12_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-13_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-14_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-15_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-16_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-17_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-18_00h00m00s@inabu_byNo1.csv"]
+    for i in range(7):
         Process(File[i],"00:00","23:59","median")
 
 
