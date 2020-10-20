@@ -308,23 +308,19 @@ def rewrite_day(reference_date,num):
         day += 1 #Here, we do not consider DAY overflow
     return reference_date[0:8] + '{0:02d}'.format(day) + ' ' + '{0:02d}'.format(hour) + reference_date[13:19]
 
-def cal_time(ProcessTime,mode):
+def cal_time(ProcessTime,mode,sec):
     before = datetime.datetime.strptime(ProcessTime,"%H:%M:%S")
-    if mode == "add1m":
-        after = before + datetime.timedelta(minutes=1)
-    elif mode == "add59s":
-        after = before + datetime.timedelta(seconds=59)
-    elif mode == "add1s":
-        after = before + datetime.timedelta(seconds=1)
-    elif mode == "sub1m":
-        after = before - datetime.timedelta(minutes=1)
+    if mode == "add":
+        after = before + datetime.timedelta(seconds=sec)
+    elif mode == "sub":
+        after = before - datetime.timedelta(seconds=sec)
     return after.strftime("%H:%M:%S")
 
 def Process(fileName,StartTime,EndTime, F_flag):
     ###initialize###
     StartTime += ":00"
-    EndTime = cal_time(EndTime+":59","sub1m") 
-    processTime = cal_time(StartTime,"add59s")
+    EndTime = EndTime+":59" 
+    processTime = cal_time(StartTime,"add",9*60 + 59)
     Pass = "../logger/data/" + fileName
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
@@ -339,29 +335,29 @@ def Process(fileName,StartTime,EndTime, F_flag):
         writer.writerow([format_to_day(data[0][0])[0:10],"1ch(nT)","2ch(nT)","3ch(nT)"])
         rowAmount = len(data[0])
         for i in range(rowAmount):
-            writer.writerow([format_to_time(data[0][i]),data[1][i],data[2][i],data[3][i],data[4][i]])
+            writer.writerow([format_to_time(data[0][i]),'{:.4f}'.format(data[1][i]),'{:.4f}'.format(data[2][i]),'{:.4f}'.format(data[3][i]),'{:.4f}'.format(data[4][i])])
         while(processTime != EndTime):
             #print(processTime)
-            data = data_process(f,header[0] + ' ' + cal_time(processTime,"add1s") ,header[0] + ' ' + cal_time(processTime,"add1m"), F_flag)
+            data = data_process(f,header[0] + ' ' + cal_time(processTime,"add",1) ,header[0] + ' ' + cal_time(processTime,"add",10*60), F_flag)
             rowAmount = len(data[0])
             for i in range(rowAmount):
-                writer.writerow([format_to_time(data[0][i]),data[1][i],data[2][i],data[3][i],data[4][i]])
-            processTime = cal_time(processTime,"add1m")
+                writer.writerow([format_to_time(data[0][i]),'{:.4f}'.format(data[1][i]),'{:.4f}'.format(data[2][i]),'{:.4f}'.format(data[3][i]),'{:.4f}'.format(data[4][i])])
+            processTime = cal_time(processTime,"add",10*60)
     ###finalize###
     csv_file.close()
 
 def main():
     File = [
-    "MI20-10-13_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-14_00h00m00s@inabu_byNo2.csv",
+    "MI20-10-04_00h00m00s@inabu_byNo2.csv",
     "MI20-10-15_00h00m00s@inabu_byNo2.csv",
     "MI20-10-16_00h00m00s@inabu_byNo2.csv",
     "MI20-10-17_00h00m00s@inabu_byNo2.csv",
     "MI20-10-18_00h00m00s@inabu_byNo2.csv",
     "MI20-10-12_00h00m00s@inabu_byNo2.csv",
+    "MI20-10-14_00h00m00s@inabu_byNo2.csv",
     "MI20-10-06_00h00m00s@inabu_byNo2.csv",
     "MI20-10-08_00h00m00s@inabu_byNo2.csv",]
-    for i in range(7):
+    for i in range(1):
         Process(File[i],"00:00","23:59","median")
 
 if __name__ == '__main__':
