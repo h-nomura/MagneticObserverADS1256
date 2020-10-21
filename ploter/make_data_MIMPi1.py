@@ -348,17 +348,15 @@ def Process(fileName,StartTime,EndTime, F_flag):
 
 def main():
     File = [
-    "MI20-10-04_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-15_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-16_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-17_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-18_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-12_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-14_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-06_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-08_00h00m00s@inabu_byNo2.csv",]
-    for i in range(1):
-        Process(File[i],"00:00","23:59","median")
+    "MI20-10-04_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-18_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-19_00h00m00s@inabu_byNo1.csv",
+    "MI20-10-20_00h00m00s@inabu_byNo1.csv",]
+    for i in range(2):
+        try:
+            Process(File[i],"00:00","23:59","median")
+        except:
+            print("ERROR: "+ File[i])
 
 if __name__ == '__main__':
     main()
