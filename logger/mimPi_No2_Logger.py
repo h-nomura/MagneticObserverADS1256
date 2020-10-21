@@ -62,8 +62,8 @@ def do_measurement(site):
             while True:            
                 now = datetime.datetime.now(timezone.utc)
                 # get data
-                # raw_channels = ads.read_sequence(CH_SEQUENCE)
-                raw_channels = ads.read_continue(CH_SEQUENCE)
+                raw_channels = ads.read_sequence(CH_SEQUENCE)
+                # raw_channels = ads.read_continue(CH_SEQUENCE)
                 #voltages     = [(i * ads.v_per_digit * 6.970260223 - 15.522769516) for i in raw_channels]
                 #MagneticF     = [(i * 1000 / 0.16) for i in voltages]
                 voltages = [i * ads.v_per_digit for i in raw_channels]
