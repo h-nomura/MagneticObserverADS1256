@@ -10,7 +10,6 @@ import datetime
 from statistics import median
 from statistics import mean
 from statistics import mode
-from control.matlab import * #### pip install control // pip install slycot
 from decimal import Decimal, ROUND_HALF_UP
 import collections
 
@@ -112,27 +111,27 @@ def list_round(l):
         out_list.append(my_round(i))
     return out_list
 
-def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 12))
-    ax_1ch = fig.add_subplot(311)
-    ax_2ch = fig.add_subplot(312)
-    ax_3ch = fig.add_subplot(313)
-    # ax_4ch = fig.add_subplot(414)
+def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
+    fig = plt.figure(figsize=(12, 8))
+    ax_1ch = fig.add_subplot(411)
+    ax_2ch = fig.add_subplot(412)
+    ax_3ch = fig.add_subplot(413)
+    ax_4ch = fig.add_subplot(414)
 
     ax_1ch.yaxis.grid(True)
     ax_2ch.yaxis.grid(True)
     ax_3ch.yaxis.grid(True)
-    # ax_4ch.yaxis.grid(True)
+    ax_4ch.yaxis.grid(True)
     ax_1ch.tick_params(labelsize=18)
     ax_2ch.tick_params(labelsize=18)
     ax_3ch.tick_params(labelsize=18)
-    # ax_4ch.tick_params(labelsize=18)
+    ax_4ch.tick_params(labelsize=18)
     ax_1ch.set_ylabel('X [nT]', fontsize=18)
     ax_2ch.set_ylabel('Y [nT]', fontsize=18)
     ax_3ch.set_ylabel('Z [nT]', fontsize=18)
-    # ax_4ch.set_ylabel('Totol [nT]', fontsize=18)
-    FFT_flag = False
-    if FFT_flag == True:
+    ax_4ch.set_ylabel('Temperature [nT]', fontsize=18)
+
+    if F_flag == "FFT":
         N = len(df_print['time'])
         dt = 1
         # dt = (60*60*24) / len(df_print['time'])#sampling freq
@@ -189,13 +188,17 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
         ax_2ch.plot(fq[:int(N/2)+1], F_abs_amp2[:int(N/2)+1], color = 'b')
         ax_3ch.plot(fq[:int(N/2)+1], F_abs_amp3[:int(N/2)+1], color = 'g')
     else:
+        #### plot line color ####
         ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
         ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
         ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
-        # ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'c')
+        ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'k')
+        #### plot grid ####
         ax_1ch.xaxis.grid(True)
         ax_2ch.xaxis.grid(True)
         ax_3ch.xaxis.grid(True)
+        ax_4ch.xaxis.grid(True)
+        #### plot Y axis limit ####
         if Yrange != 0:
             median_1ch = np.median(df_print['1ch'])
             median_2ch = np.median(df_print['2ch'])
@@ -205,66 +208,25 @@ def fig_plot(df_print, title, fig_path, dat_path = '', Yrange = 0):
             ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
             ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
             # ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
+        #### plot X axis justified ####
         ax_1ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         ax_2ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         ax_3ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
-        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
-        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
-        time_scale = False
-        if time_scale == True:
-            x = []
-            # x_axis = ['03:00:00','09:00:00','15:00:00','21:00:00']
-            # x_axis = ['00:00:00','04:00:00','08:00:00','12:00:00','16:00:00','20:00:00']
-            # x_axis = ['15:00:00','15:20:00','15:40:00','16:00:00','16:20:00','16:40:00','17:00:00']
-            # x_axis = ['16:00:00','16:00:10','16:00:20','16:00:30','16:00:40','16:00:50','16:01:00']
-            # x_axis = ['15:20:00','15:21:00','15:22:00','15:23:00','15:24:00','15:25:00']
-            # x_axis = ['15:22:00','15:22:10','15:22:20','15:22:30','15:22:40','15:22:50','15:23:00']
-            x_axis = [':22:00','15:22:10','15:22:20','15:22:30','15:22:40','15:22:50','15:23:00']
-            print(":type:"+ str(type(df_print['time'][0])))
-            for s in x_axis:
-                x.append(format_to_day_T(df_print['time'][0]) + s)
-            # x.append(add_day(format_to_day_T(df_print['time'][0]) + '00:00:00'))
-            x_axis_np = pd.to_datetime(np.array(x))
-            ax_1ch.set_xticks(x_axis_np)
-            ax_2ch.set_xticks(x_axis_np)
-            ax_3ch.set_xticks(x_axis_np)
-            # ax_1ch.xaxis.set_major_locator(mpl.ticker.FixedLocator(x_axis_np))
-        
+        ax_4ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+        #### plot X label print format ####
+        # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+        ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
+        # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
+    #### show only X label of bottom graph #### 
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
-    # plt.setp(ax_3ch.get_xticklabels(),visible=False)
+    plt.setp(ax_3ch.get_xticklabels(),visible=False)
+
     if dat_path != '':    
         df_print.to_csv(dat_path)
     ax_1ch.set_title(title)
     plt.savefig(fig_path)
     plt.close()
-
-#ex. start_datetime_str = 2017-08-01 01:00:
-def data_process(f,start_datetime_str,end_datetime_str,F_flag,Yrange):
-    rawdata = rawdata_maker(f,start_datetime_str,end_datetime_str)
-    rawtime = pd.to_datetime(rawdata[0])
-    raw1ch = np.array(rawdata[1])
-    raw2ch = np.array(rawdata[2])
-    raw3ch = np.array(rawdata[3])
-    # raw4ch = np.array(rawdata[4])
-
-    df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch})
-
-    fig_dir = datetime.datetime.strptime(start_datetime_str, '%Y-%m-%d %H:%M:%S')
-    end_dir = datetime.datetime.strptime(end_datetime_str, '%Y-%m-%d %H:%M:%S')  
-    my_makedirs('./fig/' + fig_dir.strftime('%Y-%m-%d'))
-    title = start_datetime_str + '(UT) magnetic force(nT)' + F_flag
-    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_jpgu.png'
-    fig_plot(df_print,title, fig_path,Yrange=int(Yrange))
-    
-    Yrange = Yrange / 2
-    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_jpgu.png'
-    fig_plot(df_print,title, fig_path,Yrange=int(Yrange))
-
-    Yrange = 0
-    fig_path = './fig/' + fig_dir.strftime('%Y-%m-%d') + '/' + fig_dir.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S') + '_' + str(Yrange)+F_flag+'_jpgu.png'
-    fig_plot(df_print,title, fig_path)
 
 def my_makedirs(path):
     if not os.path.isdir(path):
@@ -278,103 +240,94 @@ def rewrite_day(reference_date,num):
         day += 1 #Here, we do not consider DAY overflow
     return reference_date[0:8] + '{0:02d}'.format(day) + ' ' + '{0:02d}'.format(hour) + reference_date[13:19]
 
+def crop_str(str1,target,mode=0):
+    for i in range(len(str1)):
+        if str1[i] == target:
+            if mode == 0:
+                return str1[i+1:len(str1)]
+            else:
+                return str1[0:i]
+
 def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     Pass = "../logger/data/" + fileName
+    siteInfo = crop_str(crop_str(fileName,"@"),".",mode=1)
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
     print(header)
-    data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag ,Yrange)
+    start_time_str = header[0] + ' ' + StartTime
+    end_time_str = header[0] + ' ' + EndTime
+    rawdata = rawdata_maker(f,start_time_str,end_time_str)
+    rawtime = pd.to_datetime(rawdata[0])
+    raw1ch = np.array(rawdata[1])
+    raw2ch = np.array(rawdata[2])
+    raw3ch = np.array(rawdata[3])
+    raw4ch = np.array(rawdata[4])
+    df_print = pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch})
+
+    fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
+    end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
+    fig_dir = './fig/' + fig_date.strftime('%Y-%m-%d') + siteInfo
+    figFileDate = fig_date.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S')
+    my_makedirs(fig_dir)
+    title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
+    #### graph print ####
+    fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+    fig_plot(df_print,title, fig_path,F_flag,Yrange=int(Yrange))
+    
+    Yrange = int(Yrange / 2)
+    fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+    fig_plot(df_print,title, fig_path,F_flag,Yrange=int(Yrange))
+
+    Yrange = 0
+    fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+    fig_plot(df_print,title, fig_path,F_flag, Yrange=0)
+
+def cal_time(ProcessTime,mode):
+    before = datetime.datetime.strptime(ProcessTime,"%H:%M:%S")
+    if mode == "add1m":
+        after = before + datetime.timedelta(minutes=1)
+    elif mode == "add59s":
+        after = before + datetime.timedelta(seconds=59)
+    elif mode == "add1s":
+        after = before + datetime.timedelta(seconds=1)
+    elif mode == "add1h":
+        after = before + datetime.timedelta(hours=1)
+    elif mode == "add59m59s":
+        after = before + datetime.timedelta(seconds=(59*60)+59)
+    elif mode == "sub1m":
+        after = before - datetime.timedelta(minutes=1)
+    return after.strftime("%H:%M:%S")
 
 def day_1hour(File, f_type, Yrange):
-        # Process(File,"00:00:00","01:00:00",f_type+str(1),Yrange)
-        # Process(File,"01:00:00","02:00:00",f_type+str(2),Yrange)
-        # Process(File,"02:00:00","03:00:00",f_type+str(3),Yrange)
-        # Process(File,"03:00:00","04:00:00",f_type+str(4),Yrange)
-        # Process(File,"04:00:00","05:00:00",f_type+str(5),Yrange)
-        # Process(File,"05:00:00","06:00:00",f_type+str(6),Yrange)
-        # Process(File,"06:00:00","07:00:00",f_type+str(7),Yrange)
-        # Process(File,"07:00:00","08:00:00",f_type+str(8),Yrange)
-        # Process(File,"08:00:00","09:00:00",f_type+str(9),Yrange)
-        Process(File,"09:00:00","10:00:00",f_type+str(10),Yrange)
-        Process(File,"10:00:00","11:00:00",f_type+str(11),Yrange)
-        Process(File,"11:00:00","12:00:00",f_type+str(12),Yrange)
-        Process(File,"12:00:00","13:00:00",f_type+str(13),Yrange)
-        Process(File,"13:00:00","14:00:00",f_type+str(14),Yrange)
-        Process(File,"14:00:00","15:00:00",f_type+str(15),Yrange)
-        Process(File,"15:00:00","16:00:00",f_type+str(16),Yrange)
-        Process(File,"16:00:00","17:00:00",f_type+str(17),Yrange)
-        Process(File,"17:00:00","18:00:00",f_type+str(18),Yrange)
-        Process(File,"18:00:00","19:00:00",f_type+str(19),Yrange)
-        Process(File,"19:00:00","20:00:00",f_type+str(20),Yrange)
-        Process(File,"20:00:00","21:00:00",f_type+str(21),Yrange)
-        Process(File,"21:00:00","22:00:00",f_type+str(22),Yrange)
-        Process(File,"22:00:00","23:00:00",f_type+str(23),Yrange)
-        Process(File,"23:00:00","23:59:59",f_type+str(24),Yrange)
+    ProcessTime = "00:00:00"
+    for i in range(24):
+        # print(ProcessTime)
+        if i != 23:
+            # print(cal_time(ProcessTime,"add1h")+"\n#####")
+            Process(File,ProcessTime,cal_time(ProcessTime,"add1h"),f_type+str(i+1),Yrange)
+        else:
+            # print(cal_time(ProcessTime,"add59m59s"))
+            Process(File,ProcessTime,cal_time(ProcessTime,"add59m59s"),f_type+str(i+1),Yrange)
+        ProcessTime = cal_time(ProcessTime,"add1h")
 
 def main():
     File = [
-    "MI20-09-11_05h41m04s.csv",
-    "1sec_median_MI20-10-02_08h25m50s.csv",
-    "1sec_median_MI20-10-02_08h25m57s.csv",
-    "1sec_median_MI20-07-19_00h00m00s.csv",
-    "1sec_median_MI20-07-20_00h00m00s.csv",
-    "1sec_median_MI20-07-21_00h00m00s.csv",
-    "1sec_median_MI20-06-17_01h52m20s.csv",
-    "1sec_median_MI20-06-18_00h00m00s.csv",
-    "1sec_median_MI20-06-19_00h00m00s.csv",
-    "1sec_median_MI20-06-20_00h00m00s.csv",
-    "1sec_median_MI20-06-21_00h00m00s.csv",
-    "1sec_median_MI20-06-22_00h00m00s.csv",
-    "1sec_median_MI20-06-23_00h00m00s.csv",
-    "1sec_median_MI20-06-24_00h00m00s.csv",
-    "1sec_median_MI20-06-25_00h00m00s.csv",
-    "MI20-06-25_00h00m00s.csv",
-    "UT_MI20-02-14_00h00m00s.csv",
-    "MI20-06-03_01h02m06s.csv",
-    "MI20-05-27_00h00m00s.csv",
-    "MI20-05-28_00h00m00s.csv",
-    "MI20-05-29_00h00m00s.csv",
-    "MI20-05-30_00h00m00s.csv",
-    "MI20-05-31_00h00m00s.csv",
-    "MI20-05-26_06h09m32s.csv",
-    "MI20-04-17_00h00m00s.csv",
-    "MI20-04-18_00h00m00s.csv",
-    "MI20-04-19_00h00m00s.csv",
-    "MI20-04-20_00h00m00s.csv",
-    "MI20-04-21_00h00m00s.csv",
-    "MI20-04-22_00h00m00s.cqsv",
-    "MI20-04-23_00h00m00s.csv",
-    "MI20-04-24_00h00m00s.csv",
-    "MI20-04-25_00h00m00s.csv",
-    "MI20-04-26_00h00m00s.csv",
-    "MI20-04-27_00h00m00s.csv",
-    "MI20-04-28_00h00m00s.csv",
-    "MI20-04-29_00h00m00s.csv",
-    "MI20-04-15_09h45m40s.csv",
-    "UT_MI20-02-14_00h00m00s.csv",
-    "UT_MI20-02-15_00h00m00s.csv",
-    "UT_MI20-02-16_00h00m00s.csv",
-    "UT_MI20-02-17_00h00m00s.csv",
-    "UT_MI20-02-18_00h00m00s.csv",
-    "UT_MI20-02-19_00h00m00s.csv",
-    "clean_per2crop_MI19-11-11_19h58m31s.csv",
-    "clean_per2crop_MI19-11-11_19h58m31s.csv",
-    "MI19-11-04_00h00m00s.csv",
-    "MI19-09-03_19h21m14s.csv",
-    "MI19-08-20_16h23m17s.csv",
+    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2_10min.csv",
+    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI20-10-05_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-05_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI20-10-07_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-07_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI20-10-09_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-09_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI20-10-10_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-10_00h00m00s@inabu_byNo2.csv",
     "MI19-09-20_12h39m47s.csv"]
-    # Process(File[8],"15:22:00","15:23:00","median",20)
-    # Process(File[0],"14:45:00","14:50:00","madian",20)
-    # Process(File[1],"03:55:00","03:58:00","madinan",20)
-    # Process(File[1],"04:00:00","05:00:00","madinan",20)
-    # day_1hour(File[2],"median",20)
-    Process(File[2],"09:00:00","21:00:00","median",200)
+    Process(File[0],"00:00:00","23:59:59","median",200)
+    # Process(File[0],"00:00:00","23:59:59","median",200)
     # day_1hour(File[0],"median",20)/
-    # for i in [0,1,2,3]:
-    #     day_1hour(File[i],"median",20)
-    #     Process(File[i],"00:00:00","23:59:59","median",50)
-
 
 if __name__ == '__main__':
     main()
