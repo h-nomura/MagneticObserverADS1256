@@ -320,7 +320,7 @@ def Process(fileName,StartTime,EndTime, F_flag):
     ###initialize###
     StartTime += ":00"
     EndTime = EndTime+":59" 
-    processTime = cal_time(StartTime,"add",9*60 + 59)
+    processTime = cal_time(StartTime,"add", 60*59 + 59)
     Pass = "../logger/data/" + fileName
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
@@ -338,11 +338,11 @@ def Process(fileName,StartTime,EndTime, F_flag):
             writer.writerow([format_to_time(data[0][i]),'{:.4f}'.format(data[1][i]),'{:.4f}'.format(data[2][i]),'{:.4f}'.format(data[3][i]),'{:.4f}'.format(data[4][i])])
         while(processTime != EndTime):
             #print(processTime)
-            data = data_process(f,header[0] + ' ' + cal_time(processTime,"add",1) ,header[0] + ' ' + cal_time(processTime,"add",10*60), F_flag)
+            data = data_process(f,header[0] + ' ' + cal_time(processTime,"add",1) ,header[0] + ' ' + cal_time(processTime,"add",60*60), F_flag)
             rowAmount = len(data[0])
             for i in range(rowAmount):
                 writer.writerow([format_to_time(data[0][i]),'{:.4f}'.format(data[1][i]),'{:.4f}'.format(data[2][i]),'{:.4f}'.format(data[3][i]),'{:.4f}'.format(data[4][i])])
-            processTime = cal_time(processTime,"add",10*60)
+            processTime = cal_time(processTime,"add",60*60)
     ###finalize###
     csv_file.close()
 
