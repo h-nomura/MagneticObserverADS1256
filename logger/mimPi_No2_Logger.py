@@ -90,7 +90,7 @@ def main():
         print(__doc__)
         print("\nPress CTRL-C to exit.")
         print("Enter a site")
-        site = str(input('>> '))
+        site = "inabu"
         do_measurement(site)
 
     except (KeyboardInterrupt):
