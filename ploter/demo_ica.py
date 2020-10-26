@@ -39,9 +39,8 @@ ax3.legend(loc = 'upper right')
 fig.tight_layout()
 plt.show()
 #### Perform ICA(independent component analysis) ####
-Y = np.vstack([y1, y2, y3]).T
-
-ica = FastICA(n_components=3, whiten=True)
+Y = np.vstack([y1, y2, y3]).T####信号を一つのNumPyに連結し転置
+ica = FastICA(n_components=3, whiten=True)####
 ica.fit(Y)
 
 X = ica.transform(Y)

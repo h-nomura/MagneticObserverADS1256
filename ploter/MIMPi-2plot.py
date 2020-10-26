@@ -496,27 +496,7 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         raw4ch = np.array(rawdata[4])
         rawdata = []
         df_print.append(pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch}))
-    #### ICA ####
-    ana_print=[]
-    if F_flag == "ICA":
-        ana_print2=[]
-        ica_result1, ica_result2 = ICA_process2(df_print[0]['1ch'],df_print[0]['2ch'],df_print[0]['3ch'],df_print[1]['1ch'],df_print[1]['2ch'],df_print[1]['3ch'])
-        ana_print.append(pd.DataFrame({'time':df_print[0]['time'],'1ch':ica_result1[0],'2ch':ica_result1[1],'3ch':ica_result1[2],'4ch':df_print[0]['4ch']}))
-        ana_print.append(pd.DataFrame({'time':df_print[1]['time'],'1ch':ica_result1[3],'2ch':ica_result1[4],'3ch':ica_result1[5],'4ch':df_print[1]['4ch']}))
-        ana_print2.append(pd.DataFrame({'time':df_print[0]['time'],'1ch':ica_result2[0],'2ch':ica_result2[1],'3ch':ica_result2[2],'4ch':df_print[0]['4ch']}))
-        ana_print2.append(pd.DataFrame({'time':df_print[1]['time'],'1ch':ica_result2[3],'2ch':ica_result2[4],'3ch':ica_result2[5],'4ch':df_print[1]['4ch']}))
-    elif F_flag == "PCA":
-        ica_result_x = PCA_process_2sig(df_print[0]['1ch'],df_print[1]['1ch'])
-        ica_result_y = PCA_process_2sig(df_print[0]['2ch'],df_print[1]['2ch'])
-        ica_result_z = PCA_process_2sig(df_print[0]['3ch'],df_print[1]['3ch'])
-        ana_print.append(pd.DataFrame({'time':df_print[0]['time'],'1ch':ica_result_x[0],'2ch':ica_result_y[0],'3ch':ica_result_z[0],'4ch':df_print[0]['4ch']}))
-        ana_print.append(pd.DataFrame({'time':df_print[1]['time'],'1ch':ica_result_x[1],'2ch':ica_result_y[1],'3ch':ica_result_z[1],'4ch':df_print[1]['4ch']}))
-    elif F_flag == "3sigICA":
-        ica_result_no1 = ICA_process_3sig(df_print[0]['1ch'],df_print[0]['2ch'],df_print[0]['3ch'])
-        ica_result_no2 = ICA_process_3sig(df_print[0]['1ch'],df_print[0]['2ch'],df_print[0]['3ch'])
-        ana_print.append(pd.DataFrame({'time':df_print[0]['time'],'1ch':ica_result_no1[0],'2ch':ica_result_no1[1],'3ch':ica_result_no1[2],'4ch':df_print[0]['4ch']}))
-        ana_print.append(pd.DataFrame({'time':df_print[1]['time'],'1ch':ica_result_no2[0],'2ch':ica_result_no2[1],'3ch':ica_result_no2[2],'4ch':df_print[1]['4ch']}))
-
+ 
     fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
     fig_dir = './fig/' + fig_date.strftime('%Y-%m-%d') + siteInfo
@@ -524,19 +504,6 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
     #### graph print ####
-    if F_flag == 'PCA':
-        labelList = ['X [nT]','Y [nT]','Z [nT]','Noise of X [nT]','Noise of Y [nT]','Noise of Z [nT]']
-        fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+"_analysis"+siteInfo+'.png'
-        fig_plot(ana_print,labelList,title, fig_path,F_flag, Yrange=Yrange)
-
-    if F_flag == 'ICA':
-        labelList = ['X [nT]','Y [nT]','Z [nT]','Noise of X [nT]','Noise of Y [nT]','Noise of Z [nT]']
-        labelList2 = ['X [nT]','Y [nT]','Z [nT]','Noise of X [nT]','Noise of Y [nT]','Noise of Z [nT]']
-        fig_path1 = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+"_analysis_component"+siteInfo+'.png'
-        fig_path2 = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+"_analysis_Result"+ica_result2[6]+siteInfo+'.png'
-        fig_plot(ana_print,labelList,title, fig_path1,F_flag, Yrange=0)
-        fig_plot(ana_print2,labelList2,title, fig_path2,F_flag, Yrange=Yrange)
-
     labelList = [""]
     fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
     fig_plot(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
@@ -569,8 +536,9 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
-    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI20-10-22_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-22_00h00m00s@inabu_byNo2.csv",
+    "Fx20-10-24_00h00m00s@inabu_Flux.csv",
     "MI19-09-20_12h39m47s.csv"]
     # Process([File[0],File[1]],"00:00:00","23:59:59","median",200)
     # Process([File[0],File[1]],"00:00:00","03:00:00","median",100)
@@ -578,9 +546,9 @@ def main():
     # Process([File[0],File[1]],"06:00:00","09:00:00","median",100)
     # Process([File[0],File[1]],"09:00:00","12:00:00","median",100)
     # Process([File[0],File[1]],"12:00:00","15:00:00","median",100)
-    Process([File[0],File[1]],"19:00:00","20:00:00","PCA",10)
+    # Process([File[0],File[1]],"15:00:00","18:00:00","median",100)
     # Process([File[0],File[1]],"18:00:00","21:00:00","PCA",10)
-    # day_1hour([File[0],File[1]],"PCA",20)
+    day_1hour([File[0],File[1]],"median",20)
 
 if __name__ == '__main__':
     main()

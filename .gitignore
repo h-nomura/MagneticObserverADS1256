@@ -2,6 +2,7 @@
 *.png
 *.dat
 *.zip
+*.sec
 nohup.out
 .*
 !/.gitignore
