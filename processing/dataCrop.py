@@ -34,7 +34,7 @@ def search_end(dataTime,end_dataTime_str,start_arg):
     return -1
 
 def crop(f,header,start,end):
-    writePass = "..\\logger\\data\\crop_" + filename
+    writePass = "../logger/data/crop_" + filename
     with open(writePass,'w', newline="") as wf:
         writer = csv.writer(wf)
         writer.writerow(header)
@@ -63,7 +63,7 @@ def crop(f,header,start,end):
                 writer.writerow(row)
 
 def main():
-    Pass = "..\\logger\\data\\" + filename
+    Pass = "../logger/data/" + filename
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
