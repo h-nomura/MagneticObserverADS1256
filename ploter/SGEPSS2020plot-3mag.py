@@ -114,94 +114,6 @@ def list_round(l):
         out_list.append(my_round(i))
     return out_list
 
-def Signal_plot(x,y, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 8))
-    ax_1ch = fig.add_subplot(911)
-    ax_2ch = fig.add_subplot(912)
-    ax_3ch = fig.add_subplot(913)
-    ax_4ch = fig.add_subplot(914)
-    ax_5ch = fig.add_subplot(915)
-    ax_6ch = fig.add_subplot(916)
-    ax_7ch = fig.add_subplot(917)
-    ax_8ch = fig.add_subplot(918)
-    ax_9ch = fig.add_subplot(919)
-
-    ax_1ch.yaxis.grid(True)
-    ax_2ch.yaxis.grid(True)
-    ax_3ch.yaxis.grid(True)
-    ax_4ch.yaxis.grid(True)
-    ax_5ch.yaxis.grid(True)
-    ax_6ch.yaxis.grid(True)
-    ax_7ch.yaxis.grid(True)
-    ax_8ch.yaxis.grid(True)
-    ax_9ch.yaxis.grid(True)
-
-    ax_1ch.tick_params(labelsize=18)
-    ax_2ch.tick_params(labelsize=18)
-    ax_3ch.tick_params(labelsize=18)
-    ax_4ch.tick_params(labelsize=18)
-    ax_5ch.tick_params(labelsize=18)
-    ax_6ch.tick_params(labelsize=18)
-    ax_7ch.tick_params(labelsize=18)
-    ax_8ch.tick_params(labelsize=18)
-    ax_9ch.tick_params(labelsize=18)
-
-    # ax_1ch.set_ylabel('X of No1[nT]', fontsize=18)
-    # ax_2ch.set_ylabel('Y of No1[nT]', fontsize=18)
-    # ax_3ch.set_ylabel('Z of No1[nT]', fontsize=18)
-    # ax_4ch.set_ylabel('X of No2[nT]', fontsize=18)
-    # ax_5ch.set_ylabel('Y of No2[nT]', fontsize=18)
-    # ax_6ch.set_ylabel('Z of No2[nT]', fontsize=18)
-
-    #### plot line color ####
-    ax_1ch.plot(x, y[0])
-    ax_2ch.plot(x, y[1])
-    ax_3ch.plot(x, y[2])
-    ax_4ch.plot(x, y[3])
-    ax_5ch.plot(x, y[4])
-    ax_6ch.plot(x, y[5])
-    ax_7ch.plot(x, y[6])
-    ax_8ch.plot(x, y[7])
-    ax_9ch.plot(x, y[8])
-    #### plot grid ####
-    ax_1ch.xaxis.grid(True)
-    ax_2ch.xaxis.grid(True)
-    ax_3ch.xaxis.grid(True)
-    ax_4ch.xaxis.grid(True)
-    ax_5ch.xaxis.grid(True)
-    ax_6ch.xaxis.grid(True)
-    ax_7ch.xaxis.grid(True)
-    ax_8ch.xaxis.grid(True)
-    ax_9ch.xaxis.grid(True)
-
-    #### plot X axis justified ####
-    ax_1ch.set_xlim([x[0],x[len(x)-1]])
-    ax_2ch.set_xlim([x[0],x[len(x)-1]])
-    ax_3ch.set_xlim([x[0],x[len(x)-1]])
-    ax_4ch.set_xlim([x[0],x[len(x)-1]])
-    ax_5ch.set_xlim([x[0],x[len(x)-1]])
-    ax_6ch.set_xlim([x[0],x[len(x)-1]])
-    ax_7ch.set_xlim([x[0],x[len(x)-1]])
-    ax_8ch.set_xlim([x[0],x[len(x)-1]])
-    ax_9ch.set_xlim([x[0],x[len(x)-1]])
-
-    #### plot X label print format ####
-    # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-    ax_9ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
-    # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
-    #### show only X label of bottom graph #### 
-    plt.setp(ax_1ch.get_xticklabels(),visible=False)
-    plt.setp(ax_2ch.get_xticklabels(),visible=False)
-    plt.setp(ax_3ch.get_xticklabels(),visible=False)
-    plt.setp(ax_4ch.get_xticklabels(),visible=False)
-    plt.setp(ax_5ch.get_xticklabels(),visible=False)
-    plt.setp(ax_6ch.get_xticklabels(),visible=False)
-    plt.setp(ax_7ch.get_xticklabels(),visible=False)
-    plt.setp(ax_8ch.get_xticklabels(),visible=False)
-
-    ax_1ch.set_title(title)
-    plt.savefig(fig_path)
-    plt.close()
 def test_plot(x):
     fig = plt.figure(figsize=(12, 12))
     ax_1ch = fig.add_subplot(611)
@@ -221,13 +133,16 @@ def test_plot(x):
 
 
 def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 12))
-    ax_1ch = fig.add_subplot(611)
-    ax_2ch = fig.add_subplot(612)
-    ax_3ch = fig.add_subplot(613)
-    ax_4ch = fig.add_subplot(614)
-    ax_5ch = fig.add_subplot(615)
-    ax_6ch = fig.add_subplot(616)
+    fig = plt.figure(figsize=(12, 6))
+    ax_1ch = fig.add_subplot(331)
+    ax_2ch = fig.add_subplot(334)
+    ax_3ch = fig.add_subplot(337)
+    ax_4ch = fig.add_subplot(332)
+    ax_5ch = fig.add_subplot(335)
+    ax_6ch = fig.add_subplot(338)
+    ax_7ch = fig.add_subplot(333)
+    ax_8ch = fig.add_subplot(336)
+    ax_9ch = fig.add_subplot(339)
 
     ax_1ch.yaxis.grid(True)
     ax_2ch.yaxis.grid(True)
@@ -235,34 +150,44 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
     ax_4ch.yaxis.grid(True)
     ax_5ch.yaxis.grid(True)
     ax_6ch.yaxis.grid(True)
+    ax_7ch.yaxis.grid(True)
+    ax_8ch.yaxis.grid(True)
+    ax_9ch.yaxis.grid(True)
     # ax_1ch.tick_params(labelsize=18)
     # ax_2ch.tick_params(labelsize=18)
     # ax_3ch.tick_params(labelsize=18)
     # ax_4ch.tick_params(labelsize=18)
     # ax_5ch.tick_params(labelsize=18)
     # ax_6ch.tick_params(labelsize=18)
-    if len(labelList) != 6:
-        labelList = ['X of No1[nT]','Y of No1[nT]','Z of No1[nT]','X of No2[nT]','Y of No2[nT]','Z of No2[nT]']
+    # ax_7ch.tick_params(labelsize=18)
+    # ax_8ch.tick_params(labelsize=18)
+    # ax_9ch.tick_params(labelsize=18)
+    if len(labelList) != 9:
+        labelList = ['X of MIM-Pi No1 [nT]','Y of MIM-Pi No1 [nT]',
+        'Z of MIM-Pi No1 [nT]','X of MIM-Pi No2 [nT]',
+        'Y of MIM-Pi No2 [nT]','Z of MIM-Pi No2 [nT]',
+        'X of Fluxgate [nT]','Y of Fluxgate [nT]','Z of Fluxgate [nT]']
     ax_1ch.set_ylabel(labelList[0])
     ax_2ch.set_ylabel(labelList[1])
     ax_3ch.set_ylabel(labelList[2])
     ax_4ch.set_ylabel(labelList[3])
     ax_5ch.set_ylabel(labelList[4])
     ax_6ch.set_ylabel(labelList[5])
-    # ax_1ch.set_ylabel('X of No1[nT]', fontsize=18)
-    # ax_2ch.set_ylabel('Y of No1[nT]', fontsize=18)
-    # ax_3ch.set_ylabel('Z of No1[nT]', fontsize=18)
-    # ax_4ch.set_ylabel('X of No2[nT]', fontsize=18)
-    # ax_5ch.set_ylabel('Y of No2[nT]', fontsize=18)
-    # ax_6ch.set_ylabel('Z of No2[nT]', fontsize=18)
+    ax_7ch.set_ylabel(labelList[6])
+    ax_8ch.set_ylabel(labelList[7])
+    ax_9ch.set_ylabel(labelList[8])
+    # ax_9ch.set_ylabel(labelList[8], fontsize=18)
 
     #### plot line color ####
     ax_1ch.plot(df_print[0]['time'], df_print[0]['1ch'], color = 'r')
     ax_2ch.plot(df_print[0]['time'], df_print[0]['2ch'], color = 'b')
     ax_3ch.plot(df_print[0]['time'], df_print[0]['3ch'], color = 'g')
-    ax_4ch.plot(df_print[1]['time'], df_print[1]['1ch'], color = 'm')
-    ax_5ch.plot(df_print[1]['time'], df_print[1]['2ch'], color = 'c')
-    ax_6ch.plot(df_print[1]['time'], df_print[1]['3ch'], color = 'y')
+    ax_4ch.plot(df_print[1]['time'], df_print[1]['1ch'], color = 'r')
+    ax_5ch.plot(df_print[1]['time'], df_print[1]['2ch'], color = 'b')
+    ax_6ch.plot(df_print[1]['time'], df_print[1]['3ch'], color = 'g')
+    ax_7ch.plot(df_print[2]['time'], df_print[2]['1ch'], color = 'r')
+    ax_8ch.plot(df_print[2]['time'], df_print[2]['2ch'], color = 'b')
+    ax_9ch.plot(df_print[2]['time'], df_print[2]['3ch'], color = 'g')
     #### plot grid ####
     ax_1ch.xaxis.grid(True)
     ax_2ch.xaxis.grid(True)
@@ -270,6 +195,9 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
     ax_4ch.xaxis.grid(True)
     ax_5ch.xaxis.grid(True)
     ax_6ch.xaxis.grid(True)
+    ax_7ch.xaxis.grid(True)
+    ax_8ch.xaxis.grid(True)
+    ax_9ch.xaxis.grid(True)
     #### plot Y axis limit ####
     if Yrange != 0:
         median_1ch = np.median(df_print[0]['1ch'])
@@ -278,12 +206,18 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
         median_4ch = np.median(df_print[1]['1ch'])
         median_5ch = np.median(df_print[1]['2ch'])
         median_6ch = np.median(df_print[1]['3ch'])
+        median_7ch = np.median(df_print[2]['1ch'])
+        median_8ch = np.median(df_print[2]['2ch'])
+        median_9ch = np.median(df_print[2]['3ch'])
         ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
         ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
         ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
         ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
         ax_5ch.set_ylim([median_5ch - (Yrange/2),median_5ch + (Yrange/2)])
         ax_6ch.set_ylim([median_6ch - (Yrange/2),median_6ch + (Yrange/2)])
+        ax_7ch.set_ylim([median_7ch - (Yrange/2),median_7ch + (Yrange/2)])
+        ax_8ch.set_ylim([median_8ch - (Yrange/2),median_8ch + (Yrange/2)])
+        ax_9ch.set_ylim([median_9ch - (Yrange/2),median_9ch + (Yrange/2)])
     
     ax_1ch.get_yaxis().get_major_formatter().set_useOffset(False)# X軸の数字をオフセットを使わずに表現する
     ax_2ch.get_yaxis().get_major_formatter().set_useOffset(False)
@@ -291,6 +225,9 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
     ax_4ch.get_yaxis().get_major_formatter().set_useOffset(False)
     ax_5ch.get_yaxis().get_major_formatter().set_useOffset(False)
     ax_6ch.get_yaxis().get_major_formatter().set_useOffset(False)
+    ax_7ch.get_yaxis().get_major_formatter().set_useOffset(False)
+    ax_8ch.get_yaxis().get_major_formatter().set_useOffset(False)
+    ax_9ch.get_yaxis().get_major_formatter().set_useOffset(False)
  
     #### plot X axis justified ####
     ax_1ch.set_xlim([df_print[0]['time'][0],df_print[0]['time'][len(df_print[0]['time'])-1]])
@@ -299,20 +236,30 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
     ax_4ch.set_xlim([df_print[1]['time'][0],df_print[1]['time'][len(df_print[1]['time'])-1]])
     ax_5ch.set_xlim([df_print[1]['time'][0],df_print[1]['time'][len(df_print[1]['time'])-1]])
     ax_6ch.set_xlim([df_print[1]['time'][0],df_print[1]['time'][len(df_print[1]['time'])-1]])
+    ax_7ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
+    ax_8ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
+    ax_9ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
     #### plot X label print format ####
+    strings = '%M'
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-    ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
+    ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
+    ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
+    ax_9ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
     #### show only X label of bottom graph #### 
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
-    plt.setp(ax_3ch.get_xticklabels(),visible=False)
+    # plt.setp(ax_3ch.get_xticklabels(),visible=False)
     plt.setp(ax_4ch.get_xticklabels(),visible=False)
     plt.setp(ax_5ch.get_xticklabels(),visible=False)
+    plt.setp(ax_7ch.get_xticklabels(),visible=False)
+    plt.setp(ax_8ch.get_xticklabels(),visible=False)
 
     if dat_path != '':    
         df_print.to_csv(dat_path)
-    ax_1ch.set_title(title)
+    plt.suptitle(title)
+    plt.subplots_adjust(top=0.7) # 図と被ってしまうので少し上を空ける
+    # ax_4ch.set_title("")
     fig.tight_layout()    #文字が重ならないよう調整
     fig.align_labels()    #軸ラベルを揃える
     plt.savefig(fig_path)
@@ -338,116 +285,6 @@ def crop_str(str1,target,mode=0):
             else:
                 return str1[0:i]
 
-#### input 6-np array output 6-np array ####
-def ICA_process(y1,y2,y3,y4,y5,y6):
-    Y = np.vstack([y1,y2,y3,y4,y5,y6]).T
-    ica = FastICA(n_components=6,whiten=True)
-    ica.fit(Y)
-    X = ica.transform(Y)
-    x1 = np.array(X.T[0,:])
-    x2 = np.array(X.T[1,:])
-    x3 = np.array(X.T[2,:])
-    x4 = np.array(X.T[3,:])
-    x5 = np.array(X.T[4,:])
-    x6 = np.array(X.T[5,:])
-    return [x1,x2,x3,x4,x5,x6]
-
-def ICA_process2(y1,y2,y3,y4,y5,y6):
-    #### Centering #####
-    y1mean = np.mean(y1)
-    y2mean = np.mean(y2)
-    y3mean = np.mean(y3)
-    y4mean = np.mean(y4)
-    y5mean = np.mean(y5)
-    y6mean = np.mean(y6)
-    y1 -= y1mean
-    y2 -= y2mean
-    y3 -= y3mean
-    y4 -= y4mean
-    y5 -= y5mean
-    y6 -= y6mean
-    Y = np.vstack([y1,y2,y3,y4,y5,y6]).T
-    transformer = FastICA(n_components=6,random_state=0)
-    X_transformed = transformer.fit_transform(Y)
-    A_ = transformer.mixing_.T  #混合行列
-
-    x = []
-    for i in range(6):
-        x.append(np.array(X_transformed.T[i,:]))    
-    test_plot([x[0],x[1],x[2],x[3],x[4],x[5]])
-    print("Noise component amount")
-    noize_c_num = int(input())
-    print("Noise component number")
-    NUM = []
-    for i in range(noize_c_num):
-        NUM.append(int(input()))
-    zero_np = np.zeros(X_transformed.T[0,:].size)
-    s = []
-    n = []
-    choiceNUM = ""
-    for i in range(6):
-        s.append(X_transformed.T[i,:])
-        n.append(zero_np)
-    for i in NUM:
-        choiceNUM += str(i)
-        n[i] = s[i]
-        s[i] = zero_np
-
-    S = np.vstack([s[0],s[1],s[2],s[3],s[4],s[5]]).T
-    N = np.vstack([n[0],n[1],n[2],n[3],n[4],n[5]]).T
-    print(S.shape)
-    y1 = np.dot(S,A_)[:,0] + y1mean
-    y2 = np.dot(S,A_)[:,1] + y2mean
-    y3 = np.dot(S,A_)[:,2] + y3mean
-    y4 = np.dot(N,A_)[:,3] + y4mean
-    y5 = np.dot(N,A_)[:,4] + y5mean
-    y6 = np.dot(N,A_)[:,5] + y6mean
-    test_plot([y1,y2,y3,y4,y5,y6])
-    return [x[0],x[1],x[2],x[3],x[4],x[5]], [y1,y2,y3,y4,y5,y6,choiceNUM]
-
-def PCA_process_2sig(y1,y2):
-    #### Centering #####
-    y1mean = np.mean(y1)
-    y2mean = np.mean(y2)
-    y1 -= y1mean
-    y2 -= y2mean
-    #### Scaling ####
-    y1std = np.std(y1)
-    y2std = np.std(y2)
-    y1 /= y1std
-    y2 /= y2std
-    #### PCA ####
-    Y = np.vstack([y1,y2]).T
-    pca = PCA(n_components=2,whiten=True)
-    pca.fit(Y)
-    X = pca.transform(Y)
-    x1 = np.array(X.T[0,:])
-    x2 = np.array(X.T[1,:])
-    #### Polarity check ####
-    x1 *= ((y1std + y2std)/2)
-    x2 *= ((y1std + y2std)/2)
-    
-    x1_1 = x1 + ((y1mean + y2mean)/2)
-    x1_2 = ((y1mean + y2mean)/2) -x1
-    diffSUM1 = np.sum((y1+y2)/2 - x1_1)
-    diffSUM2 = np.sum((y1+y2)/2 - x1_2)
-    if diffSUM1 >= diffSUM2:
-        x1 = x1_1
-    else:
-        x1 = x1_2
-    x2 += ((y1mean + y2mean)/2)
-    return [x1,x2]
-
-def ICA_process_3sig(y1,y2,y3):
-    Y = np.vstack([y1,y2,y3]).T
-    ica = FastICA(n_components=3,whiten=True)
-    ica.fit(Y)
-    X = ica.transform(Y)
-    x1 = np.array(X.T[0,:])
-    x2 = np.array(X.T[1,:])
-    x3 = np.array(X.T[2,:])
-    return [x1,x2,x3]
-
 def check_errerData(date_numpy,start_datetime):
     errer_index = []
     NaN_date = []
@@ -468,9 +305,9 @@ def check_errerData(date_numpy,start_datetime):
 def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     siteInfo = ""
     df_print = []
-    for i in range(2):
+    for i in range(3):
         Pass = "../logger/data/" + fileName[i]
-        siteInfo += crop_str(crop_str(fileName[i],"@"),".",mode=1)
+        siteInfo += "@" + crop_str(crop_str(fileName[i],"@"),".",mode=1)
         csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
         f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
         header = next(f)
@@ -504,13 +341,7 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
     #### graph print ####
-    # labelList = [""]
-    # labelList = ['X of MIM-Pi No1 [nT]','Y of MIM-Pi No1 [nT]',
-    # 'Z of MIM-Pi No1 [nT]','X of MIM-Pi No2 [nT]',
-    # 'Y of MIM-Pi No2 [nT]','Z of MIM-Pi No2 [nT]',
-    # 'X of Fluxgate [nT]','Y of Fluxgate [nT]','Z of Fluxgate [nT]']
-    labelList = ['X of MIM-Pi No1 [nT]','Y of MIM-Pi No1 [nT]',
-    'Z of MIM-Pi No1 [nT]','X of Fluxgate [nT]','Y of Fluxgate [nT]','Z of Fluxgate [nT]']
+    labelList = [""]
     fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
     fig_plot(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
     
@@ -552,9 +383,9 @@ def main():
     # Process([File[0],File[1]],"06:00:00","09:00:00","median",100)
     # Process([File[0],File[1]],"09:00:00","12:00:00","median",100)
     # Process([File[0],File[1]],"12:00:00","15:00:00","median",100)
-    Process([File[0],File[2]],"19:00:00","20:00:00","median",10)
+    Process([File[0],File[1],File[2]],"19:10:00","19:20:00","median",20)
     # Process([File[0],File[1]],"18:00:00","21:00:00","PCA",10)
-    # day_1hour([File[0],File[1]],"median",20)
+    # day_1hour([File[0],File[1],File[2]],"median",20)
 
 if __name__ == '__main__':
     main()

@@ -578,7 +578,7 @@ def main():
     # Process([File[0],File[1]],"06:00:00","09:00:00","median",100)
     # Process([File[0],File[1]],"09:00:00","12:00:00","median",100)
     # Process([File[0],File[1]],"12:00:00","15:00:00","median",100)
-    Process([File[0],File[1]],"19:00:00","20:00:00","PCA",10)
+    Process([File[0],File[1]],"19:10:00","19:20:00","ICA",10)
     # Process([File[0],File[1]],"18:00:00","21:00:00","PCA",10)
     # day_1hour([File[0],File[1]],"PCA",20)
 

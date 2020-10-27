@@ -156,7 +156,7 @@ def fit_timecode(df_print):
     return df_print
 
 def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 12))
+    fig = plt.figure(figsize=(9, 9))
     ax_1ch = fig.add_subplot(221)
     ax_2ch = fig.add_subplot(222)
     ax_3ch = fig.add_subplot(223)
@@ -187,22 +187,39 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
     clf2ch = linear_model.LinearRegression()
     clf3ch = linear_model.LinearRegression()
     clf4ch = linear_model.LinearRegression()
-    Serial_num = np.arange(len(df_print[0]['1ch']))
-    clf1ch.fit(np.stack([Serial_num,df_print[0]['1ch']]),np.stack([Serial_num,df_print[1]['1ch']]))
-    clf2ch.fit(np.stack([Serial_num,df_print[0]['2ch']]),np.stack([Serial_num,df_print[1]['2ch']]))
-    clf3ch.fit(np.stack([Serial_num,df_print[0]['3ch']]),np.stack([Serial_num,df_print[1]['3ch']]))
-    clf4ch.fit(np.stack([Serial_num,df_print[0]['4ch']]),np.stack([Serial_num,df_print[1]['4ch']]))
+    df1ch_1 = pd.DataFrame(df_print[0]['1ch'].T)
+    df1ch_2 = pd.DataFrame(df_print[1]['1ch'].T)
+    df2ch_1 = pd.DataFrame(df_print[0]['2ch'].T)
+    df2ch_2 = pd.DataFrame(df_print[1]['2ch'].T)
+    df3ch_1 = pd.DataFrame(df_print[0]['3ch'].T)
+    df3ch_2 = pd.DataFrame(df_print[1]['3ch'].T)
+    df4ch_1 = pd.DataFrame(df_print[0]['4ch'].T)
+    df4ch_2 = pd.DataFrame(df_print[1]['4ch'].T)
+
+    # Serial_num = np.arange(len(df_print[0]['1ch']))
+    # clf1ch.fit(np.stack([Serial_num,df_print[0]['1ch']]),np.stack([Serial_num,df_print[1]['1ch']]))
+    # clf2ch.fit(np.stack([Serial_num,df_print[0]['2ch']]),np.stack([Serial_num,df_print[1]['2ch']]))
+    # clf3ch.fit(np.stack([Serial_num,df_print[0]['3ch']]),np.stack([Serial_num,df_print[1]['3ch']]))
+    # clf4ch.fit(np.stack([Serial_num,df_print[0]['4ch']]),np.stack([Serial_num,df_print[1]['4ch']]))
+    clf1ch.fit(df1ch_1,df1ch_2)
+    clf2ch.fit(df2ch_1,df2ch_2)
+    clf3ch.fit(df3ch_1,df3ch_2)
+    clf4ch.fit(df4ch_1,df4ch_2)
     # clf2ch.fit(df_print[0]['2ch'],df_print[1]['2ch'])
     # clf3ch.fit(df_print[0]['3ch'],df_print[1]['3ch'])
     # clf4ch.fit(df_print[0]['4ch'],df_print[1]['4ch'])
-    ax_1ch.plot(df_print[0]['1ch'], clf1ch.predict(df_print[0]['1ch']), color = 'r')
-    ax_2ch.plot(df_print[0]['2ch'], clf2ch.predict(df_print[0]['2ch']), color = 'b')
-    ax_3ch.plot(df_print[0]['3ch'], clf3ch.predict(df_print[0]['3ch']), color = 'g')
-    ax_4ch.plot(df_print[0]['4ch'], clf4ch.predict(df_print[0]['4ch']), color = 'k')
-    text1ch = "Regression coefficient = "+str(clf1ch.coef_)+"\nIntercept = "+str(clf1ch.intercept_)
-    text2ch = "Regression coefficient = "+str(clf2ch.coef_)+"\nIntercept = "+str(clf2ch.intercept_) 
-    text3ch = "Regression coefficient = "+str(clf3ch.coef_)+"\nIntercept = "+str(clf3ch.intercept_)
-    text4ch = "Regression coefficient = "+str(clf4ch.coef_)+"\nIntercept = "+str(clf4ch.intercept_)
+    ax_1ch.plot(df1ch_1, clf1ch.predict(df1ch_1), color = 'y')
+    ax_2ch.plot(df2ch_1, clf2ch.predict(df2ch_1), color = 'y')
+    ax_3ch.plot(df3ch_1, clf3ch.predict(df3ch_1), color = 'y')
+    ax_4ch.plot(df4ch_1, clf4ch.predict(df4ch_1), color = 'y')
+    # ax_1ch.plot(np.stack([Serial_num,df_print[0]['1ch']]), clf1ch.predict(np.stack([Serial_num,df_print[0]['1ch']])), color = 'r')
+    # ax_2ch.plot(np.stack([Serial_num,df_print[0]['2ch']]), clf2ch.predict(np.stack([Serial_num,df_print[0]['2ch']])), color = 'b')
+    # ax_3ch.plot(np.stack([Serial_num,df_print[0]['3ch']]), clf3ch.predict(np.stack([Serial_num,df_print[0]['3ch']])), color = 'g')
+    # ax_4ch.plot(np.stack([Serial_num,df_print[0]['4ch']]), clf4ch.predict(np.stack([Serial_num,df_print[0]['4ch']])), color = 'k')
+    text1ch = "Regression coefficient = "+'{:.1f}'.format(clf1ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf1ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf1ch.score(df1ch_1,df1ch_2))
+    text2ch = "Regression coefficient = "+'{:.1f}'.format(clf2ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf2ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf2ch.score(df2ch_1,df2ch_2))
+    text3ch = "Regression coefficient = "+'{:.1f}'.format(clf3ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf3ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf3ch.score(df3ch_1,df3ch_2))
+    text4ch = "Regression coefficient = "+'{:.1f}'.format(clf4ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf4ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf4ch.score(df4ch_1,df4ch_2))
     ##ax.transAxesをつけると、表示位置がAxesの相対位置で指定できる
     ax_1ch.text(0.1, 0.9, text1ch, va='top', ha='left',transform=ax_1ch.transAxes)
     ax_2ch.text(0.1, 0.9, text2ch, va='top', ha='left',transform=ax_2ch.transAxes)
@@ -291,7 +308,6 @@ def check_goodData(date_numpy,start_datetime):
             now += 1
     return good_index
 
-
 def Process(fileName,F_flag ,Yrange):
     #### initialize ####
     buff_time = []
@@ -310,6 +326,7 @@ def Process(fileName,F_flag ,Yrange):
             header = next(f)
             print(header)
             start_time_str = header[0] + ' 00:00:00'
+            # end_time_str = header[0] + ' 01:00:00'
             end_time_str = header[0] + ' 23:59:59'
             rawdata = rawdata_maker(f,start_time_str,end_time_str)
             rawtime = pd.to_datetime(rawdata[0])
@@ -364,7 +381,7 @@ def Process(fileName,F_flag ,Yrange):
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
     #### graph print ####
     my_makedirs(fig_dir + str(Yrange) + 'nt/')
-    fig_path = fig_dir + '0nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+    fig_path =fig_dir + str(Yrange) + 'nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
     fig_plot(df_print,title, fig_path,F_flag, Yrange=Yrange)
 
 def countUP_filename(F_str,Num,day):
@@ -392,6 +409,8 @@ def main():
     for i in range(1):
         # try:
         Process([[File_list1[i]],[File_list2[i]]],"scatter",100)
+        Process([[File_list1[i]],[File_list3[i]]],"scatter",100)
+        Process([[File_list2[i]],[File_list3[i]]],"scatter",100)
         # except:
         #     print("ERROR ", File_list1[i])
         # try:

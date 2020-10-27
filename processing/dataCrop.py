@@ -1,9 +1,10 @@
 # coding: UTF-8
 import csv
 import datetime
+import sys
+args = sys.argv
+filename = args[1]
 
-filename = "crop_MI19-11-11_19h58m31s.csv"
-cutoff = 20
 def eliminate_f(date_str):
     date = datetime.datetime.strptime(date_str, '%H:%M:%S.%f')
     return date.strftime('%H:%M:%S')
@@ -67,7 +68,7 @@ def main():
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
     print(header)
-    crop(f,header,header[0] + ' 20:10:30', header[0] + ' 20:11:00')
+    crop(f,header,header[0] + ' 19:10:00', header[0] + ' 19:20:00')
 
 if __name__ == '__main__':
     main()
