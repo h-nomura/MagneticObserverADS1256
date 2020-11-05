@@ -156,99 +156,166 @@ def fit_timecode(df_print):
     return df_print
 
 def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(9, 9))
-    ax_1ch = fig.add_subplot(221)
-    ax_2ch = fig.add_subplot(222)
-    ax_3ch = fig.add_subplot(223)
-    ax_4ch = fig.add_subplot(224)
+    fig = plt.figure(figsize=(10, 3))
+    ax_1ch = fig.add_subplot(131)
+    ax_2ch = fig.add_subplot(132)
+    ax_3ch = fig.add_subplot(133)
+    # ax_4ch = fig.add_subplot(224)
+    # ax_1ch.set_aspect('equal', adjustable='box')
+    # ax_2ch.set_aspect('equal', adjustable='box')
+    # ax_3ch.set_aspect('equal', adjustable='box')
 
     ax_1ch.yaxis.grid(True)
     ax_2ch.yaxis.grid(True)
     ax_3ch.yaxis.grid(True)
-    ax_4ch.yaxis.grid(True)
-    ax_1ch.tick_params(labelsize=18)
-    ax_2ch.tick_params(labelsize=18)
-    ax_3ch.tick_params(labelsize=18)
-    ax_4ch.tick_params(labelsize=18)
-    ax_1ch.set_title('X [nT]', fontsize=18)
-    ax_2ch.set_title('Y [nT]', fontsize=18)
-    ax_3ch.set_title('Z [nT]', fontsize=18)
-    ax_4ch.set_title('Temperature [nT]', fontsize=18)
+    # ax_4ch.yaxis.grid(True)
+    # ax_1ch.tick_params(labelsize=18)
+    # ax_2ch.tick_params(labelsize=18)
+    # ax_3ch.tick_params(labelsize=18)
+    # ax_4ch.tick_params(labelsize=18)
+    ax_1ch.set_title('X [nT]')
+    ax_2ch.set_title('Y [nT]')
+    ax_3ch.set_title('Z [nT]')
+    # ax_4ch.set_title('Temperature [C]', fontsize=18)
 
     #### plot line color ####
     df_print = fit_timecode(df_print)
-    ax_1ch.scatter(df_print[0]['1ch'], df_print[1]['1ch'], color = 'r')
-    ax_2ch.scatter(df_print[0]['2ch'], df_print[1]['2ch'], color = 'b')
-    ax_3ch.scatter(df_print[0]['3ch'], df_print[1]['3ch'], color = 'g')
-    ax_4ch.scatter(df_print[0]['4ch'], df_print[1]['4ch'], color = 'k')
-    
-    #### Linear simple regression ####
-    clf1ch = linear_model.LinearRegression()
-    clf2ch = linear_model.LinearRegression()
-    clf3ch = linear_model.LinearRegression()
-    clf4ch = linear_model.LinearRegression()
-    df1ch_1 = pd.DataFrame(df_print[0]['1ch'].T)
-    df1ch_2 = pd.DataFrame(df_print[1]['1ch'].T)
-    df2ch_1 = pd.DataFrame(df_print[0]['2ch'].T)
-    df2ch_2 = pd.DataFrame(df_print[1]['2ch'].T)
-    df3ch_1 = pd.DataFrame(df_print[0]['3ch'].T)
-    df3ch_2 = pd.DataFrame(df_print[1]['3ch'].T)
-    df4ch_1 = pd.DataFrame(df_print[0]['4ch'].T)
-    df4ch_2 = pd.DataFrame(df_print[1]['4ch'].T)
+    if F_flag == "scatter":
+        ax_1ch.scatter(df_print[0]['1ch'], df_print[1]['1ch'], color = 'r')
+        ax_2ch.scatter(df_print[0]['2ch'], df_print[1]['2ch'], color = 'b')
+        ax_3ch.scatter(df_print[0]['3ch'], df_print[1]['3ch'], color = 'g')
+        # ax_4ch.scatter(df_print[0]['4ch'], df_print[1]['4ch'], color = 'k')
+        #### plot X axis limit ####
+        median_1ch = np.median(df_print[0]['1ch'])
+        median_2ch = np.median(df_print[0]['2ch'])
+        median_3ch = np.median(df_print[0]['3ch'])
+        # median_4ch = np.median(df_print[0]['4ch'])
+        ax_1ch.set_xlim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
+        ax_2ch.set_xlim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
+        ax_3ch.set_xlim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
+        # ax_4ch.set_xlim([median_4ch - (1/4),median_4ch + (1/4)])
+        X1chMIN = median_1ch - (Yrange/2)
+        X1chMAX = median_1ch + (Yrange/2)
+        X2chMIN = median_2ch - (Yrange/2)
+        X2chMAX = median_2ch + (Yrange/2)
+        X3chMIN = median_3ch - (Yrange/2)
+        X3chMAX = median_3ch + (Yrange/2)
+        arg1ch = []
+        arg2ch = []
+        arg3ch = []
+        for i in range(len(df_print[0]['1ch'])):
+            if df_print[0]['1ch'][i] < X1chMIN:
+                arg1ch.append(i)
+            if df_print[0]['1ch'][i] > X1chMAX:
+                arg1ch.append(i)
+            if df_print[0]['2ch'][i] < X2chMIN:
+                arg2ch.append(i)
+            if df_print[0]['2ch'][i] > X2chMAX:
+                arg2ch.append(i)
+            if df_print[0]['3ch'][i] < X3chMIN:
+                arg3ch.append(i)
+            if df_print[0]['3ch'][i] > X3chMAX:
+                arg3ch.append(i)
+        arg1ch.reverse()
+        arg2ch.reverse()
+        arg3ch.reverse()
+        for i in arg1ch:
+            df_print[0]['1ch'].pop(i)
+            df_print[1]['1ch'].pop(i)
+        for i in arg2ch:
+            df_print[0]['2ch'].pop(i)
+            df_print[1]['2ch'].pop(i)
+        for i in arg3ch:
+            df_print[0]['3ch'].pop(i)
+            df_print[1]['3ch'].pop(i)
+        #### plot Y axis limit ####
+        median_1ch = np.median(df_print[1]['1ch'])
+        median_2ch = np.median(df_print[1]['2ch'])
+        median_3ch = np.median(df_print[1]['3ch'])
+        # median_4ch = np.median(df_print[1]['4ch'])
+        ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
+        ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
+        ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
+        # ax_4ch.set_ylim([median_4ch - (1/4),median_4ch + (1/4)])
+        # Y1chMIN = median_1ch - (Yrange/2)
+        # Y1chMAX = median_1ch + (Yrange/2)
+        # Y2chMIN = median_2ch - (Yrange/2)
+        # Y2chMAX = median_2ch + (Yrange/2)
+        # Y3chMIN = median_3ch - (Yrange/2)
+        # Y3chMAX = median_3ch + (Yrange/2)
+        # arg1ch = []
+        # arg2ch = []
+        # arg3ch = []
+        # for i in range(len(df_print[1]['1ch'])):
+        #     if df_print[1]['1ch'][i] < Y1chMIN:
+        #         arg1ch.append(i)
+        #     if df_print[1]['1ch'][i] > Y1chMAX:
+        #         arg1ch.append(i)
+        #     if df_print[1]['2ch'][i] < Y2chMIN:
+        #         arg2ch.append(i)
+        #     if df_print[1]['2ch'][i] > Y2chMAX:
+        #         arg2ch.append(i)
+        #     if df_print[1]['3ch'][i] < Y3chMIN:
+        #         arg3ch.append(i)
+        #     if df_print[1]['3ch'][i] > Y3chMAX:
+        #         arg3ch.append(i)
+        # arg1ch.reverse()
+        # arg2ch.reverse()
+        # arg3ch.reverse()
+        # for i in arg1ch:
+        #     df_print[0]['1ch'].pop(i)
+        #     df_print[1]['1ch'].pop(i)
+        # for i in arg2ch:
+        #     df_print[0]['2ch'].pop(i)
+        #     df_print[1]['2ch'].pop(i)
+        # for i in arg3ch:
+        #     df_print[0]['3ch'].pop(i)
+        #     df_print[1]['3ch'].pop(i)        
+        #### Linear simple regression ####
+        clf1ch = linear_model.LinearRegression()
+        clf2ch = linear_model.LinearRegression()
+        clf3ch = linear_model.LinearRegression()
+        # clf4ch = linear_model.LinearRegression()
+        df1ch_1 = pd.DataFrame(df_print[0]['1ch'].T)
+        df1ch_2 = pd.DataFrame(df_print[1]['1ch'].T)
+        df2ch_1 = pd.DataFrame(df_print[0]['2ch'].T)
+        df2ch_2 = pd.DataFrame(df_print[1]['2ch'].T)
+        df3ch_1 = pd.DataFrame(df_print[0]['3ch'].T)
+        df3ch_2 = pd.DataFrame(df_print[1]['3ch'].T)
+        # df4ch_1 = pd.DataFrame(df_print[0]['4ch'].T)
+        # df4ch_2 = pd.DataFrame(df_print[1]['4ch'].T)
 
-    # Serial_num = np.arange(len(df_print[0]['1ch']))
-    # clf1ch.fit(np.stack([Serial_num,df_print[0]['1ch']]),np.stack([Serial_num,df_print[1]['1ch']]))
-    # clf2ch.fit(np.stack([Serial_num,df_print[0]['2ch']]),np.stack([Serial_num,df_print[1]['2ch']]))
-    # clf3ch.fit(np.stack([Serial_num,df_print[0]['3ch']]),np.stack([Serial_num,df_print[1]['3ch']]))
-    # clf4ch.fit(np.stack([Serial_num,df_print[0]['4ch']]),np.stack([Serial_num,df_print[1]['4ch']]))
-    clf1ch.fit(df1ch_1,df1ch_2)
-    clf2ch.fit(df2ch_1,df2ch_2)
-    clf3ch.fit(df3ch_1,df3ch_2)
-    clf4ch.fit(df4ch_1,df4ch_2)
-    # clf2ch.fit(df_print[0]['2ch'],df_print[1]['2ch'])
-    # clf3ch.fit(df_print[0]['3ch'],df_print[1]['3ch'])
-    # clf4ch.fit(df_print[0]['4ch'],df_print[1]['4ch'])
-    ax_1ch.plot(df1ch_1, clf1ch.predict(df1ch_1), color = 'y')
-    ax_2ch.plot(df2ch_1, clf2ch.predict(df2ch_1), color = 'y')
-    ax_3ch.plot(df3ch_1, clf3ch.predict(df3ch_1), color = 'y')
-    ax_4ch.plot(df4ch_1, clf4ch.predict(df4ch_1), color = 'y')
-    # ax_1ch.plot(np.stack([Serial_num,df_print[0]['1ch']]), clf1ch.predict(np.stack([Serial_num,df_print[0]['1ch']])), color = 'r')
-    # ax_2ch.plot(np.stack([Serial_num,df_print[0]['2ch']]), clf2ch.predict(np.stack([Serial_num,df_print[0]['2ch']])), color = 'b')
-    # ax_3ch.plot(np.stack([Serial_num,df_print[0]['3ch']]), clf3ch.predict(np.stack([Serial_num,df_print[0]['3ch']])), color = 'g')
-    # ax_4ch.plot(np.stack([Serial_num,df_print[0]['4ch']]), clf4ch.predict(np.stack([Serial_num,df_print[0]['4ch']])), color = 'k')
-    text1ch = "Regression coefficient = "+'{:.1f}'.format(clf1ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf1ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf1ch.score(df1ch_1,df1ch_2))
-    text2ch = "Regression coefficient = "+'{:.1f}'.format(clf2ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf2ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf2ch.score(df2ch_1,df2ch_2))
-    text3ch = "Regression coefficient = "+'{:.1f}'.format(clf3ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf3ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf3ch.score(df3ch_1,df3ch_2))
-    text4ch = "Regression coefficient = "+'{:.1f}'.format(clf4ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf4ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf4ch.score(df4ch_1,df4ch_2))
-    ##ax.transAxesをつけると、表示位置がAxesの相対位置で指定できる
-    ax_1ch.text(0.1, 0.9, text1ch, va='top', ha='left',transform=ax_1ch.transAxes)
-    ax_2ch.text(0.1, 0.9, text2ch, va='top', ha='left',transform=ax_2ch.transAxes)
-    ax_3ch.text(0.1, 0.9, text3ch, va='top', ha='left',transform=ax_3ch.transAxes)
-    ax_4ch.text(0.1, 0.9, text4ch, va='top', ha='left',transform=ax_4ch.transAxes)
+        clf1ch.fit(df1ch_1,df1ch_2)
+        clf2ch.fit(df2ch_1,df2ch_2)
+        clf3ch.fit(df3ch_1,df3ch_2)
+        # clf4ch.fit(df4ch_1,df4ch_2)
+        ax_1ch.plot(df1ch_1, clf1ch.predict(df1ch_1), color = 'y')
+        ax_2ch.plot(df2ch_1, clf2ch.predict(df2ch_1), color = 'y')
+        ax_3ch.plot(df3ch_1, clf3ch.predict(df3ch_1), color = 'y')
+        # ax_4ch.plot(df4ch_1, clf4ch.predict(df4ch_1), color = 'y')
+        text1ch = "Slope = "+'{:.2f}'.format(clf1ch.coef_[0][0])+"\nR^2 = "+'{:.2f}'.format(clf1ch.score(df1ch_1,df1ch_2))
+        text2ch = "Slope = "+'{:.2f}'.format(clf2ch.coef_[0][0])+"\nR^2 = "+'{:.2f}'.format(clf2ch.score(df2ch_1,df2ch_2))
+        text3ch = "Slope = "+'{:.2f}'.format(clf3ch.coef_[0][0])+"\nR^2 = "+'{:.2f}'.format(clf3ch.score(df3ch_1,df3ch_2))
+        # text1ch = "Slope = "+'{:.2f}'.format(clf1ch.coef_[0][0])+"\nIntercept = "+'{:.2f}'.format(clf1ch.intercept_[0])+"\nR^2 = "+'{:.2f}'.format(clf1ch.score(df1ch_1,df1ch_2))
+        # text2ch = "Slope = "+'{:.2f}'.format(clf2ch.coef_[0][0])+"\nIntercept = "+'{:.2f}'.format(clf2ch.intercept_[0])+"\nR^2 = "+'{:.2f}'.format(clf2ch.score(df2ch_1,df2ch_2))
+        # text3ch = "Slope = "+'{:.2f}'.format(clf3ch.coef_[0][0])+"\nIntercept = "+'{:.2f}'.format(clf3ch.intercept_[0])+"\nR^2 = "+'{:.2f}'.format(clf3ch.score(df3ch_1,df3ch_2))
+        # text4ch = "Regression coefficient = "+'{:.1f}'.format(clf4ch.coef_[0][0])+"\nIntercept = "+'{:.1f}'.format(clf4ch.intercept_[0])+"\nCoefficient of determination = "+'{:.1f}'.format(clf4ch.score(df4ch_1,df4ch_2))
+        ##ax.transAxesをつけると、表示位置がAxesの相対位置で指定できる
+        ax_1ch.text(0.1, 0.9, text1ch, va='top', ha='left',transform=ax_1ch.transAxes,fontsize='large')
+        ax_2ch.text(0.1, 0.9, text2ch, va='top', ha='left',transform=ax_2ch.transAxes,fontsize='large')
+        ax_3ch.text(0.1, 0.9, text3ch, va='top', ha='left',transform=ax_3ch.transAxes,fontsize='large')
+        # ax_4ch.text(0.1, 0.9, text4ch, va='top', ha='left',transform=ax_4ch.transAxes)
+
+    elif F_flag == "scatterT":
+        ax_1ch.scatter(df_print[0]['1ch'], df_print[0]['4ch'], color = 'r')
+        ax_2ch.scatter(df_print[0]['2ch'], df_print[0]['4ch'], color = 'b')
+        ax_3ch.scatter(df_print[0]['3ch'], df_print[0]['4ch'], color = 'g')
+        
     #### plot grid ####
     ax_1ch.xaxis.grid(True)
     ax_2ch.xaxis.grid(True)
     ax_3ch.xaxis.grid(True)
-    ax_4ch.xaxis.grid(True)
-    #### plot X axis limit ####
-    median_1ch = np.median(df_print[0]['1ch'])
-    median_2ch = np.median(df_print[0]['2ch'])
-    median_3ch = np.median(df_print[0]['3ch'])
-    median_4ch = np.median(df_print[0]['4ch'])
-    ax_1ch.set_xlim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
-    ax_2ch.set_xlim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
-    ax_3ch.set_xlim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
-    ax_4ch.set_xlim([median_4ch - (1/4),median_4ch + (1/4)])
-    #### plot Y axis limit ####
-    median_1ch = np.median(df_print[1]['1ch'])
-    median_2ch = np.median(df_print[1]['2ch'])
-    median_3ch = np.median(df_print[1]['3ch'])
-    median_4ch = np.median(df_print[1]['4ch'])
-    ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
-    ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
-    ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
-    ax_4ch.set_ylim([median_4ch - (1/4),median_4ch + (1/4)])
-    
+    # ax_4ch.xaxis.grid(True)
  
     if dat_path != '':    
         df_print.to_csv(dat_path)
@@ -373,8 +440,6 @@ def Process(fileName,F_flag ,Yrange):
         buff_4ch = []
         df_print.append(pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch}))
 
-    fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
-    end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
     fig_dir = './fig/SGEPSS_scatter/'
     figFileDate = rawtime[0].strftime('%Y-%m-%d_%H%M%S') + rawtime[-1].strftime('-%Y-%m-%d_%H%M%S')
     my_makedirs(fig_dir)
@@ -408,9 +473,9 @@ def main():
         File_list3.append(countUP_filename(File[2],3,i))    
     for i in range(1):
         # try:
-        Process([[File_list1[i]],[File_list2[i]]],"scatter",100)
-        Process([[File_list1[i]],[File_list3[i]]],"scatter",100)
-        Process([[File_list2[i]],[File_list3[i]]],"scatter",100)
+        # Process([[File_list1[i]],[File_list2[i]]],"scatter",100)
+        Process([[File_list1[i]],[File_list3[i]]],"scatterT",100)
+        Process([[File_list2[i]],[File_list3[i]]],"scatterT",100)
         # except:
         #     print("ERROR ", File_list1[i])
         # try:

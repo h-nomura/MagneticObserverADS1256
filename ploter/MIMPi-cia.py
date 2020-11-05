@@ -220,7 +220,7 @@ def test_plot(x):
     plt.show()
 
 def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 12))
+    fig = plt.figure(figsize=(6, 6))
     ax_1ch = fig.add_subplot(611)
     ax_2ch = fig.add_subplot(612)
     ax_3ch = fig.add_subplot(613)
@@ -311,7 +311,7 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
 
     if dat_path != '':    
         df_print.to_csv(dat_path)
-    ax_1ch.set_title(title)
+    # ax_1ch.set_title(title)
     fig.tight_layout()    #文字が重ならないよう調整
     fig.align_labels()    #軸ラベルを揃える
     plt.savefig(fig_path)
@@ -398,9 +398,9 @@ def ICA_process2(y1,y2,y3,y4,y5,y6):
     y1 = np.dot(S,A_)[:,0] + y1mean
     y2 = np.dot(S,A_)[:,1] + y2mean
     y3 = np.dot(S,A_)[:,2] + y3mean
-    y4 = np.dot(N,A_)[:,0] + y1mean
-    y5 = np.dot(N,A_)[:,1] + y2mean
-    y6 = np.dot(N,A_)[:,2] + y3mean
+    y4 = np.dot(S,A_)[:,3] + y4mean
+    y5 = np.dot(S,A_)[:,4] + y5mean
+    y6 = np.dot(S,A_)[:,5] + y6mean
     test_plot([y1,y2,y3,y4,y5,y6])
     return [x[0],x[1],x[2],x[3],x[4],x[5]], [y1,y2,y3,y4,y5,y6,choiceNUM]
 
@@ -503,7 +503,7 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         ana_print.append(pd.DataFrame({'time':df_print[0]['time'],'1ch':ica_result1[0],'2ch':ica_result1[1],'3ch':ica_result1[2],'4ch':df_print[0]['4ch']}))
         ana_print.append(pd.DataFrame({'time':df_print[1]['time'],'1ch':ica_result1[3],'2ch':ica_result1[4],'3ch':ica_result1[5],'4ch':df_print[1]['4ch']}))
         ana_print2.append(pd.DataFrame({'time':df_print[0]['time'],'1ch':ica_result2[0],'2ch':ica_result2[1],'3ch':ica_result2[2],'4ch':df_print[0]['4ch']}))
-        ana_print2.append(pd.DataFrame({'time':df_print[2]['time'],'1ch':df_print[2]['1ch'],'2ch':df_print[2]['2ch'],'3ch':df_print[2]['3ch'],'4ch':df_print[1]['4ch']}))
+        ana_print2.append(pd.DataFrame({'time':df_print[2]['time'],'1ch':ica_result2[3],'2ch':ica_result2[4],'3ch':ica_result2[5],'4ch':df_print[1]['4ch']}))
     elif F_flag == "PCA":
         ica_result_x = PCA_process_2sig(df_print[0]['1ch'],df_print[1]['1ch'])
         ica_result_y = PCA_process_2sig(df_print[0]['2ch'],df_print[1]['2ch'])
@@ -529,9 +529,11 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         fig_plot(ana_print,labelList,title, fig_path,F_flag, Yrange=Yrange)
 
     if F_flag == 'ICA':
-        labelList = ['component1','component2','component3','component4','component5','component6']
+        # labelList = ['component1','component2','component3','component4','component5','component6']
+        labelList = ['comp1','comp2','comp3','com4','comp5','comp6']
         # labelList2 = ['X [nT]','Y [nT]','Z [nT]','Noise of X [nT]','Noise of Y [nT]','Noise of Z [nT]']
-        labelList2 = ['X of MIM-Pi No1 [nT]','Y of MIM-Pi No1 [nT]','Z of MIM-Pi No1 [nT]','X of Fluxgate [nT]','Y of Fluxgate [nT]','Z of Fluxgate [nT]']
+        labelList2 = ['X1 [nT]','Y1 [nT]','Z1 [nT]','X2 [nT]','Y2 [nT]','Z2 [nT]']
+        # labelList2 = ['X of No1 [nT]','Y of No1 [nT]','Z of No1 [nT]','X of No2 [nT]','Y of No2 [nT]','Z of No2 [nT]']
         fig_path1 = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+"_analysis_component"+siteInfo+'.png'
         fig_path2 = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+"_analysis_Result"+ica_result2[6]+siteInfo+'.png'
         fig_plot(ana_print,labelList,title, fig_path1,F_flag, Yrange=0)
@@ -578,7 +580,7 @@ def main():
     # Process([File[0],File[1]],"06:00:00","09:00:00","median",100)
     # Process([File[0],File[1]],"09:00:00","12:00:00","median",100)
     # Process([File[0],File[1]],"12:00:00","15:00:00","median",100)
-    Process([File[0],File[1],File[2]],"19:00:00","20:00:00","ICA",10)
+    Process([File[0],File[1],File[2]],"19:25:00","19:30:00","ICA",5)
     # Process([File[0],File[1]],"18:00:00","21:00:00","PCA",10)
     # day_1hour([File[0],File[1]],"PCA",20)
 

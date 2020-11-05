@@ -203,7 +203,7 @@ def Signal_plot(x,y, title, fig_path, F_flag, dat_path = '', Yrange = 0):
     plt.savefig(fig_path)
     plt.close()
 def test_plot(x):
-    fig = plt.figure(figsize=(12, 12))
+    fig = plt.figure(figsize=(9, 9))
     ax_1ch = fig.add_subplot(611)
     ax_2ch = fig.add_subplot(612)
     ax_3ch = fig.add_subplot(613)
@@ -221,7 +221,7 @@ def test_plot(x):
 
 
 def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 12))
+    fig = plt.figure(figsize=(6, 6))
     ax_1ch = fig.add_subplot(611)
     ax_2ch = fig.add_subplot(612)
     ax_3ch = fig.add_subplot(613)
@@ -242,7 +242,7 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
     # ax_5ch.tick_params(labelsize=18)
     # ax_6ch.tick_params(labelsize=18)
     if len(labelList) != 6:
-        labelList = ['X of No1[nT]','Y of No1[nT]','Z of No1[nT]','X of No2[nT]','Y of No2[nT]','Z of No2[nT]']
+        labelList = ['X1 [nT]','Y1 [nT]','Z1 [nT]','X2 [nT]','Y2 [nT]','Z2 [nT]']
     ax_1ch.set_ylabel(labelList[0])
     ax_2ch.set_ylabel(labelList[1])
     ax_3ch.set_ylabel(labelList[2])
@@ -312,7 +312,7 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
 
     if dat_path != '':    
         df_print.to_csv(dat_path)
-    ax_1ch.set_title(title)
+    # ax_1ch.set_title(title)
     fig.tight_layout()    #文字が重ならないよう調整
     fig.align_labels()    #軸ラベルを揃える
     plt.savefig(fig_path)
@@ -499,18 +499,18 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
  
     fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
-    fig_dir = './fig/' + fig_date.strftime('%Y-%m-%d') + siteInfo
+    fig_dir = './fig/2plt/' + fig_date.strftime('%Y-%m-%d') + siteInfo
     figFileDate = fig_date.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S')
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
     #### graph print ####
-    # labelList = [""]
+    labelList = [""]
     # labelList = ['X of MIM-Pi No1 [nT]','Y of MIM-Pi No1 [nT]',
     # 'Z of MIM-Pi No1 [nT]','X of MIM-Pi No2 [nT]',
     # 'Y of MIM-Pi No2 [nT]','Z of MIM-Pi No2 [nT]',
     # 'X of Fluxgate [nT]','Y of Fluxgate [nT]','Z of Fluxgate [nT]']
-    labelList = ['X of MIM-Pi No1 [nT]','Y of MIM-Pi No1 [nT]',
-    'Z of MIM-Pi No1 [nT]','X of Fluxgate [nT]','Y of Fluxgate [nT]','Z of Fluxgate [nT]']
+    # labelList = ['X of MIM-Pi No1 [nT]','Y of MIM-Pi No1 [nT]',
+    # 'Z of MIM-Pi No1 [nT]','X of Fluxgate [nT]','Y of Fluxgate [nT]','Z of Fluxgate [nT]']
     fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
     fig_plot(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
     
@@ -552,7 +552,7 @@ def main():
     # Process([File[0],File[1]],"06:00:00","09:00:00","median",100)
     # Process([File[0],File[1]],"09:00:00","12:00:00","median",100)
     # Process([File[0],File[1]],"12:00:00","15:00:00","median",100)
-    Process([File[0],File[2]],"19:00:00","20:00:00","median",10)
+    Process([File[0],File[1]],"19:25:00","19:30:00","median",5)
     # Process([File[0],File[1]],"18:00:00","21:00:00","PCA",10)
     # day_1hour([File[0],File[1]],"median",20)
 

@@ -44,7 +44,15 @@ def format_to_day_T(date_timestamp):
         return date.strftime('%Y-%m-%d ')
     except ValueError:
         date = datetime.datetime.strptime(date_timestamp, '%Y-%m-%d %H:%M:%S.%f')
-        return date.strftime('%Y-%m-%d ')        
+        return date.strftime('%Y-%m-%d ') 
+
+def f_date_str(date_timestamp):
+    try:
+        date = date_timestamp
+        return date.strftime('%H:%M:%S.%f')
+    except ValueError:
+        date = datetime.datetime.strptime(date_timestamp, '%Y-%m-%d %H:%M:%S.%f')
+        return date.strftime('%H:%M:%S.%f')        
 
 def search_start(dataTime,start_dataTime_str):
     i = 0
@@ -112,29 +120,31 @@ def list_round(l):
     return out_list
 
 def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 8))
-    ax_1ch = fig.add_subplot(411)
-    ax_2ch = fig.add_subplot(412)
-    ax_3ch = fig.add_subplot(413)
-    ax_4ch = fig.add_subplot(414)
+    fig = plt.figure(figsize=(6, 4))
+    ax_1ch = fig.add_subplot(311)
+    ax_2ch = fig.add_subplot(312)
+    ax_3ch = fig.add_subplot(313)
+    # ax_4ch = fig.add_subplot(414)
 
     ax_1ch.yaxis.grid(True)
     ax_2ch.yaxis.grid(True)
     ax_3ch.yaxis.grid(True)
-    ax_4ch.yaxis.grid(True)
-    ax_1ch.tick_params(labelsize=18)
-    ax_2ch.tick_params(labelsize=18)
-    ax_3ch.tick_params(labelsize=18)
-    ax_4ch.tick_params(labelsize=18)
-    ax_1ch.set_ylabel('X [nT]', fontsize=18)
-    ax_2ch.set_ylabel('Y [nT]', fontsize=18)
-    ax_3ch.set_ylabel('Z [nT]', fontsize=18)
-    ax_4ch.set_ylabel('Temperature [nT]', fontsize=18)
+    # ax_4ch.yaxis.grid(True)
+    # ax_1ch.tick_params(labelsize=18)
+    # ax_2ch.tick_params(labelsize=18)
+    # ax_3ch.tick_params(labelsize=18)
+    # ax_4ch.tick_params(labelsize=18)
+    ax_1ch.set_ylabel('X [nT]')
+    ax_2ch.set_ylabel('Y [nT]')
+    ax_3ch.set_ylabel('Z [nT]')
+    # ax_4ch.set_ylabel('Temperature [nT]', fontsize=18)
 
     if F_flag == "FFT":
         N = len(df_print['time'])
-        dt = 1
-        # dt = (60*60*24) / len(df_print['time'])#sampling freq
+        # dt = 1
+        # dt = (60) / len(df_print['time'])#sampling freq
+        SampltingRate = get_Srate(df_print['time'])
+        dt = 1 / SampltingRate
         print("sampling = " + str(1 / dt))
         F1 = np.fft.fft(df_print['1ch'])
         F2 = np.fft.fft(df_print['2ch'])
@@ -158,9 +168,9 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
         # ax_1ch.set_xlim(0.01,1000)
         # ax_2ch.set_xlim(0.01,1000)
         # ax_3ch.set_xlim(0.01,1000)
-        ax_1ch.set_xscale('log')
-        ax_2ch.set_xscale('log')
-        ax_3ch.set_xscale('log')
+        # ax_1ch.set_xscale('log')
+        # ax_2ch.set_xscale('log')
+        # ax_3ch.set_xscale('log')
         ax_1ch.set_yscale('log')
         ax_2ch.set_yscale('log')
         ax_3ch.set_yscale('log')
@@ -174,13 +184,14 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
         # ax_1ch.yaxis.grid(which = "both")
         # ax_2ch.yaxis.grid(which = "both")
         # ax_3ch.yaxis.grid(which = "both")
-        yLimit = [1,10**4]
+        yLimit = [10,10**(3.5)]
         # yLimit = [1,10**3]
         ax_1ch.set_ylim(yLimit)
         ax_2ch.set_ylim(yLimit)
         ax_3ch.set_ylim(yLimit)
-        xLimit = [10**(-5),1]
-        # xLimit = [10**(-4),1]
+        # xLimit = [10**(-5),1]
+        # xLimit = [10**(-1),10**(-1)]
+        xLimit =[0,SampltingRate/2]
         ax_1ch.set_xlim(xLimit)
         ax_2ch.set_xlim(xLimit)
         ax_3ch.set_xlim(xLimit)
@@ -192,12 +203,12 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
         ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
         ax_2ch.plot(df_print['time'], df_print['2ch'], color = 'b')
         ax_3ch.plot(df_print['time'], df_print['3ch'], color = 'g')
-        ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'k')
+        # ax_4ch.plot(df_print['time'], df_print['4ch'], color = 'k')
         #### plot grid ####
         ax_1ch.xaxis.grid(True)
         ax_2ch.xaxis.grid(True)
         ax_3ch.xaxis.grid(True)
-        ax_4ch.xaxis.grid(True)
+        # ax_4ch.xaxis.grid(True)
         #### plot Y axis limit ####
         if Yrange != 0:
             median_1ch = np.median(df_print['1ch'])
@@ -212,21 +223,48 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
         ax_1ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         ax_2ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         ax_3ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
-        ax_4ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
+        # ax_4ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         #### plot X label print format ####
-        # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-        ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
+        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+        # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
         # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
     #### show only X label of bottom graph #### 
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
-    plt.setp(ax_3ch.get_xticklabels(),visible=False)
-
+    # plt.setp(ax_3ch.get_xticklabels(),visible=False)
+    # plt.subplots_adjust(top=0.7) # 図と被ってしまうので少し上を空ける
+    fig.tight_layout()    #文字が重ならないよう調整
+    fig.align_labels()    #軸ラベルを揃える
     if dat_path != '':    
         df_print.to_csv(dat_path)
-    ax_1ch.set_title(title)
+    # ax_1ch.set_title(title)
     plt.savefig(fig_path)
     plt.close()
+
+def get_Srate(time_dat):
+    now_time  = eliminate_f(f_date_str(time_dat[0]))
+    i = 0
+    l = []
+    try:
+        while(len(l)< 30):
+            #### load head ####
+            while(1):
+                i += 1
+                if now_time != eliminate_f(f_date_str(time_dat[i])):
+                    now_time = eliminate_f(f_date_str(time_dat[i]))
+                    break
+            #### count ####
+            count = 0
+            while(1):
+                i += 1
+                count += 1
+                if now_time != eliminate_f(f_date_str(time_dat[i])):
+                    l.append(count)
+                    break
+        print(l)
+        return mean(l)             
+    except IndexError:
+        return 0
 
 def my_makedirs(path):
     if not os.path.isdir(path):
@@ -250,7 +288,7 @@ def crop_str(str1,target,mode=0):
 
 def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     Pass = "../logger/data/" + fileName
-    siteInfo = crop_str(crop_str(fileName,"@"),".",mode=1)
+    siteInfo = "@"+crop_str(crop_str(fileName,"@"),".",mode=1)
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
@@ -313,9 +351,9 @@ def day_1hour(File, f_type, Yrange):
 
 def main():
     File = [
-    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2_10min.csv",
-    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2.csv",
+    "crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-31_00h00m00s@inabu_byNo3.csv",
     "1sec_median_MI20-10-05_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-05_00h00m00s@inabu_byNo2.csv",
     "1sec_median_MI20-10-07_00h00m00s@inabu_byNo1.csv",
@@ -325,9 +363,11 @@ def main():
     "1sec_median_MI20-10-10_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-10_00h00m00s@inabu_byNo2.csv",
     "MI19-09-20_12h39m47s.csv"]
-    Process(File[0],"00:00:00","23:59:59","median",200)
+    Process(File[0],"19:10:00","19:11:00","FFT",50)
+    # Process(File[0],"19:10:59","19:11:59","RAW",50)
+    # Process(File[1],"19:11:00","19:12:00","median",50)
     # Process(File[0],"00:00:00","23:59:59","median",200)
-    # day_1hour(File[0],"median",20)/
+    # day_1hour(File[2],"median",20)
 
 if __name__ == '__main__':
     main()

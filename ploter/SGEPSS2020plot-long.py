@@ -355,19 +355,19 @@ def countUP_filename(F_str,Num,day):
 
 def main():
     File = [
-    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI20-10-25_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-25_00h00m00s@inabu_byNo2.csv",
     "Fx20-10-04_00h00m00s@inabu_Flux.csv"]
     File_list1 = []
     File_list2 = []
     File_list3 = []
-    for i in range(16):
+    for i in range(8):
         File_list1.append(countUP_filename(File[0],1,i))
         File_list2.append(countUP_filename(File[1],2,i))
         File_list3.append(countUP_filename(File[2],3,i))    
     Process(File_list1,"median",200)
     Process(File_list2,"median",200)
-    Process(File_list3,"median",200)
+    # Process(File_list3,"median",200)
 
 if __name__ == '__main__':
     main()

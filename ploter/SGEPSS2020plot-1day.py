@@ -376,13 +376,14 @@ def main():
     File = [
     "1sec_median_MI20-10-22_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-22_00h00m00s@inabu_byNo2.csv",
-    "Fx20-10-04_00h00m00s@inabu_Flux.csv"]
-    for i in range(1):
+    "Fx20-10-04_00h00m00s@inabu_Flux.csv",
+    "1sec_median_MI20-11-02_00h00m00s@inabu_byNo3.csv"]
+    # for i in range(1):
         # Process(countUP_filename(File[2],3,i),"00:00:00","23:59:59","median",200)
-        Process(countUP_filename(File[1],2,i),"00:00:00","23:59:59","median",200)
-        Process(countUP_filename(File[0],1,i),"00:00:00","23:59:59","median",200)
+        # Process(countUP_filename(File[1],2,i),"00:00:00","23:59:59","median",200)
+        # Process(countUP_filename(File[0],1,i),"00:00:00","23:59:59","median",200)
     # Process(File[0],"00:00:00","23:59:59","median",200)
-    # day_1hour(File[0],"median",20)/
+    day_1hour(File[3],"median",20)
 
 if __name__ == '__main__':
     main()

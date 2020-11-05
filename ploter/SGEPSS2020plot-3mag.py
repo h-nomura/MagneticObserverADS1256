@@ -131,9 +131,119 @@ def test_plot(x):
     fig.tight_layout()
     plt.show()
 
+def fig_plot2(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange = 0):
+    fig = plt.figure(figsize=(16, 6))
+    ax_1ch = fig.add_subplot(321)
+    ax_2ch = fig.add_subplot(323)
+    ax_3ch = fig.add_subplot(325)
+    ax_4ch = fig.add_subplot(322)
+    ax_5ch = fig.add_subplot(324)
+    ax_6ch = fig.add_subplot(326)
 
-def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange = 0):
-    fig = plt.figure(figsize=(12, 6))
+    ax_1ch.yaxis.grid(True)
+    ax_2ch.yaxis.grid(True)
+    ax_3ch.yaxis.grid(True)
+    ax_4ch.yaxis.grid(True)
+    ax_5ch.yaxis.grid(True)
+    ax_6ch.yaxis.grid(True)
+    ax_1ch.set_ylabel(labelList[0])
+    ax_2ch.set_ylabel(labelList[1])
+    ax_3ch.set_ylabel(labelList[2])
+    ax_4ch.set_ylabel(labelList[3])
+    ax_5ch.set_ylabel(labelList[4])
+    ax_6ch.set_ylabel(labelList[5])
+    # ax_9ch.set_ylabel(labelList[8], fontsize=18)
+
+    #### plot line color ####
+    ax_1ch.plot(df_print[0]['time'], df_print[0]['1ch'], color = 'r')
+    ax_2ch.plot(df_print[0]['time'], df_print[0]['2ch'], color = 'b')
+    ax_3ch.plot(df_print[0]['time'], df_print[0]['3ch'], color = 'g')
+    ax_4ch.plot(df_print[1]['time'], df_print[1]['1ch'], color = 'r')
+    ax_5ch.plot(df_print[1]['time'], df_print[1]['2ch'], color = 'b')
+    ax_6ch.plot(df_print[1]['time'], df_print[1]['3ch'], color = 'g')
+    #### plot grid ####
+    ax_1ch.xaxis.grid(True)
+    ax_2ch.xaxis.grid(True)
+    ax_3ch.xaxis.grid(True)
+    ax_4ch.xaxis.grid(True)
+    ax_5ch.xaxis.grid(True)
+    ax_6ch.xaxis.grid(True)
+    #### plot Y axis limit ####
+    if Yrange != 0:
+        median_1ch = np.median(df_print[0]['1ch'])
+        median_2ch = np.median(df_print[0]['2ch'])
+        median_3ch = np.median(df_print[0]['3ch'])
+        median_4ch = np.median(df_print[1]['1ch'])
+        median_5ch = np.median(df_print[1]['2ch'])
+        median_6ch = np.median(df_print[1]['3ch'])
+        ax_1ch.set_ylim([median_1ch - (Yrange/2),median_1ch + (Yrange/2)])
+        ax_2ch.set_ylim([median_2ch - (Yrange/2),median_2ch + (Yrange/2)])
+        ax_3ch.set_ylim([median_3ch - (Yrange/2),median_3ch + (Yrange/2)])
+        ax_4ch.set_ylim([median_4ch - (Yrange/2),median_4ch + (Yrange/2)])
+        ax_5ch.set_ylim([median_5ch - (Yrange/2),median_5ch + (Yrange/2)])
+        ax_6ch.set_ylim([median_6ch - (Yrange/2),median_6ch + (Yrange/2)])
+    
+    ax_1ch.get_yaxis().get_major_formatter().set_useOffset(False)# X軸の数字をオフセットを使わずに表現する
+    ax_2ch.get_yaxis().get_major_formatter().set_useOffset(False)
+    ax_3ch.get_yaxis().get_major_formatter().set_useOffset(False)
+    ax_4ch.get_yaxis().get_major_formatter().set_useOffset(False)
+    ax_5ch.get_yaxis().get_major_formatter().set_useOffset(False)
+    ax_6ch.get_yaxis().get_major_formatter().set_useOffset(False)
+ 
+    #### plot X axis justified ####
+    ax_1ch.set_xlim([df_print[0]['time'][0],df_print[0]['time'][len(df_print[0]['time'])-1]])
+    ax_2ch.set_xlim([df_print[0]['time'][0],df_print[0]['time'][len(df_print[0]['time'])-1]])
+    ax_3ch.set_xlim([df_print[0]['time'][0],df_print[0]['time'][len(df_print[0]['time'])-1]])
+    ax_4ch.set_xlim([df_print[1]['time'][0],df_print[1]['time'][len(df_print[1]['time'])-1]])
+    ax_5ch.set_xlim([df_print[1]['time'][0],df_print[1]['time'][len(df_print[1]['time'])-1]])
+    ax_6ch.set_xlim([df_print[1]['time'][0],df_print[1]['time'][len(df_print[1]['time'])-1]])
+    #### plot X label print format ####
+    strings = '%H:%M'
+    # strings = '%d'
+    # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+    ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
+    ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
+    # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
+    time_scale = False
+    if time_scale == True:
+        # x = ['2020-10-04 00:00:00','2020-10-08 00:00:00','2020-10-12 00:00:00','2020-10-16 00:00:00','2020-10-20 00:00:00',]
+        x_axis = ['19:10:00','19:12:00','19:14:00','19:16:00','19:18:00','19:20:00']
+        x = []
+        print(":type:"+ str(type(df_print[0]['time'][0])))
+        for s in x_axis:
+            x.append(format_to_day_T(df_print[0]['time'][0]) + s)
+        # x.append(add_day(format_to_day_T(df_print['time'][0]) + '00:00:00'))
+        x_axis_np = pd.to_datetime(np.array(x))
+        ax_1ch.set_xticks(x_axis_np)
+        ax_2ch.set_xticks(x_axis_np)
+        ax_3ch.set_xticks(x_axis_np)
+        ax_4ch.set_xticks(x_axis_np)
+        ax_5ch.set_xticks(x_axis_np)
+        ax_6ch.set_xticks(x_axis_np)
+        ax_7ch.set_xticks(x_axis_np)
+        ax_8ch.set_xticks(x_axis_np)
+        ax_9ch.set_xticks(x_axis_np)
+        
+    #### show only X label of bottom graph #### 
+    plt.setp(ax_1ch.get_xticklabels(),visible=False)
+    plt.setp(ax_2ch.get_xticklabels(),visible=False)
+    # plt.setp(ax_3ch.get_xticklabels(),visible=False)
+    plt.setp(ax_4ch.get_xticklabels(),visible=False)
+    plt.setp(ax_5ch.get_xticklabels(),visible=False)
+
+    if dat_path != '':    
+        df_print.to_csv(dat_path)
+    # plt.suptitle(title)
+    # plt.subplots_adjust(top=0.7) # 図と被ってしまうので少し上を空ける
+    # ax_4ch.set_title("")
+    fig.tight_layout()    #文字が重ならないよう調整
+    fig.align_labels()    #軸ラベルを揃える
+    plt.savefig(fig_path)
+    plt.close()
+
+
+def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange = 0):
+    fig = plt.figure(figsize=(16, 6))
     ax_1ch = fig.add_subplot(331)
     ax_2ch = fig.add_subplot(334)
     ax_3ch = fig.add_subplot(337)
@@ -240,12 +350,33 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
     ax_8ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
     ax_9ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
     #### plot X label print format ####
-    strings = '%M'
+    # strings = '%H:%M'
+    strings = '%d'
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     ax_9ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
+    time_scale = False
+    if time_scale == True:
+        # x = ['2020-10-04 00:00:00','2020-10-08 00:00:00','2020-10-12 00:00:00','2020-10-16 00:00:00','2020-10-20 00:00:00',]
+        x_axis = ['19:10:00','19:12:00','19:14:00','19:16:00','19:18:00','19:20:00']
+        x = []
+        print(":type:"+ str(type(df_print[0]['time'][0])))
+        for s in x_axis:
+            x.append(format_to_day_T(df_print[0]['time'][0]) + s)
+        # x.append(add_day(format_to_day_T(df_print['time'][0]) + '00:00:00'))
+        x_axis_np = pd.to_datetime(np.array(x))
+        ax_1ch.set_xticks(x_axis_np)
+        ax_2ch.set_xticks(x_axis_np)
+        ax_3ch.set_xticks(x_axis_np)
+        ax_4ch.set_xticks(x_axis_np)
+        ax_5ch.set_xticks(x_axis_np)
+        ax_6ch.set_xticks(x_axis_np)
+        ax_7ch.set_xticks(x_axis_np)
+        ax_8ch.set_xticks(x_axis_np)
+        ax_9ch.set_xticks(x_axis_np)
+        
     #### show only X label of bottom graph #### 
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
     plt.setp(ax_2ch.get_xticklabels(),visible=False)
@@ -257,8 +388,8 @@ def fig_plot(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange 
 
     if dat_path != '':    
         df_print.to_csv(dat_path)
-    plt.suptitle(title)
-    plt.subplots_adjust(top=0.7) # 図と被ってしまうので少し上を空ける
+    # plt.suptitle(title)
+    # plt.subplots_adjust(top=0.7) # 図と被ってしまうので少し上を空ける
     # ax_4ch.set_title("")
     fig.tight_layout()    #文字が重ならないよう調整
     fig.align_labels()    #軸ラベルを揃える
@@ -336,21 +467,102 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
  
     fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
-    fig_dir = './fig/' + fig_date.strftime('%Y-%m-%d') + siteInfo
+    fig_dir = './fig/SGEPSS_event/' + fig_date.strftime('%Y-%m-%d') + siteInfo
     figFileDate = fig_date.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S')
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
     #### graph print ####
-    labelList = [""]
-    fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+    if F_flag == "median2sig":
+        labelList = ["X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]"]
+        fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+        fig_plot2(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
+
+        Yrange = int(Yrange / 2)
+        fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+        fig_plot2(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
+
+        Yrange = 0
+        fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+        fig_plot2(df_print,labelList,title, fig_path,F_flag, Yrange=0)    
+    else:
+        labelList = ["X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]"]
+        fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+        fig_plot3(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
+
+        Yrange = int(Yrange / 2)
+        fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+        fig_plot3(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
+
+        Yrange = 0
+        fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+        fig_plot3(df_print,labelList,title, fig_path,F_flag, Yrange=0)
+
+def Process_long(fileName,F_flag ,Yrange):
+    #### initialize ####
+    siteInfo = ""
+    df_print = []
+    for j in range(3):
+        buff_time = []
+        buff_1ch = []
+        buff_2ch = []
+        buff_3ch = []
+        buff_4ch = []
+        siteInfo +="@"+crop_str(crop_str(fileName[j][0],"@"),".",mode=1)
+        for i in range(len(fileName[j])):
+            Pass = "../logger/data/" + fileName[j][i]
+            csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
+            f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
+            header = next(f)
+            print(header)
+            start_time_str = header[0] + ' 00:00:00'
+            end_time_str = header[0] + ' 23:59:59'
+            rawdata = rawdata_maker(f,start_time_str,end_time_str)
+            rawtime = pd.to_datetime(rawdata[0])
+            # print(rawtime)
+            errer_index, NaN_date = check_errerData(rawtime,rawtime[0])
+            print("errer index amount = ",len(errer_index))
+            print("NaN index amount = ",len(NaN_date))
+            errer_index.reverse()
+            for i in errer_index:
+                rawdata[0].pop(i)
+                rawdata[1].pop(i)
+                rawdata[2].pop(i)
+                rawdata[3].pop(i)
+                rawdata[4].pop(i)
+            rawtime = pd.to_datetime(rawdata[0])
+            # print(rawtime)
+            #### joint ####
+            buff_time = buff_time + rawdata[0]
+            buff_1ch = buff_1ch + rawdata[1]
+            buff_2ch = buff_2ch + rawdata[2]
+            buff_3ch = buff_3ch + rawdata[3]
+            buff_4ch = buff_4ch + rawdata[4]
+        rawtime = pd.to_datetime(buff_time)
+        raw1ch = np.array(buff_1ch)
+        raw2ch = np.array(buff_2ch)
+        raw3ch = np.array(buff_3ch)
+        raw4ch = np.array(buff_4ch)
+
+        df_print.append(pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch}))
+
+    fig_dir = './fig/SGEPSS_all/'
+    figFileDate = rawtime[0].strftime('%Y-%m-%d_%H%M%S') + rawtime[-1].strftime('-%Y-%m-%d_%H%M%S')
+    my_makedirs(fig_dir)
+    title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
+    #### graph print ####
+    my_makedirs(fig_dir + str(Yrange) + 'nt/')
+    labelList = ["X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]"]
+    fig_path = fig_dir + str(Yrange) + 'nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
     fig_plot(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
     
     Yrange = int(Yrange / 2)
-    fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+    my_makedirs(fig_dir + str(Yrange) + 'nt/')
+    fig_path = fig_dir + str(Yrange) + 'nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
     fig_plot(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
 
     Yrange = 0
-    fig_path = fig_dir + '/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+    my_makedirs(fig_dir + str(Yrange) + 'nt/')
+    fig_path = fig_dir + '0nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
     fig_plot(df_print,labelList,title, fig_path,F_flag, Yrange=0)
 
 def cal_time(ProcessTime,mode,sec):
@@ -370,22 +582,38 @@ def day_1hour(File, f_type, Yrange):
         else:
             Process(File,ProcessTime,cal_time(ProcessTime,"add",59*60+59),f_type,Yrange)
         ProcessTime = cal_time(ProcessTime,"add",60*60)
+        
+def countUP_filename(F_str,Num,day):
+    if Num == 3:
+        F_date = datetime.datetime.strptime(F_str,"Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+    else:    
+        F_date = datetime.datetime.strptime(F_str,"1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
 
 def main():
     File = [
+    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2.csv",
+    "Fx20-10-04_00h00m00s@inabu_Flux.csv"]
+    File2 = [
     "1sec_median_MI20-10-24_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-24_00h00m00s@inabu_byNo2.csv",
-    "Fx20-10-24_00h00m00s@inabu_Flux.csv",
-    "MI19-09-20_12h39m47s.csv"]
-    # Process([File[0],File[1]],"00:00:00","23:59:59","median",200)
-    # Process([File[0],File[1]],"00:00:00","03:00:00","median",100)
-    # Process([File[0],File[1]],"03:00:00","06:00:00","median",100)
-    # Process([File[0],File[1]],"06:00:00","09:00:00","median",100)
-    # Process([File[0],File[1]],"09:00:00","12:00:00","median",100)
-    # Process([File[0],File[1]],"12:00:00","15:00:00","median",100)
-    Process([File[0],File[1],File[2]],"19:10:00","19:20:00","median",20)
-    # Process([File[0],File[1]],"18:00:00","21:00:00","PCA",10)
-    # day_1hour([File[0],File[1],File[2]],"median",20)
+    "Fx20-10-24_00h00m00s@inabu_Flux.csv"]
+
+    File_list1 = []
+    File_list2 = []
+    File_list3 = []
+    for i in range(16):
+        File_list1.append(countUP_filename(File[0],1,i))
+        File_list2.append(countUP_filename(File[1],2,i))
+        File_list3.append(countUP_filename(File[2],3,i))    
+
+    Process([File2[0],File2[2],File2[2]],"19:10:00","19:20:00","median2sig",10)
+    # Process_long([File_list1,File_list2,File_list3],"median",200)
+ 
 
 if __name__ == '__main__':
     main()

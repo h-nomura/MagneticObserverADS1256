@@ -354,11 +354,11 @@ def main():
     print("MIM-Pi Number is ??")
     MIMPinum = int(input('>> '))
     File = [
-    "MI20-10-03_04h56m47s@inabu_byNo1.csv",
+    "crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
     "MI20-10-03_04h55m55s@inabu_byNo2.csv"]
     if MIMPinum == 1:
         print("MIM-Pi number is " + str(MIMPinum))
-        Process(File[0],"08:13","08:16","median")
+        Process(File[0],"19:10","19:20","median")
     elif MIMPinum == 2:
         print("MIM-Pi number is " + str(MIMPinum))
         Process(File[0],"08:13","08:16","median")
