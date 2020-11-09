@@ -309,7 +309,7 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag):
     if F_flag == 'cutAverage':
         #print('1s median')
         ave_dat = sec_average(3,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
-        rawtime = med_dat[0]
+        rawtime = ave_dat[0]
         raw1ch = np.array(ave_dat[1])
         raw2ch = np.array(ave_dat[2])
         raw3ch = np.array(ave_dat[3])
