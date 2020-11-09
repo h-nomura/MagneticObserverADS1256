@@ -540,19 +540,37 @@ def day_1hour(File, f_type, Yrange):
             Process(File,ProcessTime,cal_time(ProcessTime,"add",59*60+59),f_type,Yrange)
         ProcessTime = cal_time(ProcessTime,"add",60*60)
 
+def countUP_filename(F_str,Num,day):
+    if Num == 3:
+        F_date = datetime.datetime.strptime(F_str,"Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+    else:    
+        F_date = datetime.datetime.strptime(F_str,"1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+
 def main():
     File = [
-    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo2.csv",
-    "Fx20-10-24_00h00m00s@inabu_Flux.csv",
+    "1sec_median_MI20-10-26_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-26_00h00m00s@inabu_byNo2.csv",
     "MI19-09-20_12h39m47s.csv"]
+    File_list1 = []
+    File_list2 = []
+    File_list3 = []
+    for i in range(7):
+        File_list1.append(countUP_filename(File[0],1,i))
+        File_list2.append(countUP_filename(File[1],2,i))
+        # File_list3.append(countUP_filename(File[2],3,i))
+    for i in range(7):
+          day_1hour([File_list1[i],File_list2[i]],"median",0)
     # Process([File[0],File[1]],"00:00:00","23:59:59","median",200)
     # Process([File[0],File[1]],"00:00:00","03:00:00","median",100)
     # Process([File[0],File[1]],"03:00:00","06:00:00","median",100)
     # Process([File[0],File[1]],"06:00:00","09:00:00","median",100)
     # Process([File[0],File[1]],"09:00:00","12:00:00","median",100)
     # Process([File[0],File[1]],"12:00:00","15:00:00","median",100)
-    Process([File[0],File[1]],"19:25:00","19:30:00","median",5)
+    # Process([File[0],File[1]],"19:25:00","19:30:00","median",5)
     # Process([File[0],File[1]],"18:00:00","21:00:00","PCA",10)
     # day_1hour([File[0],File[1]],"median",20)
 

@@ -349,21 +349,32 @@ def day_1hour(File, f_type, Yrange):
             Process(File,ProcessTime,cal_time(ProcessTime,"add59m59s"),f_type+str(i+1),Yrange)
         ProcessTime = cal_time(ProcessTime,"add1h")
 
+def countUP_filename(F_str,Num,day):
+    if Num == 3:
+        F_date = datetime.datetime.strptime(F_str,"Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+    else:    
+        F_date = datetime.datetime.strptime(F_str,"1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+
 def main():
     File = [
-    "crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-31_00h00m00s@inabu_byNo3.csv",
-    "1sec_median_MI20-10-05_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-05_00h00m00s@inabu_byNo2.csv",
-    "1sec_median_MI20-10-07_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-07_00h00m00s@inabu_byNo2.csv",
-    "1sec_median_MI20-10-09_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-09_00h00m00s@inabu_byNo2.csv",
-    "1sec_median_MI20-10-10_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-10_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI20-10-26_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-26_00h00m00s@inabu_byNo2.csv",
     "MI19-09-20_12h39m47s.csv"]
-    Process(File[0],"19:10:00","19:11:00","FFT",50)
+    File_list1 = []
+    File_list2 = []
+    File_list3 = []
+    for i in range(7):
+        File_list1.append(countUP_filename(File[0],1,i))
+        File_list2.append(countUP_filename(File[1],2,i))
+        # File_list3.append(countUP_filename(File[2],3,i))
+    for i in range(7):
+          day_1hour(File_list1[i],"median",20)
+          day_1hour(File_list2[i],"median",20)
+    # Process(File[0],"19:10:00","19:11:00","FFT",50)
     # Process(File[0],"19:10:59","19:11:59","RAW",50)
     # Process(File[1],"19:11:00","19:12:00","median",50)
     # Process(File[0],"00:00:00","23:59:59","median",200)

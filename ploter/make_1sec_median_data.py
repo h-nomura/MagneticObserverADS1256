@@ -178,6 +178,18 @@ def sec_average(op,time_dat,dat1,dat2,dat3,dat4):
                 ave_d2.append(my_mode(buff2))
                 ave_d3.append(my_mode(buff3))
                 ave_d4.append(my_mode(buff4))
+            elif op == 3:
+                num = int(len(buff1))
+                cutoff = int(num/4)
+                buff1.sort()
+                buff2.sort()
+                buff3.sort()
+                buff4.sort()
+                ave_d1.append(mean(buff1[cutoff:num-cutoff]))
+                ave_d2.append(mean(buff2[cutoff:num-cutoff]))
+                ave_d3.append(mean(buff3[cutoff:num-cutoff]))
+                ave_d4.append(mean(buff4[cutoff:num-cutoff]))
+
             return ave_t, ave_d1, ave_d2, ave_d3, ave_d4            
 
         if now != eliminate_f(time_dat[i+1]):
@@ -204,11 +216,24 @@ def sec_average(op,time_dat,dat1,dat2,dat3,dat4):
                 ave_d2.append(my_mode(buff2))
                 ave_d3.append(my_mode(buff3))
                 ave_d4.append(my_mode(buff4))
+            elif op == 3:
+                num = int(len(buff1))
+                cutoff = int(num/4)
+                buff1.sort()
+                buff2.sort()
+                buff3.sort()
+                buff4.sort()
+                ave_d1.append(mean(buff1[cutoff:num-cutoff]))
+                ave_d2.append(mean(buff2[cutoff:num-cutoff]))
+                ave_d3.append(mean(buff3[cutoff:num-cutoff]))
+                ave_d4.append(mean(buff4[cutoff:num-cutoff]))
             buff1 =[]
             buff2 =[]
             buff3 =[]
             buff4 =[]
         i += 1
+
+
 
 def get_Srate(time_dat):
     now_time  = eliminate_f(time_dat[0])
@@ -281,6 +306,14 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag):
         raw2ch = np.array(med_dat[2])
         raw3ch = np.array(med_dat[3])
         raw4ch = np.array(med_dat[4])
+    if F_flag == 'cutAverage':
+        #print('1s median')
+        ave_dat = sec_average(3,rawdata[0],raw1ch.tolist(),raw2ch.tolist(),raw3ch.tolist(),raw4ch.tolist())
+        rawtime = med_dat[0]
+        raw1ch = np.array(ave_dat[1])
+        raw2ch = np.array(ave_dat[2])
+        raw3ch = np.array(ave_dat[3])
+        raw4ch = np.array(ave_dat[4])
 
         
     if F_flag == 'mode':
@@ -332,7 +365,7 @@ def Process(fileName,StartTime,EndTime, F_flag):
     print(header)
     ###processing###
     data = data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + processTime, F_flag)
-    wPass = "../logger/data/1sec_median_" + fileName
+    wPass = "../logger/data/1sec_ave_" + fileName
     rowAmount = len(data[0])
     with open(wPass, 'w', newline="") as fw:
         writer = csv.writer(fw)
@@ -358,7 +391,7 @@ def main():
     "MI20-10-03_04h55m55s@inabu_byNo2.csv"]
     if MIMPinum == 1:
         print("MIM-Pi number is " + str(MIMPinum))
-        Process(File[0],"19:10","19:20","median")
+        Process(File[0],"19:10","19:20","cutAverage")
     elif MIMPinum == 2:
         print("MIM-Pi number is " + str(MIMPinum))
         Process(File[0],"08:13","08:16","median")

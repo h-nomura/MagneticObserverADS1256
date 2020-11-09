@@ -69,28 +69,30 @@ def search_end(dataTime,end_dataTime_str,start_arg):
         i += 1
     return -1
 
-def rawdata_maker(f,start_dataTime_str,end_dataTime_str):
+def rawdata_maker(f,start_dataTime_str,end_dataTime_str,offset=0):
     df_list_raw = {'Time':[],'ch1':[],'ch2':[],'ch3':[],'ch4':[]}
     startFlag = False
     endFlagNum = False
     dataday = format_to_day(start_dataTime_str)
     for row in f:#row is list
+        time_Date = datetime.datetime.strptime(row[0], '%H:%M:%S.%f') + datetime.timedelta(seconds=offset)
+        time_Str = time_Date.strftime('%H:%M:%S.%f')
         if startFlag == False:
-            if (dataday + eliminate_f(row[0])) == start_dataTime_str:
+            if (dataday + eliminate_f(time_Str)) == start_dataTime_str:
                 print("START")
                 startFlag = True
         if startFlag == True:
-            if (dataday + eliminate_f(row[0])) == end_dataTime_str:
+            if (dataday + eliminate_f(time_Str)) == end_dataTime_str:
                 endFlagNum = True
         if endFlagNum == True:
-            if (dataday + eliminate_f(row[0])) != end_dataTime_str:
+            if (dataday + eliminate_f(time_Str)) != end_dataTime_str:
                 print("END")
                 endFlagNum = False
                 startFlag = False
                 break
         
         if startFlag == True:
-            df_list_raw['Time'].append(dataday + row[0])
+            df_list_raw['Time'].append(dataday + time_Str)
             df_list_raw['ch1'].append(float(row[1]))
             df_list_raw['ch2'].append(float(row[2]))
             df_list_raw['ch3'].append(float(row[3]))
@@ -220,9 +222,6 @@ def fig_plot2(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
         ax_4ch.set_xticks(x_axis_np)
         ax_5ch.set_xticks(x_axis_np)
         ax_6ch.set_xticks(x_axis_np)
-        ax_7ch.set_xticks(x_axis_np)
-        ax_8ch.set_xticks(x_axis_np)
-        ax_9ch.set_xticks(x_axis_np)
         
     #### show only X label of bottom graph #### 
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
@@ -350,14 +349,14 @@ def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
     ax_8ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
     ax_9ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
     #### plot X label print format ####
-    # strings = '%H:%M'
-    strings = '%d'
+    strings = '%H:%M'
+    # strings = '%d'
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     ax_9ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
-    time_scale = False
+    time_scale = True
     if time_scale == True:
         # x = ['2020-10-04 00:00:00','2020-10-08 00:00:00','2020-10-12 00:00:00','2020-10-16 00:00:00','2020-10-20 00:00:00',]
         x_axis = ['19:10:00','19:12:00','19:14:00','19:16:00','19:18:00','19:20:00']
@@ -445,7 +444,11 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         print(header)
         start_time_str = header[0] + ' ' + StartTime
         end_time_str = header[0] + ' ' + EndTime
-        rawdata = rawdata_maker(f,start_time_str,end_time_str)
+        if i == 2:
+            offset_sec = 40
+        else:
+            offset_sec = 0
+        rawdata = rawdata_maker(f,start_time_str,end_time_str,offset=offset_sec)
         csv_file.close()
         rawtime = pd.to_datetime(rawdata[0])
         print(rawtime)
@@ -553,17 +556,17 @@ def Process_long(fileName,F_flag ,Yrange):
     my_makedirs(fig_dir + str(Yrange) + 'nt/')
     labelList = ["X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]"]
     fig_path = fig_dir + str(Yrange) + 'nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
-    fig_plot(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
+    fig_plot3(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
     
     Yrange = int(Yrange / 2)
     my_makedirs(fig_dir + str(Yrange) + 'nt/')
     fig_path = fig_dir + str(Yrange) + 'nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
-    fig_plot(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
+    fig_plot3(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
 
     Yrange = 0
     my_makedirs(fig_dir + str(Yrange) + 'nt/')
     fig_path = fig_dir + '0nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
-    fig_plot(df_print,labelList,title, fig_path,F_flag, Yrange=0)
+    fig_plot3(df_print,labelList,title, fig_path,F_flag, Yrange=0)
 
 def cal_time(ProcessTime,mode,sec):
     before = datetime.datetime.strptime(ProcessTime,"%H:%M:%S")
@@ -599,7 +602,7 @@ def main():
     "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2.csv",
     "Fx20-10-04_00h00m00s@inabu_Flux.csv"]
     File2 = [
-    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-24_00h00m00s@inabu_byNo2.csv",
     "Fx20-10-24_00h00m00s@inabu_Flux.csv"]
 
@@ -611,7 +614,7 @@ def main():
         File_list2.append(countUP_filename(File[1],2,i))
         File_list3.append(countUP_filename(File[2],3,i))    
 
-    Process([File2[0],File2[2],File2[2]],"19:10:00","19:20:00","median2sig",10)
+    Process([File2[0],File2[1],File2[2]],"19:10:00","19:20:00","median",10)
     # Process_long([File_list1,File_list2,File_list3],"median",200)
  
 
