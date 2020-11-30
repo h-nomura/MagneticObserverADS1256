@@ -225,8 +225,8 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
         ax_3ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         # ax_4ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         #### plot X label print format ####
-        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-        # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
+        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
         # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
     #### show only X label of bottom graph #### 
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
@@ -361,24 +361,27 @@ def countUP_filename(F_str,Num,day):
 
 def main():
     File = [
+    "1sec_median_MI20-11-03_00h00m00s@inabu_byNo3.csv",
+    "1sec_median_crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-26_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-26_00h00m00s@inabu_byNo2.csv",
     "MI19-09-20_12h39m47s.csv"]
     File_list1 = []
     File_list2 = []
     File_list3 = []
-    for i in range(7):
-        File_list1.append(countUP_filename(File[0],1,i))
-        File_list2.append(countUP_filename(File[1],2,i))
-        # File_list3.append(countUP_filename(File[2],3,i))
-    for i in range(7):
-          day_1hour(File_list1[i],"median",20)
-          day_1hour(File_list2[i],"median",20)
-    # Process(File[0],"19:10:00","19:11:00","FFT",50)
+    # for i in range(7):
+    #     File_list1.append(countUP_filename(File[0],1,i))
+    #     File_list2.append(countUP_filename(File[1],2,i))
+    #     # File_list3.append(countUP_filename(File[2],3,i))
+    # for i in range(7):
+    #       day_1hour(File_list1[i],"median",20)
+    #       day_1hour(File_list2[i],"median",20)
+    # Process(File[0],"19:10:00","19:11:00","ave",2)
+    # Process(File[0],"19:10:00","19:11:00","median",2)
     # Process(File[0],"19:10:59","19:11:59","RAW",50)
     # Process(File[1],"19:11:00","19:12:00","median",50)
     # Process(File[0],"00:00:00","23:59:59","median",200)
-    # day_1hour(File[2],"median",20)
+    day_1hour(File[0],"median",20)
 
 if __name__ == '__main__':
     main()
