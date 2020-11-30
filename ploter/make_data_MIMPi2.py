@@ -346,16 +346,27 @@ def Process(fileName,StartTime,EndTime, F_flag):
     ###finalize###
     csv_file.close()
 
+def countUP_filename(F_str,Num,day):
+    if Num == 3:
+        F_date = datetime.datetime.strptime(F_str,"Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+    else:    
+        F_date = datetime.datetime.strptime(F_str,"MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+
 def main():
     File = [
-    "MI20-10-18_00h00m00s@inabu_byNo2.csv",
-    "MI20-10-19_00h00m00s@inabu_byNo2.csv",
+    "MI20-11-10_00h00m00s@inabu_byNo2.csv",
+    "MI20-10-23_00h00m00s@inabu_byNo2.csv",
     "MI20-10-20_00h00m00s@inabu_byNo2.csv",]
-    for i in range(1):
+    for i in range(9):
         try:
-            Process(File[i],"00:00","23:59","median")
+            fileName = countUP_filename(File[0],2,i)
+            Process(fileName,"00:00","23:59","median")
         except:
-            print("Error: "+ File[i])
+            print("ERROR: "+ fileName)
 
 if __name__ == '__main__':
     main()
