@@ -198,6 +198,47 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
         ax_1ch.plot(fq[:int(N/2)+1], F_abs_amp1[:int(N/2)+1], color = 'r')
         ax_2ch.plot(fq[:int(N/2)+1], F_abs_amp2[:int(N/2)+1], color = 'b')
         ax_3ch.plot(fq[:int(N/2)+1], F_abs_amp3[:int(N/2)+1], color = 'g')
+    elif F_flag == "FFT1sig":
+        fig2 = plt.figure(figsize=(6, 4))
+        ax_FFT1sig = fig2.add_subplot(111)
+        ax_FFT1sig.yaxis.grid(True)
+        # ax_FFT1sig.set_ylabel('Noise density(pT/√Hz)', fontname="MS Gothic")
+        ax_FFT1sig.set_ylabel('Noise density [pT/√Hz]')
+        ax_FFT1sig.set_xlabel('frequency [Hz]')
+        N = len(df_print['time'])
+        SampltingRate = get_Srate(df_print['time'])
+        dt = 1 / SampltingRate
+        print("sampling = " + str(1 / dt))
+        F1 = np.fft.fft(df_print['1ch'])
+        F_abs1 = np.abs(F1)
+        F_abs_amp1 = F_abs1 / N * 2
+        F_abs_amp1[0] = F_abs_amp1[0] / N
+        F_abs_amp1 = np.sqrt(F_abs_amp1) * 1000
+        fq = np.linspace(0,1.0/dt,N)
+        ax_FFT1sig.set_ylim(1,1000)
+        ax_FFT1sig.set_xlim(0.01,1000)
+        ax_FFT1sig.set_xscale('log')
+        ax_FFT1sig.set_yscale('log')
+        ax_FFT1sig.xaxis.grid(which = "both")
+        y_axis_np = np.array([1,10**1,10**2,10**3])
+        ax_FFT1sig.set_yticks(y_axis_np)
+        # ax_FFT1sig.yaxis.grid(which = "both")
+        # yLimit = [10,10**(3.5)]
+        # yLimit = [1,10**3]
+        # ax_FFT1sig.set_ylim(yLimit)
+        # xLimit = [10**(-5),1]
+        # xLimit = [10**(-1),10**(-1)]
+        # xLimit =[0,SampltingRate/2]
+        # ax_FFT1sig.set_xlim(xLimit)
+        ax_FFT1sig.plot(fq[:int(N/2)+1], F_abs_amp1[:int(N/2)+1], color = 'r')
+        fig2.tight_layout()    #文字が重ならないよう調整
+        fig2.align_labels()    #軸ラベルを揃える
+        if dat_path != '':    
+            df_print.to_csv(dat_path)
+        # ax_1ch.set_title(title)
+        plt.savefig(fig_path)
+        plt.close()
+        return
     else:
         #### plot line color ####
         ax_1ch.plot(df_print['time'], df_print['1ch'], color = 'r')
@@ -367,8 +408,8 @@ def main():
     # for i in range(7):
     #       day_1hour(File_list1[i],"median",20)
     #       day_1hour(File_list2[i],"median",20)
-    Process(File[0],"06:48:00","06:49:00","FFT",0)
-    
+    # Process(File[0],"06:48:00","06:49:00","FFT1sig",0)
+    Process(File[0],"06:48:00","06:49:00","median",20)
     # for i in range(24):
     #     s_time = "06:00:00"
     #     try:
