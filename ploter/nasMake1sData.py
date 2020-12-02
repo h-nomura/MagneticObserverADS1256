@@ -233,8 +233,6 @@ def sec_average(op,time_dat,dat1,dat2,dat3,dat4):
             buff4 =[]
         i += 1
 
-
-
 def get_Srate(time_dat):
     now_time  = eliminate_f(time_dat[0])
     i = 0
@@ -314,7 +312,6 @@ def data_process(f,start_datetime_str,end_datetime_str,F_flag):
         raw2ch = np.array(ave_dat[2])
         raw3ch = np.array(ave_dat[3])
         raw4ch = np.array(ave_dat[4])
-
         
     if F_flag == 'mode':
         #print('1s mode')
@@ -353,19 +350,19 @@ def cal_time(ProcessTime,mode):
         after = before - datetime.timedelta(minutes=1)
     return after.strftime("%H:%M:%S")
 
+
 def Process(fileName,StartTime,EndTime, F_flag):
     ###initialize###
     StartTime += ":00"
-    EndTime = cal_time(EndTime+":59","sub1m") 
-    processTime = cal_time(StartTime,"add59s")
-    Pass = "../logger/data/" + fileName
+    EndTime += ":59"
+    Pass = "/nas5/users/nomura/" + fileName
     csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
     f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
     header = next(f)
     print(header)
     ###processing###
-    data = data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + processTime, F_flag)
-    wPass = "../logger/data/1sec_ave_" + fileName
+    data = data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag)
+    wPass = "/nas5/users/nomura/1sec_" + fileName
     rowAmount = len(data[0])
     with open(wPass, 'w', newline="") as fw:
         writer = csv.writer(fw)
@@ -373,28 +370,42 @@ def Process(fileName,StartTime,EndTime, F_flag):
         rowAmount = len(data[0])
         for i in range(rowAmount):
             writer.writerow([format_to_time(data[0][i]),data[1][i],data[2][i],data[3][i],data[4][i]])
-        while(processTime != EndTime):
-            #print(processTime)
-            data = data_process(f,header[0] + ' ' + cal_time(processTime,"add1s") ,header[0] + ' ' + cal_time(processTime,"add1m"), F_flag)
-            rowAmount = len(data[0])
-            for i in range(rowAmount):
-                writer.writerow([format_to_time(data[0][i]),data[1][i],data[2][i],data[3][i],data[4][i]])
-            processTime = cal_time(processTime,"add1m")
+        # while(processTime != EndTime):
+        #     #print(processTime)
+        #     data = data_process(f,header[0] + ' ' + cal_time(processTime,"add1s") ,header[0] + ' ' + cal_time(processTime,"add1m"), F_flag)
+        #     rowAmount = len(data[0])
+        #     for i in range(rowAmount):
+        #         writer.writerow([format_to_time(data[0][i]),data[1][i],data[2][i],data[3][i],data[4][i]])
+        #     processTime = cal_time(processTime,"add1m")
     ###finalize###
     csv_file.close()
+def countUP_filename(F_str,Num,day):
+    if Num == 3:
+        F_date = datetime.datetime.strptime(F_str,"Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
+    else:    
+        F_date = datetime.datetime.strptime(F_str,"MIM-Pi"+str(Num)+"@inabu/MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+        F_date += datetime.timedelta(days=day)
+        return F_date.strftime("MIM-Pi"+str(Num)+"@inabu/MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
 
 def main():
-    print("MIM-Pi Number is ??")
-    MIMPinum = int(input('>> '))
     File = [
-    "crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
-    "MI20-10-03_04h55m55s@inabu_byNo2.csv"]
-    if MIMPinum == 1:
-        print("MIM-Pi number is " + str(MIMPinum))
-        Process(File[0],"19:10","19:20","cutAverage")
-    elif MIMPinum == 2:
-        print("MIM-Pi number is " + str(MIMPinum))
-        Process(File[0],"08:13","08:16","median")
+    "MIM-Pi1@inabu/MI20-10-04_00h00m00s@inabu_byNo1.csv",
+    "MIM-Pi2@inabu/MI20-10-04_00h00m00s@inabu_byNo2.csv",
+    "MI20-10-23_00h00m00s@inabu_byNo2.csv",
+    "MI20-10-20_00h00m00s@inabu_byNo2.csv",]
+    for i in range(60):
+        try:
+            fileName1 = countUP_filename(File[0],1,i)
+            Process(fileName1,"00:00","23:59","median")
+        except:
+            print("ERROR: "+ fileName1)
+        try:
+            fileName2 = countUP_filename(File[1],2,i)
+            Process(fileName2,"00:00","23:59","median")
+        except:
+            print("ERROR: "+ fileName2)
 
 if __name__ == '__main__':
     main()

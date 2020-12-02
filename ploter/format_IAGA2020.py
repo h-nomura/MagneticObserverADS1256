@@ -337,12 +337,14 @@ def read_file(filepass):
 
 def Process(fileName):
     ###initialize###
-    Pass = "../logger/data/" + fileName
+    Pass = "/nas5/users/nose/Inabu/data_raw/" + fileName
     data = read_file(Pass)
     ###processing###
     site = "inabu"
     wfileName = 'Fx{0:%y-%m-%d_%Hh%Mm%Ss}@'.format(data[0][0])+site+'_Flux.csv'
-    wPass = "../logger/data/" + wfileName
+    wPass = "/nas5/users/nomura/1sec_FMG@inabu/" 
+    my_makedirs(wPass)
+    wPass += wfileName
     print(wPass)
     with open(wPass,'w', newline="") as wf:
         wdata = ['{0:%Y-%m-%d}'.format(data[0][0]),
@@ -364,12 +366,12 @@ def countUP_filename(F_str,day):
     return F_date.strftime("inb%Y%m%dpsec.sec")
 
 def main():
-    start_File = "inb20201024psec.sec"
-    for i in range(1):
+    start_File = "inb20201004psec.sec"
+    for i in range(55):
         try:
             Process(countUP_filename(start_File,i))
         except:
-            print("Error: "+ File[i])
+            print("Error: "+ countUP_filename(start_File,i))
 
 if __name__ == '__main__':
     main()
