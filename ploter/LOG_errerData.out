@@ -1,0 +1,788 @@
+Unable to init server: Could not connect: Connection refused
+Unable to init server: 接続できませんでした: Connection refused
+
+(AGU2020plot_3mag.py:1647020): Gdk-CRITICAL **: 21:55:27.505: gdk_cursor_new_for_display: assertion 'GDK_IS_DISPLAY (display)' failed
+['2020-10-24', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+3
+1
+4
+2
+1
+1
+1
+1
+1
+1
+1
+1
+errer index amount =  428
+NaN index amount =  16
+['2020-10-25', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+4
+errer index amount =  108
+NaN index amount =  1
+['2020-10-26', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+3
+1
+1
+1
+errer index amount =  230
+NaN index amount =  10
+['2020-10-27', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+2
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+2
+1
+1
+1
+errer index amount =  296
+NaN index amount =  17
+['2020-10-28', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+2
+1
+2
+1
+errer index amount =  137
+NaN index amount =  7
+['2020-10-29', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-30', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  61
+NaN index amount =  0
+['2020-10-31', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+1
+errer index amount =  73
+NaN index amount =  7
+['2020-11-01', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+errer index amount =  135
+NaN index amount =  5
+['2020-11-02', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+errer index amount =  122
+NaN index amount =  10
+['2020-11-03', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-04', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-05', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-06', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-07', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+9
+1
+15
+1
+errer index amount =  98
+NaN index amount =  6
+['2020-11-08', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+errer index amount =  18
+NaN index amount =  2
+['2020-11-09', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-10', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-11', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-12', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-13', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-14', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-15', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-16', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+errer index amount =  0
+NaN index amount =  2
+['2020-11-17', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+errer index amount =  0
+NaN index amount =  2
+['2020-11-18', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-19', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+3
+errer index amount =  0
+NaN index amount =  1
+['2020-11-20', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-21', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+2
+errer index amount =  0
+NaN index amount =  2
+['2020-11-22', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+2
+errer index amount =  0
+NaN index amount =  1
+['2020-11-23', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-24', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-25', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-26', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-11-27', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+2
+errer index amount =  0
+NaN index amount =  1
+['2020-10-24', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+2
+1
+1
+1
+1
+1
+2
+1
+1
+1
+errer index amount =  459
+NaN index amount =  15
+['2020-10-25', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+2
+errer index amount =  55
+NaN index amount =  5
+['2020-10-26', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+1
+2
+3
+1
+errer index amount =  182
+NaN index amount =  10
+['2020-10-27', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+errer index amount =  301
+NaN index amount =  17
+['2020-10-28', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+2
+1
+1
+1
+1
+errer index amount =  190
+NaN index amount =  8
+['2020-10-29', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+2
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  7
+['2020-10-30', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+2
+1
+errer index amount =  74
+NaN index amount =  3
+['2020-10-31', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+2
+2
+1
+1
+1
+1
+errer index amount =  76
+NaN index amount =  10
+['2020-11-01', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+2
+errer index amount =  112
+NaN index amount =  2
+['2020-11-02', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+2
+2
+1
+1
+1
+1
+errer index amount =  127
+NaN index amount =  8
+['2020-11-03', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  4
+['2020-11-04', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+3
+errer index amount =  0
+NaN index amount =  5
+['2020-11-05', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-06', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+1
+1
+errer index amount =  16
+NaN index amount =  8
+['2020-11-07', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+11
+1
+11
+1
+errer index amount =  83
+NaN index amount =  5
+['2020-11-08', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+2
+1
+1
+1
+1
+errer index amount =  17
+NaN index amount =  5
+['2020-11-09', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+2
+3
+1
+1
+1
+1
+1
+1
+1
+1
+2
+errer index amount =  0
+NaN index amount =  11
+['2020-11-10', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+2
+1
+1
+1
+1
+1
+1
+2
+1
+1
+1
+1
+1
+1
+1
+1
+2
+errer index amount =  0
+NaN index amount =  19
+['2020-11-11', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  11
+['2020-11-12', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+2
+1
+errer index amount =  0
+NaN index amount =  6
+['2020-11-13', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+2
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  6
+['2020-11-14', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+2
+1
+errer index amount =  0
+NaN index amount =  2
+['2020-11-15', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+2
+1
+1
+1
+errer index amount =  0
+NaN index amount =  10
+['2020-11-16', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  4
+['2020-11-17', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+2
+errer index amount =  0
+NaN index amount =  1
+['2020-11-18', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+2
+1
+1
+errer index amount =  0
+NaN index amount =  3
+['2020-11-19', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+errer index amount =  0
+NaN index amount =  3
+['2020-11-20', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+2
+1
+1
+1
+1
+1
+1
+2
+1
+1
+1
+1
+1
+1
+2
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  20
+['2020-11-21', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+3
+1
+1
+errer index amount =  0
+NaN index amount =  4
+['2020-11-22', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  6
+['2020-11-23', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  4
+['2020-11-24', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+2
+1
+1
+1
+1
+1
+2
+1
+1
+1
+1
+1
+1
+errer index amount =  0
+NaN index amount =  14
+['2020-11-25', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+1
+1
+2
+3
+3
+1
+1
+1
+1
+2
+1
+3
+2
+errer index amount =  0
+NaN index amount =  14
+['2020-11-26', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+2
+1
+1
+1
+1
+1
+3
+2
+10
+1
+errer index amount =  0
+NaN index amount =  11
+['2020-11-27', '1ch(nT)', '2ch(nT)', '3ch(nT)']
+START
+1
+errer index amount =  0
+NaN index amount =  1
+['2020-10-24', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-25', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-26', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-27', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-28', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-29', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-30', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-10-31', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-01', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-02', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-03', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-04', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-05', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-06', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-07', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-08', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-09', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-10', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-11', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-12', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-13', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-14', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-15', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-16', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-17', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-18', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-19', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-20', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-21', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-22', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-23', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-24', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-25', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-26', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0
+['2020-11-27', 'x-asix(nT)_1ch', 'y-asix(nT)_2ch', 'z-asix(nT)_3ch', 'NON_4ch']
+START
+errer index amount =  0
+NaN index amount =  0

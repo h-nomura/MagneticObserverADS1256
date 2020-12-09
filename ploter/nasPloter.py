@@ -311,8 +311,8 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
 
     fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
-    # fig_dir = './fig/' + fig_date.strftime('%Y-%m-%d') + siteInfo
-    fig_dir = './fig/MIM@inabu'
+    fig_dir = './fig/' + fig_date.strftime('%Y-%m-%d') + siteInfo
+    # fig_dir = './fig/MIM@inabu'
     figFileDate = fig_date.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S')
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
@@ -376,14 +376,18 @@ def main():
     File = [
     "MI20-10-22_00h00m00s@inabu_byNo1.csv",
     "MI20-10-22_00h00m00s@inabu_byNo2.csv",
+    "MI20-11-20_00h00m00s@inabu_byNo1.csv",
+    "MI20-11-20_00h00m00s@inabu_byNo2.csv",
     "1sec_median_crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-26_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-26_00h00m00s@inabu_byNo2.csv",
     "MI19-09-20_12h39m47s.csv"]
+    # Process(File[2],"23:00:00","23:10:00","median",20)
+    Process(File[3],"23:10:00","23:20:00","median",20)
 
-    for i in range(36):
-        day_1hour(countUP_filename(File[0],1,i),"median",20)
-        day_1hour(countUP_filename(File[1],2,i),"median",20)    
+    # for i in range(36):
+    #     day_1hour(countUP_filename(File[0],1,i),"median",20)
+    #     day_1hour(countUP_filename(File[1],2,i),"median",20)    
     #       day_1hour(File_list2[i],"median",20)
     # Process(File[0],"19:10:00","19:11:00","ave",2)
     # Process(File[0],"19:10:00","19:11:00","median",2)
