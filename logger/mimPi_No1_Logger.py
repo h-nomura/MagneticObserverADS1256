@@ -52,7 +52,7 @@ def do_measurement(site):
     while True:
         now = datetime.datetime.now(timezone.utc)#get time
         today = '{0:%Y-%m-%d}'.format(now)
-        with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}@'.format(now)+site+'_byNo2.csv','w') as f:
+        with open('./data/MI{0:%y-%m-%d_%Hh%Mm%Ss}@'.format(now)+site+'_byNo1.csv','w') as f:
             data = ['{0:%Y-%m-%d}'.format(now),
             '8B1009B(nT)_1ch','8B1015A(nT)_2ch',
             '8B1007A(nT)_3ch','LM60(C)_4ch']
