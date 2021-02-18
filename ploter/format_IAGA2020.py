@@ -342,7 +342,7 @@ def Process(fileName):
     ###processing###
     site = "inabu"
     wfileName = 'Fx{0:%y-%m-%d_%Hh%Mm%Ss}@'.format(data[0][0])+site+'_Flux.csv'
-    wPass = "/nas5/users/nomura/1sec_FMG@inabu/" 
+    wPass = "/nas5/users/nomura/1sec_FGM@inabu/" 
     my_makedirs(wPass)
     wPass += wfileName
     print(wPass)
@@ -366,8 +366,8 @@ def countUP_filename(F_str,day):
     return F_date.strftime("inb%Y%m%dpsec.sec")
 
 def main():
-    start_File = "inb20201004psec.sec"
-    for i in range(55):
+    start_File = "inb20200617psec.sec"
+    for i in range(9):
         try:
             Process(countUP_filename(start_File,i))
         except:

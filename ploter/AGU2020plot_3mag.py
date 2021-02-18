@@ -74,6 +74,9 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str,offset=0):
     startFlag = False
     endFlagNum = False
     dataday = format_to_day(start_dataTime_str)
+    num = 1
+    if offset < 0:
+        num = -1
     for row in f:#row is list
         time_Date = datetime.datetime.strptime(row[0], '%H:%M:%S.%f') + datetime.timedelta(seconds=offset)
         time_Str = time_Date.strftime('%H:%M:%S.%f')
@@ -95,7 +98,7 @@ def rawdata_maker(f,start_dataTime_str,end_dataTime_str,offset=0):
             df_list_raw['Time'].append(dataday + time_Str)
             df_list_raw['ch1'].append(float(row[1]))
             df_list_raw['ch2'].append(float(row[2]))
-            df_list_raw['ch3'].append(float(row[3]))
+            df_list_raw['ch3'].append(float(row[3])*num)
             df_list_raw['ch4'].append(float(row[4]))
     return df_list_raw['Time'],df_list_raw['ch1'],df_list_raw['ch2'],df_list_raw['ch3'],df_list_raw['ch4']
 
@@ -350,12 +353,13 @@ def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
     #### plot X label print format ####
     strings = '%H:%M'
     # strings = '%m%d'
+    # strings = '%d'
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     ax_9ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
-    time_scale = False
+    time_scale = True
     if time_scale == True:
         # x = ['2020-10-04 00:00:00','2020-10-08 00:00:00','2020-10-12 00:00:00','2020-10-16 00:00:00','2020-10-20 00:00:00',]
         # x_axis = ['19:10:00','19:12:00','19:14:00','19:16:00','19:18:00','19:20:00']
@@ -451,8 +455,8 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         print(header)
         start_time_str = header[0] + ' ' + StartTime
         end_time_str = header[0] + ' ' + EndTime
-        if i == 2:
-            offset_sec = 40
+        if i == 1:
+            offset_sec = -1
         else:
             offset_sec = 0
         rawdata = rawdata_maker(f,start_time_str,end_time_str,offset=offset_sec)
@@ -474,11 +478,14 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         raw4ch = np.array(rawdata[4])
         rawdata = []
         df_print.append(pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch}))
- 
+    if oldData == True:
+        df_print[1]['2ch'] = df_print[1]['3ch']
+        df_print[1]['3ch'] = df_print[2]['2ch']
+    
     fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
     # fig_dir = './fig/AGU_10min/' + fig_date.strftime('%Y-%m-%d') + siteInfo
-    fig_dir = './fig/AGU_1day'
+    fig_dir = './fig/Inabu_june_event'
     figFileDate = fig_date.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S')
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
@@ -537,8 +544,15 @@ def Process_long(fileName,F_flag ,Yrange):
             header = next(f)
             print(header)
             start_time_str = header[0] + ' 00:00:00'
-            end_time_str = header[0] + ' 23:59:59'
-            rawdata = rawdata_maker(f,start_time_str,end_time_str)
+            if i == len(fileName[j])-1:
+                end_time_str = header[0] + ' 23:00:00'
+            else:
+                end_time_str = header[0] + ' 23:59:59'
+            if j == 1:
+                Dray = -1
+            else:
+                Dray = 0
+            rawdata = rawdata_maker(f,start_time_str,end_time_str,Dray)
             rawtime = pd.to_datetime(rawdata[0])
             # print(rawtime)
             errer_index, NaN_date = check_errerData(rawtime,rawtime[0])
@@ -566,8 +580,12 @@ def Process_long(fileName,F_flag ,Yrange):
         raw4ch = np.array(buff_4ch)
 
         df_print.append(pd.DataFrame({'time':rawtime,'1ch':raw1ch,'2ch':raw2ch,'3ch':raw3ch,'4ch':raw4ch}))
-
-    fig_dir = './fig/AGU_1day/'
+    
+    if oldData == True:
+        df_print[1]['2ch'] = df_print[1]['3ch']
+        df_print[1]['3ch'] = df_print[2]['2ch']
+    
+    fig_dir = './fig/LongTarm/'
     figFileDate = rawtime[0].strftime('%Y-%m-%d_%H%M%S') + rawtime[-1].strftime('-%Y-%m-%d_%H%M%S')
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
@@ -626,16 +644,26 @@ def countUP_filename(F_str,Num,day):
         F_date = datetime.datetime.strptime(F_str,"Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
         F_date += datetime.timedelta(days=day)
         return F_date.strftime("Fx%y-%m-%d_%Hh%Mm%Ss@inabu_Flux.csv")
-    else:    
-        F_date = datetime.datetime.strptime(F_str,"MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
-        F_date += datetime.timedelta(days=day)
-        return F_date.strftime("MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+    else:
+        try:
+            F_date = datetime.datetime.strptime(F_str,"MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+            F_date += datetime.timedelta(days=day)
+            return F_date.strftime("MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+        except ValueError:
+            F_date = datetime.datetime.strptime(F_str,"1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
+            F_date += datetime.timedelta(days=day)
+            return F_date.strftime("1sec_median_MI%y-%m-%d_%Hh%Mm%Ss@inabu_byNo"+str(Num)+".csv")
 
 def main():
+    #### Input Example ####
+    # File = [
+    # "MI20-11-10_00h00m00s@inabu_byNo1.csv",
+    # "MI20-11-10_00h00m00s@inabu_byNo2.csv",
+    # "Fx20-11-10_00h00m00s@inabu_Flux.csv"]
     File = [
-    "MI20-11-10_00h00m00s@inabu_byNo1.csv",
-    "MI20-11-10_00h00m00s@inabu_byNo2.csv",
-    "Fx20-11-10_00h00m00s@inabu_Flux.csv"]
+    "1sec_median_MI20-06-18_00h00m00s@inabu_byNo1.csv",
+    "Fx20-06-18_00h00m00s@inabu_Flux.csv",
+    "Fx20-06-18_00h00m00s@inabu_Flux.csv"]
     File2 = [
     "1sec_median_crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-24_00h00m00s@inabu_byNo2.csv",
@@ -644,11 +672,11 @@ def main():
     File_list1 = []
     File_list2 = []
     File_list3 = []
-    for i in range(1):
+    for i in range(8):
         File_list1.append(countUP_filename(File[0],1,i))
-        File_list2.append(countUP_filename(File[1],2,i))
+        File_list2.append(countUP_filename(File[1],3,i))
         File_list3.append(countUP_filename(File[2],3,i))
-    for i in range(1):
+    for i in range(8):
         # File_list1 = []
         # File_list2 = []
         # File_list3 = []
@@ -656,12 +684,13 @@ def main():
         # File_list1.append(countUP_filename(File[0],1,i))
         # File_list2.append(countUP_filename(File[1],2,i))
         # File_list3.append(countUP_filename(File[2],3,i))
-        # Process_long([File_list1,File_list2,File_list3],"median",150)
-        # Process([File_list1[i],File_list2[i],File_list3[i]],"00:00:00","03:59:59","median",200)
-        day_10min([File_list1[i],File_list2[i],File_list3[i]],"median",10)
+        # Process_long([File_list1,File_list2,File_list3],"median",125)
+        Process([File_list1[i],File_list2[i],File_list3[i]],"00:00:00","23:59:59","median",125)
+        # Process([File_list1[i],File_list2[i],File_list3[i]],"15:30:00","16:30:00","median",10)
+        # Process([File_list1[i],File_list2[i],File_list3[i]],"21:30:00","23:30:00","median",10)
+        # day_10min([File_list1[i],File_list2[i],File_list3[i]],"median",10)
             
-
-    # Process([File2[0],File2[1],File2[2]],"19:10:00","19:20:00","median",10)
+    # Process([File[0],File[1],File[2]],"00:00:00","23:59:59","median",125)
     # Process_long([File_list1,File_list2,File_list3],"median",150)
  
 
