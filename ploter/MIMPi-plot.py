@@ -351,7 +351,16 @@ def countUP_filename(F_str,Num,day):
 
 def main():
     File = [
-    "MI20-12-02_05h56m31s@isee_byNo2.csv",
+    "1sec_median_MI21-01-16_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI21-01-17_00h00m00s@inabu_byNo1.csv",
+    "MI20-12-10_03h00m59s@isee_byNo2.csv",
+    "MI20-12-10_05h15m26s@isee_byNo2.csv",
+    "MI20-12-10_07h37m23s@isee_byNo2.csv",
+    "MI20-12-10_07h57m42s@isee_byNo2.csv",
+    "1sec_median_MI20-12-10_08h10m07s@isee_byNo2.csv",
+    "1sec_median_MI20-12-10_05h15m26s@isee_byNo2.csv",
+    "1sec_median_MI20-12-10_07h37m23s@isee_byNo2.csv",
+    "1sec_median_MI20-12-10_07h57m42s@isee_byNo2.csv",
     "1sec_median_MI20-11-03_00h00m00s@inabu_byNo3.csv",
     "1sec_median_crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-26_00h00m00s@inabu_byNo1.csv",
@@ -367,7 +376,15 @@ def main():
     # for i in range(7):
     #       day_1hour(File_list1[i],"median",20)
     #       day_1hour(File_list2[i],"median",20)
-    Process(File[0],"06:48:00","06:49:00","FFT",0)
+    # Process(File[0],"03:01:00","03:08:00","raw",1500)
+    # Process(File[1],"05:16:00","05:23:00","raw",1500)
+    # Process(File[2],"07:38:00","07:47:00","raw",1500)
+    # Process(File[3],"07:58:00","08:06:00","raw",1500)
+    Process(File[0],"00:00:00","23:59:59","median",150)
+    Process(File[1],"00:00:00","23:59:59","median",150)
+    # Process(File[1+4],"05:16:00","05:23:00","median",1500)
+    # Process(File[2+4],"07:38:00","07:47:00","median",1500)
+    # Process(File[3+4],"07:58:00","08:06:00","median",1500)
     
     # for i in range(24):
     #     s_time = "06:00:00"

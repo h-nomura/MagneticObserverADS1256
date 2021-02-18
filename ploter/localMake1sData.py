@@ -391,11 +391,25 @@ def countUP_filename(F_str,Num,day):
 
 def main():
     File = [
-    "MI20-12-02_05h56m31s@isee_byNo2.csv",
+    "MI20-12-10_03h00m59s@isee_byNo2.csv",
+    "MI20-12-10_05h15m26s@isee_byNo2.csv",
+    "MI20-12-10_07h37m23s@isee_byNo2.csv",
+    "MI20-12-11_01h45m59s@isee_byNo2.csv",
+    "MI20-12-11_02h03m33s@isee_byNo2.csv",
+    "MI20-12-11_02h08m34s@isee_byNo2.csv",
+    "MI20-12-11_02h15m05s@isee_byNo2.csv",
+    "MI20-12-11_02h19m30s@isee_byNo2.csv",
     "MI20-10-18_00h00m00s@inabu_byNo1.csv",
     "MI20-10-23_00h00m00s@inabu_byNo2.csv",
     "MI20-10-20_00h00m00s@inabu_byNo2.csv",]
-    Process(File[0],"06:00","09:00","median")
+    # Process(File[1],"05:16","05:23","median")
+    # Process(File[2],"07:38","07:47","median")
+    # Process(File[3],"01:46","01:48","median")
+    Process(File[4],"02:04","02:07","median")
+    Process(File[5],"02:09","02:12","median")
+    Process(File[6],"02:16","02:19","median")
+    Process(File[7],"02:20","02:23","median")
+
     # for i in range(60):
     #     try:
     #         fileName1 = countUP_filename(File[0],1,i)

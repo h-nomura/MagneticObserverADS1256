@@ -417,7 +417,8 @@ def Process(fileName,F_flag ,Yrange):
     siteInfo = ""
     for j in range(2):
         siteInfo += crop_str(crop_str(fileName[j][0],"@"),".",mode=1)
-        dirPass = "/nas5/users/nomura/"
+        # dirPass = "/nas5/users/nomura/"
+        dirPass = "../logger/data/nas5/"
         FsiteInfo = "@"+crop_str(crop_str(fileName[j][0],"@"),".",mode=1)
         if FsiteInfo == "@inabu_Flux":
             dirPass += "1sec_FGM@inabu/"
@@ -522,7 +523,7 @@ def main():
         File_list1.append(countUP_filename(File[0],1,i))
         File_list2.append(countUP_filename(File[1],2,i))
         File_list3.append(countUP_filename(File[2],3,i))    
-    Process([File_list1,File_list3],"scatter",100)
+    # Process([File_list1,File_list3],"scatter",100)
     Process([File_list2,File_list3],"scatter",100)
     # for i in range(10):
         # try:

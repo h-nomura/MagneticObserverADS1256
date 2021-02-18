@@ -266,8 +266,8 @@ def fig_plot(df_print, title, fig_path, F_flag, dat_path = '', Yrange = 0):
         ax_3ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         # ax_4ch.set_xlim([df_print['time'][0],df_print['time'][len(df_print['time'])-1]])
         #### plot X label print format ####
-        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
-        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
+        ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
+        # ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M'))
         # ax_4ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
     #### show only X label of bottom graph #### 
     plt.setp(ax_1ch.get_xticklabels(),visible=False)
@@ -409,7 +409,7 @@ def main():
     #       day_1hour(File_list1[i],"median",20)
     #       day_1hour(File_list2[i],"median",20)
     # Process(File[0],"06:48:00","06:49:00","FFT1sig",0)
-    Process(File[0],"06:48:00","06:49:00","median",20)
+    Process(File[0],"06:48:00","06:49:00","raw",20)
     # for i in range(24):
     #     s_time = "06:00:00"
     #     try:

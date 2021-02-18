@@ -3,6 +3,7 @@
 *.dat
 *.zip
 *.sec
+*.xlsx
 nohup.out
 .*
 !/.gitignore
