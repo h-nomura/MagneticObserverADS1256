@@ -18,7 +18,7 @@ from sklearn.decomposition import PCA
 
 import matplotlib as mpl
 mpl.rcParams['agg.path.chunksize'] = 100000
-oldData = True
+oldData = False
 
 def eliminate_f(date_str):
     try:
@@ -136,6 +136,28 @@ def test_plot(x):
     ax_6ch.plot(x[5], color = 'y')
     fig.tight_layout()
     plt.show()
+
+def search_maxmin(pd_data, mode_num):
+    if mode_num == 0:
+        max_ = pd_data.max()
+        max_index = pd_data.idxmax()
+        max_ave = pd_data[max_index-30:max_index+30].mean()
+        if abs(max_ - max_ave) < 1:
+            return max_index
+        else:
+            for i in range(60):
+                pd_data.at[max_index-30+i] = -80000
+            return search_maxmin(pd_data,mode_num)
+    else:
+        min_ = pd_data.min()
+        min_index = pd_data.idxmin()
+        min_ave = pd_data[min_index-30:min_index+30].mean()
+        if abs(min_ - min_ave) < 1:
+            return min_index
+        else:
+            for i in range(60):
+                pd_data.at[min_index-30+i] = 80000
+            return search_maxmin(pd_data,mode_num)
 
 def fig_plot2(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange = 0):
     fig = plt.figure(figsize=(16, 6))
@@ -290,16 +312,6 @@ def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
     ax_9ch.set_ylabel(labelList[8])
     # ax_9ch.set_ylabel(labelList[8], fontsize=18)
 
-    print("データ",df_print[0]['2ch'])
-    print("最大値",df_print[0]['2ch'].max())
-    max_index = df_print[0]['2ch'].idxmax()
-    print(df_print[0]['2ch'][max_index-3:max_index+3],max_index)
-    print("平均値",df_print[0]['2ch'][max_index-3:max_index+3].mean(),)
-    goukei = 0
-    for i in df_print[0]['2ch'][max_index-3:max_index+3]:
-        goukei += i
-    print(goukei/6)
-
     #### plot line color ####
     ax_1ch.plot(df_print[0]['time'], df_print[0]['1ch'], color = 'r')
     ax_2ch.plot(df_print[0]['time'], df_print[0]['2ch'], color = 'b')
@@ -310,39 +322,41 @@ def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
     ax_7ch.plot(df_print[2]['time'], df_print[2]['1ch'], color = 'r')
     ax_8ch.plot(df_print[2]['time'], df_print[2]['2ch'], color = 'b')
     ax_9ch.plot(df_print[2]['time'], df_print[2]['3ch'], color = 'g')
-
+    
+    time_scale = True
+    if time_scale == True:
     #### max line ####
-    value_2chmax = df_print[0]['2ch'].max()
-    value_2chmaxIndex = df_print[0]['2ch'].idxmax()
-    value_2chmaxAve = df_print[0]['2ch'][value_2chmaxIndex-30:value_2chmaxIndex+30].mean()
-    value_5chmax = df_print[1]['2ch'].max()
-    value_5chmaxIndex = df_print[1]['2ch'].idxmax()
-    value_5chmaxAve = df_print[1]['2ch'][value_5chmaxIndex-30:value_5chmaxIndex+30].mean()
-    value_8chmax = df_print[2]['2ch'].max()
-    value_8chmaxIndex = df_print[2]['2ch'].idxmax()
-    value_8chmaxAve = df_print[2]['2ch'][value_8chmaxIndex-30:value_8chmaxIndex+30].mean()
-    ax_2ch.axhline(value_2chmax, ls = "-.", color = "magenta")
-    ax_2ch.text(0.05, 0.9, "Max="+'{:.1f}'.format(value_2chmax)+" MaxAve="+'{:.1f}'.format(value_2chmaxAve), size=11, transform= ax_2ch.transAxes)
-    ax_5ch.axhline(value_5chmax, ls = "-.", color = "magenta")
-    ax_5ch.text(0.05, 0.9, "Max="+'{:.1f}'.format(value_5chmax)+" MaxAve="+'{:.1f}'.format(value_5chmaxAve), size=11, transform= ax_5ch.transAxes)
-    ax_8ch.axhline(value_8chmax, ls = "-.", color = "magenta")
-    ax_8ch.text(0.05, 0.9, "Max="+'{:.1f}'.format(value_8chmax)+" MaxAve="+'{:.1f}'.format(value_8chmaxAve), size=11, transform= ax_8ch.transAxes)
+        value_2chmaxIndex = search_maxmin(df_print[0]['2ch'],0)
+        value_2chmax = df_print[0]['2ch'][value_2chmaxIndex]
+        value_2chmaxAve = df_print[0]['2ch'][value_2chmaxIndex-30:value_2chmaxIndex+30].mean()
+        value_5chmaxIndex = search_maxmin(df_print[1]['2ch'],0)
+        value_5chmax = df_print[1]['2ch'][value_5chmaxIndex]
+        value_5chmaxAve = df_print[1]['2ch'][value_5chmaxIndex-30:value_5chmaxIndex+30].mean()
+        value_8chmaxIndex = search_maxmin(df_print[2]['2ch'],0)
+        value_8chmax = df_print[2]['2ch'][value_8chmaxIndex]
+        value_8chmaxAve = df_print[2]['2ch'][value_8chmaxIndex-30:value_8chmaxIndex+30].mean()
+        ax_2ch.axhline(value_2chmax, ls = "-.", color = "magenta")
+        ax_2ch.text(0.05, 0.9, "Max="+'{:.1f}'.format(value_2chmax)+" MaxAve="+'{:.1f}'.format(value_2chmaxAve), size=11, transform= ax_2ch.transAxes)
+        ax_5ch.axhline(value_5chmax, ls = "-.", color = "magenta")
+        ax_5ch.text(0.05, 0.9, "Max="+'{:.1f}'.format(value_5chmax)+" MaxAve="+'{:.1f}'.format(value_5chmaxAve), size=11, transform= ax_5ch.transAxes)
+        ax_8ch.axhline(value_8chmax, ls = "-.", color = "magenta")
+        ax_8ch.text(0.05, 0.9, "Max="+'{:.1f}'.format(value_8chmax)+" MaxAve="+'{:.1f}'.format(value_8chmaxAve), size=11, transform= ax_8ch.transAxes)
     #### min line ####
-    value_2chmin = df_print[0]['2ch'].min()
-    value_2chminIndex = df_print[0]['2ch'].idxmin()
-    value_2chminAve = df_print[0]['2ch'][value_2chminIndex-30:value_2chminIndex+30].mean()
-    value_5chmin = df_print[1]['2ch'].min()
-    value_5chminIndex = df_print[1]['2ch'].idxmin()
-    value_5chminAve = df_print[1]['2ch'][value_5chminIndex-30:value_5chminIndex+30].mean()
-    value_8chmin = df_print[2]['2ch'].min()
-    value_8chminIndex = df_print[2]['2ch'].idxmin()
-    value_8chminAve = df_print[2]['2ch'][value_8chminIndex-30:value_8chminIndex+30].mean()
-    ax_2ch.axhline(value_2chmin, ls = "-.", color = "magenta")
-    ax_2ch.text(0.05, 0.03, "Min="+'{:.1f}'.format(value_2chmin)+" MinAve="+'{:.1f}'.format(value_2chminAve), size=11, transform= ax_2ch.transAxes)
-    ax_5ch.axhline(value_5chmin, ls = "-.", color = "magenta")
-    ax_5ch.text(0.05, 0.03, "Min="+'{:.1f}'.format(value_5chmin)+" MinAve="+'{:.1f}'.format(value_5chminAve), size=11, transform= ax_5ch.transAxes)
-    ax_8ch.axhline(value_8chmin, ls = "-.", color = "magenta")
-    ax_8ch.text(0.05, 0.03, "Min="+'{:.1f}'.format(value_8chmin)+" MinAve="+'{:.1f}'.format(value_8chminAve), size=11, transform= ax_8ch.transAxes)
+        value_2chminIndex = search_maxmin(df_print[0]['2ch'],1)
+        value_2chmin = df_print[0]['2ch'][value_2chminIndex]
+        value_2chminAve = df_print[0]['2ch'][value_2chminIndex-30:value_2chminIndex+30].mean()
+        value_5chminIndex = search_maxmin(df_print[1]['2ch'],1)
+        value_5chmin = df_print[1]['2ch'][value_5chminIndex]
+        value_5chminAve = df_print[1]['2ch'][value_5chminIndex-30:value_5chminIndex+30].mean()
+        value_8chminIndex = search_maxmin(df_print[2]['2ch'],1)
+        value_8chmin = df_print[2]['2ch'][value_8chminIndex]
+        value_8chminAve = df_print[2]['2ch'][value_8chminIndex-30:value_8chminIndex+30].mean()
+        ax_2ch.axhline(value_2chmin, ls = "-.", color = "magenta")
+        ax_2ch.text(0.05, 0.03, "Min="+'{:.1f}'.format(value_2chmin)+" MinAve="+'{:.1f}'.format(value_2chminAve), size=11, transform= ax_2ch.transAxes)
+        ax_5ch.axhline(value_5chmin, ls = "-.", color = "magenta")
+        ax_5ch.text(0.05, 0.03, "Min="+'{:.1f}'.format(value_5chmin)+" MinAve="+'{:.1f}'.format(value_5chminAve), size=11, transform= ax_5ch.transAxes)
+        ax_8ch.axhline(value_8chmin, ls = "-.", color = "magenta")
+        ax_8ch.text(0.05, 0.03, "Min="+'{:.1f}'.format(value_8chmin)+" MinAve="+'{:.1f}'.format(value_8chminAve), size=11, transform= ax_8ch.transAxes)
 
     #### plot grid ####
     ax_1ch.xaxis.grid(True)
@@ -404,7 +418,7 @@ def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
     ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     ax_9ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H'))
-    time_scale = True
+    
     if time_scale == True:
         # x = ['2020-10-04 00:00:00','2020-10-08 00:00:00','2020-10-12 00:00:00','2020-10-16 00:00:00','2020-10-20 00:00:00',]
         # x_axis = ['19:10:00','19:12:00','19:14:00','19:16:00','19:18:00','19:20:00']
@@ -488,11 +502,11 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         Pass = "/nas5/users/nomura/"
         FsiteInfo = "@"+crop_str(crop_str(fileName[i],"@"),".",mode=1)
         if FsiteInfo == "@inabu_Flux":
-            Pass += "1sec_FGM@inabu/" + fileName[i]
+            Pass += "jst_1sec_FGM@inabu/" + fileName[i]
         elif FsiteInfo == "@inabu_byNo1":
-            Pass += "1sec_MIM-Pi1@inabu/" + fileName[i]
+            Pass += "jst_1sec_MIM-Pi1@inabu/" + fileName[i]
         elif FsiteInfo == "@inabu_byNo2":
-            Pass += "1sec_MIM-Pi2@inabu/" + fileName[i]
+            Pass += "jst_1sec_MIM-Pi2@inabu/" + fileName[i]
         siteInfo += "@" + crop_str(crop_str(fileName[i],"@"),".",mode=1)
         csv_file = open(Pass,"r",encoding = "ms932",errors = "", newline = "")
         f = csv.reader(csv_file, delimiter=",",doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
@@ -500,7 +514,7 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
         print(header)
         start_time_str = header[0] + ' ' + StartTime
         end_time_str = header[0] + ' ' + EndTime
-        if i == 1:
+        if i == -1:
             offset_sec = -1
         else:
             offset_sec = 0
@@ -531,7 +545,7 @@ def Process(fileName,StartTime,EndTime, F_flag ,Yrange):
     fig_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
     end_dir = datetime.datetime.strptime(end_time_str, '%Y-%m-%d %H:%M:%S')
     # fig_dir = './fig/AGU_10min/' + fig_date.strftime('%Y-%m-%d') + siteInfo
-    fig_dir = './fig/Inabu_june_event'
+    fig_dir = './fig/Inabu_Sq_jst'
     figFileDate = fig_date.strftime('%Y-%m-%d_%H%M%S') + end_dir.strftime('-%H%M%S')
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
@@ -594,7 +608,7 @@ def Process_long(fileName,F_flag ,Yrange):
                 end_time_str = header[0] + ' 23:00:00'
             else:
                 end_time_str = header[0] + ' 23:59:59'
-            if j == 1:
+            if j == 4:
                 Dray = -1
             else:
                 Dray = 0
@@ -636,10 +650,12 @@ def Process_long(fileName,F_flag ,Yrange):
     my_makedirs(fig_dir)
     title = start_time_str + '(UT) magnetic force(nT)' + F_flag + siteInfo
     #### graph print ####
-    my_makedirs(fig_dir + str(Yrange) + 'nt/')
-    labelList = ["X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]"]
-    fig_path = fig_dir + str(Yrange) + 'nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
-    fig_plot3(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
+    for i in range(4):
+        Yrange -= (i*10)
+        my_makedirs(fig_dir + str(Yrange) + 'nt/')
+        labelList = ["X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]","X [nT]","Y [nT]","Z [nT]"]
+        fig_path = fig_dir + str(Yrange) + 'nt/' + figFileDate + '_' + str(Yrange)+F_flag+siteInfo+'.png'
+        fig_plot3(df_print,labelList,title, fig_path,F_flag,Yrange=int(Yrange))
     
     # Yrange_ori = Yrange
     # Yrange = int(Yrange_ori*2/3)
@@ -707,22 +723,38 @@ def main():
     # "MI20-11-10_00h00m00s@inabu_byNo2.csv",
     # "Fx20-11-10_00h00m00s@inabu_Flux.csv"]
     File = [
-    "1sec_median_MI20-06-18_00h00m00s@inabu_byNo1.csv",
-    "Fx20-06-18_00h00m00s@inabu_Flux.csv",
-    "Fx20-06-18_00h00m00s@inabu_Flux.csv"]
+    "1sec_median_MI21-01-17_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI21-01-17_00h00m00s@inabu_byNo2.csv",
+    "1sec_median_MI21-01-17_00h00m00s@inabu_byNo2.csv"]
     File2 = [
-    "1sec_median_crop_MI20-10-24_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI20-10-24_00h00m00s@inabu_byNo2.csv",
-    "Fx20-10-24_00h00m00s@inabu_Flux.csv"]
+    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2.csv",
+    "Fx20-10-04_00h00m00s@inabu_Flux.csv"]
+    File3 = [
+    "1sec_median_MI20-06-19_00h00m00s@inabu_byNo1.csv",
+    "Fx20-06-19_00h00m00s@inabu_Flux.csv",
+    "Fx20-06-19_00h00m00s@inabu_Flux.csv"]
 
     File_list1 = []
     File_list2 = []
     File_list3 = []
-    for i in range(8):
+    # for i in range(7):
+    #     File_list1.append(countUP_filename(File3[0],1,i))
+    #     File_list2.append(countUP_filename(File3[1],3,i))
+    #     File_list3.append(countUP_filename(File3[1],3,i))
+
+    for i in range(30):
         File_list1.append(countUP_filename(File[0],1,i))
-        File_list2.append(countUP_filename(File[1],3,i))
-        File_list3.append(countUP_filename(File[2],3,i))
-    for i in range(8):
+        File_list2.append(countUP_filename(File[1],2,i))
+        File_list3.append(countUP_filename(File[1],2,i))
+        # print(countUP_filename(File[2],2,i))
+    for i in range(55):
+        File_list1.append(countUP_filename(File2[0],1,i))
+        File_list2.append(countUP_filename(File2[1],2,i))
+        File_list3.append(countUP_filename(File2[2],3,i))
+    #     print(countUP_filename(File2[1],2,i))
+
+    for i in range(85):
         # File_list1 = []
         # File_list2 = []
         # File_list3 = []
@@ -731,13 +763,16 @@ def main():
         # File_list2.append(countUP_filename(File[1],2,i))
         # File_list3.append(countUP_filename(File[2],3,i))
         # Process_long([File_list1,File_list2,File_list3],"median",125)
-        Process([File_list1[i],File_list2[i],File_list3[i]],"00:00:00","23:59:59","median",125)
+        try:
+            Process([File_list1[i],File_list2[i],File_list3[i]],"00:00:00","23:59:59","median",125)
+        except:
+            print("ERROR  =  "+File_list1[i])
         # Process([File_list1[i],File_list2[i],File_list3[i]],"15:30:00","16:30:00","median",10)
         # Process([File_list1[i],File_list2[i],File_list3[i]],"21:30:00","23:30:00","median",10)
         # day_10min([File_list1[i],File_list2[i],File_list3[i]],"median",10)
             
     # Process([File[0],File[1],File[2]],"00:00:00","00:59:59","median",125)
-    # Process_long([File_list1,File_list2,File_list3],"median",150)
+    # Process_long([File_list1,File_list2,File_list3],"median",160)
  
 
 if __name__ == '__main__':
