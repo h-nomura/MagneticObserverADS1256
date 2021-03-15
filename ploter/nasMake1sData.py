@@ -362,7 +362,7 @@ def Process(fileName,StartTime,EndTime, F_flag):
     print(header)
     ###processing###
     data = data_process(f,header[0] + ' ' + StartTime ,header[0] + ' ' + EndTime, F_flag)
-    wPass = "/nas5/users/nomura/1sec_" + fileName
+    wPass = "/nas5/users/nomura/1sec_" + fileName[:14] + "1sec_median_" + fileName[14:]
     rowAmount = len(data[0])
     with open(wPass, 'w', newline="") as fw:
         writer = csv.writer(fw)
@@ -391,8 +391,8 @@ def countUP_filename(F_str,Num,day):
 
 def main():
     File = [
-    "MIM-Pi1@inabu/MI20-10-04_00h00m00s@inabu_byNo1.csv",
-    "MIM-Pi2@inabu/MI20-10-04_00h00m00s@inabu_byNo2.csv",
+    "MIM-Pi1@inabu/MI21-01-16_00h00m00s@inabu_byNo1.csv",
+    "MIM-Pi2@inabu/MI21-01-16_00h00m00s@inabu_byNo2.csv",
     "MI20-10-23_00h00m00s@inabu_byNo2.csv",
     "MI20-10-20_00h00m00s@inabu_byNo2.csv",]
     for i in range(60):

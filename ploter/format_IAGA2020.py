@@ -366,8 +366,8 @@ def countUP_filename(F_str,day):
     return F_date.strftime("inb%Y%m%dpsec.sec")
 
 def main():
-    start_File = "inb20200617psec.sec"
-    for i in range(9):
+    start_File = "inb20210115psec.sec"
+    for i in range(60):
         try:
             Process(countUP_filename(start_File,i))
         except:

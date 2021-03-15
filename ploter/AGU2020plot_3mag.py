@@ -323,7 +323,7 @@ def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
     ax_8ch.plot(df_print[2]['time'], df_print[2]['2ch'], color = 'b')
     ax_9ch.plot(df_print[2]['time'], df_print[2]['3ch'], color = 'g')
     
-    time_scale = True
+    time_scale = False
     if time_scale == True:
     #### max line ####
         value_2chmaxIndex = search_maxmin(df_print[0]['2ch'],0)
@@ -410,8 +410,8 @@ def fig_plot3(df_print,labelList, title, fig_path, F_flag, dat_path = '', Yrange
     ax_8ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
     ax_9ch.set_xlim([df_print[2]['time'][0],df_print[2]['time'][len(df_print[2]['time'])-1]])
     #### plot X label print format ####
-    strings = '%H:%M'
-    # strings = '%m%d'
+    # strings = '%H:%M'
+    strings = '%m%d'
     # strings = '%d'
     # ax_6ch.xaxis.set_major_formatter(mpl.dates.DateFormatter('%H:%M:%S'))
     ax_3ch.xaxis.set_major_formatter(mpl.dates.DateFormatter(strings))
@@ -723,9 +723,9 @@ def main():
     # "MI20-11-10_00h00m00s@inabu_byNo2.csv",
     # "Fx20-11-10_00h00m00s@inabu_Flux.csv"]
     File = [
-    "1sec_median_MI21-01-17_00h00m00s@inabu_byNo1.csv",
-    "1sec_median_MI21-01-17_00h00m00s@inabu_byNo2.csv",
-    "1sec_median_MI21-01-17_00h00m00s@inabu_byNo2.csv"]
+    "1sec_median_MI21-01-16_00h00m00s@inabu_byNo1.csv",
+    "1sec_median_MI21-01-16_00h00m00s@inabu_byNo2.csv",
+    "Fx21-01-16_00h00m00s@inabu_Flux.csv"]
     File2 = [
     "1sec_median_MI20-10-04_00h00m00s@inabu_byNo1.csv",
     "1sec_median_MI20-10-04_00h00m00s@inabu_byNo2.csv",
@@ -743,18 +743,18 @@ def main():
     #     File_list2.append(countUP_filename(File3[1],3,i))
     #     File_list3.append(countUP_filename(File3[1],3,i))
 
-    for i in range(30):
+    for i in range(48):
         File_list1.append(countUP_filename(File[0],1,i))
         File_list2.append(countUP_filename(File[1],2,i))
-        File_list3.append(countUP_filename(File[1],2,i))
-        # print(countUP_filename(File[2],2,i))
-    for i in range(55):
-        File_list1.append(countUP_filename(File2[0],1,i))
-        File_list2.append(countUP_filename(File2[1],2,i))
-        File_list3.append(countUP_filename(File2[2],3,i))
+        File_list3.append(countUP_filename(File[2],3,i))
+        print(countUP_filename(File[2],3,i))
+    # for i in range(55):
+    #     File_list1.append(countUP_filename(File2[0],1,i))
+    #     File_list2.append(countUP_filename(File2[1],2,i))
+    #     File_list3.append(countUP_filename(File2[2],3,i))
     #     print(countUP_filename(File2[1],2,i))
 
-    for i in range(85):
+    # for i in range(85):
         # File_list1 = []
         # File_list2 = []
         # File_list3 = []
@@ -763,16 +763,16 @@ def main():
         # File_list2.append(countUP_filename(File[1],2,i))
         # File_list3.append(countUP_filename(File[2],3,i))
         # Process_long([File_list1,File_list2,File_list3],"median",125)
-        try:
-            Process([File_list1[i],File_list2[i],File_list3[i]],"00:00:00","23:59:59","median",125)
-        except:
-            print("ERROR  =  "+File_list1[i])
+        # try:
+        #     Process([File_list1[i],File_list2[i],File_list3[i]],"00:00:00","23:59:59","median",125)
+        # except:
+        #     print("ERROR  =  "+File_list1[i])
         # Process([File_list1[i],File_list2[i],File_list3[i]],"15:30:00","16:30:00","median",10)
         # Process([File_list1[i],File_list2[i],File_list3[i]],"21:30:00","23:30:00","median",10)
         # day_10min([File_list1[i],File_list2[i],File_list3[i]],"median",10)
             
     # Process([File[0],File[1],File[2]],"00:00:00","00:59:59","median",125)
-    # Process_long([File_list1,File_list2,File_list3],"median",160)
+    Process_long([File_list1,File_list2,File_list3],"median",160)
  
 
 if __name__ == '__main__':
